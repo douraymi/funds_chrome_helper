@@ -1,0 +1,27 @@
+{
+	"manifest_version": 2,
+	"name": "sumi website tools",
+	"version": "0.1.0",
+	"icons": {
+        "16": "img/icon16.png",
+        "48": "img/icon48.png",
+        "128": "img/icon128.png"
+    },
+	"content_scripts":[
+		{
+			"run_at": "document_end",
+			"matches":["https://trade.fund123.cn/home/agreementquery/*"],
+			"js":["js/lib/jquery-2.0.0.min.js", "js/lib/ZhCN_Pinyin.min.js", "js/bin/tableSort.js", "js/agreementquery.js"],
+			"css":["css/app.css"]
+		}
+	],
+	"permissions": [
+	  "tabs",
+	  "bookmarks",
+	  "unlimitedStorage",
+	  "http://*.fund123.cn/",
+	  "http://*.eastmoney.com/"
+	],
+	"web_accessible_resources":["js/lib/jquery.min.map"]
+
+}
