@@ -1,27 +1,51 @@
 {
 	"manifest_version": 2,
 	"name": "sumi website tools",
-	"version": "0.1.0",
+	"version": "2.0.0",
 	"icons": {
-        "16": "img/icon16.png",
-        "48": "img/icon48.png",
-        "128": "img/icon128.png"
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+	"browser_action": {
+    "default_icon": {                    // 可选
+    	"19": "images/icon19.png",           // 可选
+    	"38": "images/icon38.png"            // 可选
     },
+    "default_title": "girafeee box",      // 可选; 在工具提示中显示
+    "default_popup": "app/browserAction/index.html"        // 可选
+	},
+	"background": {
+  	"persistent": false,
+  	"scripts": [
+  		"lib/jquery-2.0.0.min.js",
+  		"app/background/app.js"
+  	]
+	},
 	"content_scripts":[
 		{
-			"run_at": "document_end",
+			"run_at": "document_end",  // document_start document_end document_idle
+			"all_frames": false,  //只在最上层frame中运行
 			"matches":["https://trade.fund123.cn/home/agreementquery/*"],
-			"js":["js/lib/jquery-2.0.0.min.js", "js/lib/ZhCN_Pinyin.min.js", "js/bin/tableSort.js", "js/agreementquery.js"],
-			"css":["css/app.css"]
+			"js":[
+				"lib/jquery-2.0.0.min.js",
+				"lib/ZhCN_Pinyin.min.js",
+				"lib/tableSort.js",
+				"app/contentScripts/app.js"
+			],
+			"css":["app/contentScripts/app.css"]
 		}
 	],
 	"permissions": [
-	  "tabs",
-	  "bookmarks",
-	  "unlimitedStorage",
-	  "http://*.fund123.cn/",
-	  "http://*.eastmoney.com/"
+		"tabs",
+		"bookmarks",
+		"unlimitedStorage",
+		"<all_urls>"
 	],
-	"web_accessible_resources":["js/lib/jquery.min.map"]
-
+	"web_accessible_resources":[
+    "fonts/glyphicons-halflings-regular.eot",
+    "fonts/glyphicons-halflings-regular.svg",
+    "fonts/glyphicons-halflings-regular.ttf",
+    "fonts/glyphicons-halflings-regular.woff"
+	]
 }
