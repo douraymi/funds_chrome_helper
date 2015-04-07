@@ -1,0 +1,30 @@
+<div class="girMain">
+	<div class="girNav">
+		<ul class="am-nav am-nav-pills">
+		  <li class="am-active"><a href="#">首页</a></li>
+		  <li><a href="#" id="testButton">开始使用</a></li>
+		  <li><a href="#" id="testButton2">按需定制</a></li>
+		</ul>
+
+	</div>
+	<div class="girBody"></div>
+</div>
+
+<script>
+	// console.log("do???");
+	$("#testButton").click(function(){
+		// console.log("CCC");
+		$.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data, textStatus){
+	// console.log("data:",data,"textStatus:",textStatus);
+			$("#main").html(data);
+		} });
+	});
+
+
+	$("#testButton2").click(function(){
+		chrome.runtime.sendMessage("messa", function(response){
+			console.log("get Response:", response);
+			$("#main").html(response);
+		});
+	});
+</script>

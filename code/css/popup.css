@@ -1,0 +1,21 @@
+@media only screen and (max-width: 640px) {
+body {
+    min-width: 500px;
+  }
+}
+.header {
+  text-align: center;
+}
+.header h1 {
+  font-size: 150%;
+  color: #333;
+  margin-top: 10px;
+}
+.header p {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+hr {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
