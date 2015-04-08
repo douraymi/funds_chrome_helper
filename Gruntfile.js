@@ -84,6 +84,10 @@ module.exports = function(grunt) {
         files: ['package.json', 'lint-options.json', 'Gruntfile.js', 'code/**/*.js',
                 'code/**/*.json', '!code/js/libs/*'],
         tasks: ['test']
+      },
+      hc: {
+        files: ['code/css/**/*.css', 'code/html/**/*.html'],
+        tasks: ['hc']
       }
     }
 
@@ -129,7 +133,12 @@ module.exports = function(grunt) {
   //
 
   grunt.registerTask('test', ['jshint', 'mochaTest']);
-  grunt.registerTask('test-cont', ['test', 'watch']);
+  // grunt.registerTask('test-cont', ['test', 'watch']);
+  grunt.registerTask('test-cont', ['test', 'watch:js']);
+
+  // @douraymi@ css auto
+  grunt.registerTask('hc', ['copy:main', 'manifest', 'copy:prod']);
+  grunt.registerTask('html-css', ['watch:hc']);
 
   //
   // DEFAULT
