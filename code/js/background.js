@@ -1,16 +1,118 @@
 ;(function() {
   var $ = require('jquery');
-  
-  chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if(message==="messa"){
-      // console.log("get messsaa");
-      $.ajax({ url: "http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&ft=gp&sd=&ed=&sc=z&st=desc&pi=1&pn=20&zf=diy&sh=list&rnd=0.07104309764690697", async:true, success: function(data, textStatus){
-        // console.log("sendResponse:", sendResponse);
-        sendResponse(data);
-      } });
-      // sendResponse(resp);
-      return true;
-    }
-  });
+
+
+	// chrome.runtime.onConnect.addListener(function(port){
+	// 	port.onMessage.addListener(function(info){
+	// 		console.log("info get in bg:", info);
+			
+	// 		$.ajax({ url: "http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&ft=gp&sd=&ed=&sc=z&st=desc&pi=1&pn=20&zf=diy&sh=list&rnd=0.07104309764690697", async:true, success: function(data, textStatus){
+
+	// 			port.postMessage(data);
+ //      } });
+	// 	});
+	// });
+
+	//test for bg port
+	// var bg_port = chrome.runtime.connect();
+
+	// chrome.alarms.create("tam", {
+	// 	when:Date.now(),
+	// 	periodInMinutes:0.1
+	// });
+	// chrome.alarms.onAlarm.addListener(function(alm){
+	// 	console.log(alm);
+	// 	bg_port.postMessage("(bg)post from bg");
+	// });
+
+	// bg_port.onMessage.addListener(function(info){
+	// 	console.log("(bg)info get in bg:", info);
+	// });
+
+	// chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+	// 	var port = chrome.tabs.connect(tabs[0].id);
+	// 	port.postMessage("(bg) post in bg");
+	// 	console.log("(bg) sended!");
+	// 	port.onMessage.addListener(function(response){
+	// 		console.log("(bg) response in bg:", response);
+	// 	});
+	// });
+
+	// chrome.runtime.onConnect.addListener(function(port) {
+	//     console.assert(port.name == "knockknock", "nokock!");
+	//     port.onMessage.addListener(function(msg) {
+	//           console.log(msg);
+	//         if (msg.joke == "Knock knock")
+	//             port.postMessage({question: "Who's there?"});
+	//         else if (msg.answer == "Madame")
+	//             port.postMessage({question: "Madame who?"});
+	//         else if (msg.answer == "Madame... Bovary")
+	//             port.postMessage({question: "I don't get it."});
+	//     });
+	// });
+	
+	var ttbb = [];
+
+	chrome.runtime.onMessage.addListener(
+	function(request, sender, sendResponse) {
+		 if (request.greeting == "hello"){
+
+			var port = chrome.tabs.connect(sender.tab.id);
+			ttbb.push(port);
+			// port.postMessage({joke: "Knock knock"});
+
+			port.onDisconnect.addListener(function(abc){
+				console.log("onDisconnect.abc:", abc);
+			});
+
+			port.onMessage.addListener(function(msg) {
+				// console.log(msg);
+			    if (msg.question == "Who's there?")
+			        port.postMessage({answer: "Madame"});
+			    else if (msg.question == "Madame who?")
+			        port.postMessage({answer: "Madame... Bovary"});
+			});
+		 }
+
+
+	});
+
+	chrome.alarms.create("tam", {
+		when:Date.now(),
+		periodInMinutes:0.1
+	});
+	chrome.alarms.onAlarm.addListener(function(alm){
+		console.log(ttbb);
+		for (var i = ttbb.length - 1; i >= 0; i--) {
+			ttbb[i].postMessage({joke: "Knock knock"});
+		};
+		// console.log(alm);
+		// console.log("chrome.runtime.Port:", chrome.runtime);
+	});
+	// chrome.tabs.query({active: true}, function(tabs){
+	// 	console.log(tabs);
+	// 	var port = chrome.tabs.connect(tabs[0].id, {name: "knockknock"});
+	// 	port.postMessage({joke: "Knock knock"});
+
+	// 	port.onMessage.addListener(function(msg) {
+	// 		console.log(msg);
+	// 	    if (msg.question == "Who's there?")
+	// 	        port.postMessage({answer: "Madame"});
+	// 	    else if (msg.question == "Madame who?")
+	// 	        port.postMessage({answer: "Madame... Bovary"});
+	// 	});
+	// });
+
+
+
+  // UDP like way
+  // chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  //   if(message==="messa"){
+  //     $.ajax({ url: "http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&ft=gp&sd=&ed=&sc=z&st=desc&pi=1&pn=20&zf=diy&sh=list&rnd=0.07104309764690697", async:true, success: function(data, textStatus){
+  //       sendResponse(data);
+  //     } });
+  //     return true;
+  //   }
+  // });
   
 })();
