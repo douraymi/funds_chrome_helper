@@ -33,9 +33,7 @@
   "options_page": "html/options.html",
   "devtools_page": "html/devtools.html",
   "permissions": [
-    "alarms",
-    "activeTab",
-    "unlimitedStorage",
+    "storage",
     "*://*.fund123.cn/*",
     "*://*.eastmoney.com/*"
   ],

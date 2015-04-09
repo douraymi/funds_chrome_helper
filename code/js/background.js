@@ -1,6 +1,27 @@
 ;(function() {
   var $ = require('jquery');
 
+  // function log() { console.log.apply(console, arguments); }
+  
+  // var connect = require('./modules/connect');
+  // var bgPort;
+  // console.log(connect);
+
+  // bgPort = connect.init('bg');
+
+	chrome.alarms.create("tam", {
+		when:Date.now(),
+		periodInMinutes:0.1
+	});
+	chrome.alarms.onAlarm.addListener(function(alm){
+		// console.log(bgPort);
+	});
+
+  // connect.init('bg', function(port){
+  // 	bgPort = port;
+  // 	log("in bg");
+  // });
+
 
 	// chrome.runtime.onConnect.addListener(function(port){
 	// 	port.onMessage.addListener(function(info){
@@ -51,44 +72,43 @@
 	//     });
 	// });
 	
-	var ttbb = [];
+	// var ttbb = [];
 
-	chrome.runtime.onMessage.addListener(
-	function(request, sender, sendResponse) {
-		 if (request.greeting == "hello"){
+	// chrome.runtime.onMessage.addListener(
+	// function(request, sender, sendResponse) {
+	// 	 if (request.greeting == "hello"){
 
-			var port = chrome.tabs.connect(sender.tab.id);
-			ttbb.push(port);
-			// port.postMessage({joke: "Knock knock"});
+	// 		var port = chrome.tabs.connect(sender.tab.id);
+	// 		ttbb.push(port);
+	// 		// port.postMessage({joke: "Knock knock"});
 
-			port.onDisconnect.addListener(function(abc){
-				console.log("onDisconnect.abc:", abc);
-			});
+	// 		port.onDisconnect.addListener(function(abc){
+	// 			console.log("onDisconnect.abc:", abc);
+	// 		});
 
-			port.onMessage.addListener(function(msg) {
-				// console.log(msg);
-			    if (msg.question == "Who's there?")
-			        port.postMessage({answer: "Madame"});
-			    else if (msg.question == "Madame who?")
-			        port.postMessage({answer: "Madame... Bovary"});
-			});
-		 }
+	// 		port.onMessage.addListener(function(msg) {
+	// 			// console.log(msg);
+	// 		    if (msg.question == "Who's there?")
+	// 		        port.postMessage({answer: "Madame"});
+	// 		    else if (msg.question == "Madame who?")
+	// 		        port.postMessage({answer: "Madame... Bovary"});
+	// 		});
+	// 	 }
 
 
-	});
+	// });
 
-	chrome.alarms.create("tam", {
-		when:Date.now(),
-		periodInMinutes:0.1
-	});
-	chrome.alarms.onAlarm.addListener(function(alm){
-		console.log(ttbb);
-		for (var i = ttbb.length - 1; i >= 0; i--) {
-			ttbb[i].postMessage({joke: "Knock knock"});
-		};
-		// console.log(alm);
-		// console.log("chrome.runtime.Port:", chrome.runtime);
-	});
+	// chrome.alarms.create("tam", {
+	// 	when:Date.now(),
+	// 	periodInMinutes:0.1
+	// });
+	// chrome.alarms.onAlarm.addListener(function(alm){
+	// 	console.log(ttbb);
+	// 	for (var i = ttbb.length - 1; i >= 0; i--) {
+	// 		ttbb[i].postMessage({joke: "Knock knock"});
+	// 	};
+	// });
+
 	// chrome.tabs.query({active: true}, function(tabs){
 	// 	console.log(tabs);
 	// 	var port = chrome.tabs.connect(tabs[0].id, {name: "knockknock"});

@@ -3,23 +3,35 @@
 	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
 	window.$ = $;
 
-	// var chrome = window.chrome; need for mocha test
+	// var chrome = window.chrome; //need for mocha test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//can't use chrome.tabs here	
 
-	$.ajax({ url: chrome.extension.getURL('../html/content.html'), async:true, success: function(data, textStatus){
-			// console.log("data:",data,"textStatus:",textStatus);
-			$("html").append(data);
-			$("html").append('<div id="newBody"></div>');
-			// var gtst = getstyle(".am-close-alt");
-			// console.log("@font-face: ", gtst);
+	// $.ajax({ url: chrome.extension.getURL('../html/content.html'), async:true, success: function(data, textStatus){
+	// 		$("html").append(data);
+	// 		$("html").append('<div id="newBody"></div>');
 
-	} });
+	// } });
+
+	// $("#main").bind("DOMNodeInserted", function(elm){
+	// 	// 	console.log("main INsert");
 	// });
-
-	$("#main").bind("DOMNodeInserted", function(elm){
-	// 	console.log("main INsert");
-	});
 
 	// html是之前就有的, on一定要绑在原来就有的东西上面,
 	// 刷进去的内容要绑定on要在该内容的html里写
@@ -54,23 +66,22 @@
 	//         port.postMessage({answer: "Madame... Bovary"});
 	// });
 
-	chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
-	    // console.log(response.farewell);
-	});
+	// chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+	// });
 
-	chrome.runtime.onConnect.addListener(function(port) {
-		console.log(port);
-	    // console.assert(port.name == "knockknock", "nokock!");
-	    port.onMessage.addListener(function(msg) {
-	          console.log(msg);
-	        if (msg.joke == "Knock knock")
-	            port.postMessage({question: "Who's there?"});
-	        else if (msg.answer == "Madame")
-	            port.postMessage({question: "Madame who?"});
-	        else if (msg.answer == "Madame... Bovary")
-	            port.postMessage({question: "I don't get it."});
-	    });
-	});
+	// chrome.runtime.onConnect.addListener(function(port) {
+	// 	console.log(port);
+	//     // console.assert(port.name == "knockknock", "nokock!");
+	//     port.onMessage.addListener(function(msg) {
+	//           console.log(msg);
+	//         if (msg.joke == "Knock knock")
+	//             port.postMessage({question: "Who's there?"});
+	//         else if (msg.answer == "Madame")
+	//             port.postMessage({question: "Madame who?"});
+	//         else if (msg.answer == "Madame... Bovary")
+	//             port.postMessage({question: "I don't get it."});
+	//     });
+	// });
 
 
 
