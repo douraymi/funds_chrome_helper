@@ -22,7 +22,10 @@
   "content_scripts": [
     {
       "run_at": "document_end",
-      "matches": ["https://trade.fund123.cn/home/agreementquery/*"],
+      "matches": [
+        "https://trade.fund123.cn/home/agreementquery/*",
+        "*://*.fund123.cn/*"
+      ],
       "js": [ "js/content.js" ],
       "css": [
         "/css/amazeui/amazeui.css",
@@ -33,6 +36,9 @@
   "options_page": "html/options.html",
   "devtools_page": "html/devtools.html",
   "permissions": [
+    "activeTab",
+    "tabs",
+    "alarms",
     "storage",
     "*://*.fund123.cn/*",
     "*://*.eastmoney.com/*"

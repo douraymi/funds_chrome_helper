@@ -1,9 +1,10 @@
 //connection adapt
 
-var bgInit = function(){
+var bgInit = function(callback){
+	// console.log("in bgInit: callback:", callback);
 	chrome.runtime.onConnect.addListener(function(port){
-		// return callback(port);
-		return port;
+		console.log("in bgInit: port:", port);
+		return callback(port);
 	});
 };
 
@@ -16,8 +17,8 @@ var singleton = {
 	},
 	asyn : function( fn , callback ){
 		var result;
-		console.log("in asyn");
-
+		// console.log("in asyn: callback:", callback);
+		bgInit(callback);
 
 		// return function(){
 		// 	console.log("in asyn2");
@@ -31,10 +32,10 @@ var connect = {
 
 };
 
-connect.init = function(mode){
+connect.init = function(mode, callback){
 	switch(mode){
 		case 'bg':
-			return singleton.sync(bgInit);
+			return singleton.asyn(bgInit, callback);
 
 		case 'content':
 			break;

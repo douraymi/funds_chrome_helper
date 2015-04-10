@@ -1,9 +1,31 @@
 ;(function() {
 	var $ = require('jquery');
+	var URI = require('URIjs');
+
 	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
+	// 开发阶段开启
 	window.$ = $;
+	window.URI = URI;
+	// =======================
 
-	// var chrome = window.chrome; //need for mocha test
+	// girafeee function box
+	var content_script_init = function(){
+		var content_port =  chrome.runtime.connect({name:"content_script_init"});
+		return content_port;
+	}
+
+	var cp = content_script_init();
+
+	var msgCtner = require("./modules/message_container");
+	msgCtner.regMsg("msgtest", function(){
+		console.log("in msgtest");
+	})
+	.regTask("tasktest", ["msgtest", "abc"])
+	.runtimeInit(cp, "tasktest");
+
+
+
+	// console.log(mm);
 
 
 
@@ -17,17 +39,19 @@
 
 
 
+	//can't use chrome.tabs here	 ??
 
+	// chrome.tabs.getCurrent(function callback(tab){
+	// 	console.log("in it!:", tab);
+	// })
 
+	// console.log("chrome.tabs:", chrome.tabs);
 
+	$.ajax({ url: chrome.extension.getURL('../html/content.html'), async:true, success: function(data, textStatus){
+			$("html").append(data);
+			$("html").append('<div id="newBody"></div>');
 
-	//can't use chrome.tabs here	
-
-	// $.ajax({ url: chrome.extension.getURL('../html/content.html'), async:true, success: function(data, textStatus){
-	// 		$("html").append(data);
-	// 		$("html").append('<div id="newBody"></div>');
-
-	// } });
+	} });
 
 	// $("#main").bind("DOMNodeInserted", function(elm){
 	// 	// 	console.log("main INsert");

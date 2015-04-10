@@ -137,7 +137,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test-cont', ['test', 'watch:js']);
 
   // @douraymi@ css auto
-  grunt.registerTask('hc', ['copy:main', 'manifest', 'copy:prod']);
+  grunt.registerTask('hc', ['copy:main', 'manifest']);
   grunt.registerTask('html-css', ['watch:hc']);
 
   //

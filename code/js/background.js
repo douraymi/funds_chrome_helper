@@ -1,26 +1,32 @@
 ;(function() {
   var $ = require('jquery');
+  // var URI = require('URIjs');
+
+  chrome.runtime.onConnect.addListener(function callback(port){
+  	// var thisUrl = new URI(port.sender.tab.url).query("").fragment("").href();
+  	console.log("port:", port);
+  });
 
   // function log() { console.log.apply(console, arguments); }
   
-  // var connect = require('./modules/connect');
-  // var bgPort;
-  // console.log(connect);
+ //  var connect = require('./modules/connect');
+ //  var bgPort;
+ //  // console.log(connect);
 
-  // bgPort = connect.init('bg');
+ //  // bgPort = connect.init('bg');
+ //  connect.init('bg', function(port){
+ //  	bgPort = port;
+ //  	// log("in bg");
+ //  });
 
-	chrome.alarms.create("tam", {
-		when:Date.now(),
-		periodInMinutes:0.1
-	});
-	chrome.alarms.onAlarm.addListener(function(alm){
-		// console.log(bgPort);
-	});
+	// chrome.alarms.create("tam", {
+	// 	when:Date.now(),
+	// 	periodInMinutes:0.1
+	// });
+	// chrome.alarms.onAlarm.addListener(function(alm){
+	// 	console.log(bgPort);
+	// });
 
-  // connect.init('bg', function(port){
-  // 	bgPort = port;
-  // 	log("in bg");
-  // });
 
 
 	// chrome.runtime.onConnect.addListener(function(port){
