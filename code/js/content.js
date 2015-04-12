@@ -7,25 +7,57 @@
 	window.$ = $;
 	window.URI = URI;
 	// =======================
-
+	// console.log(window.chromeMsgBG);
 	// girafeee function box
-	var content_script_init = function(){
-		var content_port =  chrome.runtime.connect({name:"content_script_init"});
-		return content_port;
-	}
+	// var content_script_init = function(){
+	// 	var content_port =  chrome.runtime.connect({name:"content_script_init"});
+	// 	return content_port;
+	// }
 
-	var cp = content_script_init();
+	// var cp = content_script_init();
 
-	var msgCtner = require("./modules/message_container");
-	msgCtner.regMsg("msgtest", function(){
-		console.log("in msgtest");
-	})
-	.regTask("tasktest", ["msgtest", "abc"])
-	.runtimeInit(cp, "tasktest");
+	// var msgCtner = require("./modules/message_container");
+	// msgCtner
+	// .regMsg("msgtest", function(msg){
+	// 	console.log("msgtest:msg:", msg);
+	// })
+	// .regMsg("msgtest2", function(msg){
+	// 	console.log("msgtest2:msg:", msg);
+	// })
+	// .regTask("tasktest", ["msgtest", "msgtest2"])
+	// .runtimeInit(cp, "tasktest");
+
+	// var p1 = require("./modules/chrome-msg");
+	// var pp1 = p1('content_script');
+	// var p2 = require("./modules/chrome-msg")('content_script');
+	var p3 = require("./modules/chrome-msg");
+	var pp3 = p3.init('ct');
+	pp3.onMsg(function(msg, sender){
+		console.log("msg:", msg);
+		// pp3.send("hello second!");
+	});
+	pp3.send("hello world!");
+	
+	// var p4 = require("./modules/chrome-msg").init('ct').send("hello world!");
+	// var abc = msgCtner.send("hello world!");
+	console.log(pp3);
+	// console.log(p3);
+	// console.log(pp3);
 
 
+	// var port = chrome.runtime.connect({name:"content_script_init"});
+	// port.postMessage("meg1");	
+	// port.onMessage.addListener(function(msg, sender){
+	// 	console.log("msg:", msg, "sender:", sender);
+	// 	// port.postMessage("sendback");
+	// });	
+	// var port2 = chrome.runtime.connect({name:"content_script_init2"});
+	// port2.postMessage("meg2");
+	// port2.onMessage.addListener(function(msg, sender){
+	// 	console.log("msg2:", msg, "sender:", sender);
+	// 	// port2.postMessage("sendback");
+	// });
 
-	// console.log(mm);
 
 
 
