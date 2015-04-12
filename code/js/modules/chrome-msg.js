@@ -35,20 +35,6 @@
 		this.port.postMessage(msg);
 		return this;
 	}
-	//little tool
-	function randConflict(listObject){
-		var rand = _.random(99999999);
-		while(_.has(listObject, rand) ){
-			rand = _.random(99999999);
-		}
-		// 可能有极端的异步多线程问题,以后再修正
-		return rand;
-	}
-	function keyConflict(listObject, key){
-		if(_.has(listObject, key)){
-			throw new TypeError(key + ' func is already in msgList');
-		}
-	}
 	function onMsgPre(funcs, runInEach){
 		var self = this;
 		var funcList = {};
@@ -65,6 +51,20 @@
 			if(runInEach !== undefined ) runInEach(value);
 			// self.port.onMessage.addListener(value); // example
 		});
+	}
+	//little tool
+	function randConflict(listObject){
+		var rand = _.random(99999999);
+		while(_.has(listObject, rand) ){
+			rand = _.random(99999999);
+		}
+		// 可能有极端的异步多线程问题,以后再修正
+		return rand;
+	}
+	function keyConflict(listObject, key){
+		if(_.has(listObject, key)){
+			throw new TypeError(key + ' func is already in msgList');
+		}
 	}
 
 	// chromeMsgCT
@@ -139,22 +139,15 @@
 	// export
 	function chromeMsgExport(){
 		return {
-			init : function(wmi){
-				switch(wmi)
-				{
-				case "bg":
-					return window.chromeMsgBG || new chromeMsgBG();
-				  break;
-				case "ct":
-				  var _chromeMsgCT = new chromeMsgCT();
-				  var protName = "ct" + _.random(99999999);
-				  //我就不信8位数还能碰对一样的
-				  _chromeMsgCT.port = chrome.runtime.connect({name: protName });
-				  return _chromeMsgCT;
-				  break;
-				default:
-				  throw new TypeError('wrong arg with chromeMsg init');
-				}
+			initBG	: function(){
+				// background_event_page connector
+				return window.chromeMsgBG || new chromeMsgBG();
+			},
+			init 		: function(wmi){
+				// content_script_page connector
+			  var _chromeMsgCT = new chromeMsgCT();
+			  _chromeMsgCT.port = chrome.runtime.connect({name: wmi });
+			  return _chromeMsgCT;
 			}
 		};
 	}

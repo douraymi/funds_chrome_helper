@@ -1,12 +1,50 @@
 ;(function() {
 	var $ = require('jquery');
+	var MSG_CON = require("./modules/chrome-msg");
 	var URI = require('URIjs');
 
 	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
 	// 开发阶段开启
 	window.$ = $;
-	window.URI = URI;
 	// =======================
+
+	var thisUri = new URI().query("").fragment("").toString();
+	switch(thisUri){
+		case "http://my.fund123.cn/RealFundDefault.aspx":
+			//我的基金
+			require('./part/my-fund');
+			break;
+		case "https://trade.fund123.cn/home/agreementquery/":
+			//定投页面
+
+			break;
+		default:
+
+	}
+
+
+
+	// var msgHome = MSG_CON.init(thisUri);
+	// msgHome.onMsg(function(msg, sender){
+	// 	console.log("msg:", msg, "sender:", sender);
+	// 	// msgHome.send("hello second!");
+	// });
+	// msgHome.send("hello world!");
+
+
+	// $.ajax({ url: chrome.extension.getURL('../html/content.html'), async:true, success: function(data, textStatus){
+	// 		$("html").append(data);
+	// 		$("html").append('<div id="newBody"></div>');
+
+	// } });
+
+
+
+
+
+
+
+
 	// console.log(window.chromeMsgBG);
 	// girafeee function box
 	// var content_script_init = function(){
@@ -30,17 +68,11 @@
 	// var p1 = require("./modules/chrome-msg");
 	// var pp1 = p1('content_script');
 	// var p2 = require("./modules/chrome-msg")('content_script');
-	var p3 = require("./modules/chrome-msg");
-	var pp3 = p3.init('ct');
-	pp3.onMsg(function(msg, sender){
-		console.log("msg:", msg);
-		// pp3.send("hello second!");
-	});
-	pp3.send("hello world!");
-	
+
+
 	// var p4 = require("./modules/chrome-msg").init('ct').send("hello world!");
 	// var abc = msgCtner.send("hello world!");
-	console.log(pp3);
+	// console.log(pp3);
 	// console.log(p3);
 	// console.log(pp3);
 
@@ -79,11 +111,7 @@
 
 	// console.log("chrome.tabs:", chrome.tabs);
 
-	$.ajax({ url: chrome.extension.getURL('../html/content.html'), async:true, success: function(data, textStatus){
-			$("html").append(data);
-			$("html").append('<div id="newBody"></div>');
 
-	} });
 
 	// $("#main").bind("DOMNodeInserted", function(elm){
 	// 	// 	console.log("main INsert");

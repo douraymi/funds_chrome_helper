@@ -1,6 +1,14 @@
 ;(function() {
   var $ = require('jquery');
-  // var URI = require('URIjs');
+  var M = require('./modules/chrome-msg').initBG();
+  var URI = require('URIjs');
+
+  M.onMsg(function(msg, port){
+  	var thisUrl = new URI(port.sender.url).query("").fragment("").toString();
+  	// console.log("msg", msg, "port", port);
+  	console.log("msg", msg, "port", port, "url:", thisUrl);
+  	M.send("bg");
+  });
 
   // chrome.runtime.onConnect.addListener(function callback(port){
   //  	// var thisUrl = new URI(port.sender.tab.url).query("").fragment("").href();
@@ -12,48 +20,14 @@
   // 		console.log("msg:", msg, "sender:", sender);
   // 	});
   // });
-	console.log(new Date());
-	var pp = require("./modules/chrome-msg");
-	var ppp = pp.init('bg');
-	ppp.onMsg(function(msg, sender){
-		// ppp.send("from bg");
-		console.log("bgMsg:", msg);
-	});
+	// console.log(new Date());
+	// var pp = require("./modules/chrome-msg");
+	// var ppp = pp.init('bg');
+	// ppp.onMsg(function(msg, sender){
+	// 	ppp.send("from bg");
+	// 	console.log("bgMsg:", msg, "sender:", sender);
+	// });
 
-	var pp2 = require("./modules/chrome-msg");
-	var ppp2 = pp2.init('bg');
-	ppp2.onMsg(function(msg, sender){
-		// ppp.send("from bg");
-		console.log("bgMsg2:", msg);
-	});
-
-	var pp3 = require("./modules/chrome-msg");
-	var ppp3 = pp3.init('bg');
-	ppp3.onMsg(function(msg, sender){
-		// ppp.send("from bg");
-		console.log("bgMsg3:", msg);
-	});
-
-	var pp4 = require("./modules/chrome-msg");
-	var ppp4 = pp4.init('bg');
-	ppp4.onMsg(function(msg, sender){
-		// ppp.send("from bg");
-		console.log("bgMsg4:", msg);
-	});
-
-	var pp5 = require("./modules/chrome-msg");
-	var ppp5 = pp5.init('bg');
-	ppp5.onMsg(function(msg, sender){
-		// ppp.send("from bg");
-		console.log("bgMsg5:", msg);
-	});
-
-	var pp6 = require("./modules/chrome-msg");
-	var ppp6 = pp6.init('bg');
-	ppp6.onMsg(function(msg, sender){
-		// ppp.send("from bg");
-		console.log("bgMsg6:", msg);
-	});
 	// console.log(ppp);
 
 	// pp('bg').addmsg(function(msg){

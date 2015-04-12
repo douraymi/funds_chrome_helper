@@ -23,12 +23,13 @@
     {
       "run_at": "document_end",
       "matches": [
-        "https://trade.fund123.cn/home/agreementquery/*",
-        "*://*.fund123.cn/*"
+        "https://trade.fund123.cn/home/agreementquery/",
+        "http://my.fund123.cn/RealFundDefault.aspx"
       ],
       "js": [ "js/content.js" ],
       "css": [
         "/css/amazeui/amazeui.css",
+        "/css/common.css",
         "/css/content.css"
       ]
     }
