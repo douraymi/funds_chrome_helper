@@ -1,25 +1,110 @@
 ;(function() {
+	window.GIRAFEEEWINDOW = "background";
   var $ = require('jquery');
-  var M = require('./modules/chrome-msg').initBG();
+  var _ = require('underscore');
+  var C = require('./modules/chrome_cab');
+  var M = require('./modules/chrome_msg');
   var URI = require('URIjs');
 
-  M.onMsg(function(msg, port){
-  	var thisUrl = new URI(port.sender.url).query("").fragment("").toString();
-  	// console.log("msg", msg, "port", port);
-  	console.log("msg", msg, "port", port, "url:", thisUrl);
-  	M.send("bg");
-  });
+  console.log("bg begin");
+
+  var conListner = function(port){
+  	console.log("fun1");
+  	port.onMsg(funcs, filter);
+  	port.onMsg(funcs2, filter2);
+  }
+  var m = M.onConnect(conListner);
+  var filter = {
+  	name 	: "my-fund-one",
+  	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
+  }
+  var filter2 = {
+  	name 	: "my-fund-two"
+  }
+  var funcs = {
+  	a1: function(msg, pt){
+  		console.log("msg:", msg);
+  		pt.send("a1");
+  	},
+  	a2: function(msg, pt){
+  		console.log("msg:", msg);
+  		pt.send("a2");
+  	}
+  }
+  var funcs2 = {
+  	b1: function(msg, pt){
+  		console.log("msg:", msg);
+  		pt.send("b1");
+  	},
+  	b2: function(msg, pt){
+  		console.log("msg:", msg);
+  		pt.send("b2");
+  	}
+  }
+
+  // C.alm(function(){
+  // 	console.log("m:", m);
+  // 	_.each(m.ports, function(value, key, list){
+  // 		value.postMessage("gggooooddd");
+  // 	});
+  // });
+
+  // C.alm(function(){
+  // 	m.rmMsg(filter2, funcs2);
+  // }, 0.5);
+
+  // var m2 = require('./modules/chrome_msg').onConnect(fun1);
+  // console.log("m2:", m2);
+  // var m3 = require('./modules/chrome_msg').onConnect(fun1);
+  // console.log("m3:", m3);
+  // var o1 = m();
+  // console.log(o1);
+  // var o2 = m();
+  // console.log(o2);
+  // var o3 = m();
+  // m.add();
+  // console.log(m);
+  // m.add();
+  // var m2 = M.initBG()();
+  // console.log(m2);
+
+
+
+  // M = M.initBG();
+  // M.onMsg(function(msg, port){
+  // 	var thisUrl = new URI(port.sender.url).query("").fragment("").toString();
+  // 	// console.log("msg", msg, "port", port);
+  // 	// console.log("msg", msg, "port", port, "url:", thisUrl);
+  // 	console.log(port);
+  // 	// port.postMessage("bg");
+  // 	// M.send("bg");
+	 //  C.alm(function(){
+	 //  	// M.send("bg");
+	 //  	port.postMessage("bg");
+	 //  });
+  // });
+
+
 
   // chrome.runtime.onConnect.addListener(function callback(port){
-  //  	// var thisUrl = new URI(port.sender.tab.url).query("").fragment("").href();
-  //  	// console.log("port:", port);
-  //  	// port.postMessage("t1");
-  //  	// port.postMessage("t2");
+  // //  	// var thisUrl = new URI(port.sender.tab.url).query("").fragment("").href();
+  // //  	// console.log("port:", port);
+  // //  	// port.postMessage("t1");
+  // //  	// port.postMessage("t2");
   // 	port.postMessage("bbgg");
   // 	port.onMessage.addListener(function(msg, sender){
+	 //  	// C.alm(function(){
+		//   // 	// M.send("bg");
+		//   // 	port.postMessage("bg");
+		//   // });
   // 		console.log("msg:", msg, "sender:", sender);
   // 	});
   // });
+
+	// M.init().send("same in bg").onMsg(function(msg){
+	// 	console.log("got it!");
+	// });
+
 	// console.log(new Date());
 	// var pp = require("./modules/chrome-msg");
 	// var ppp = pp.init('bg');

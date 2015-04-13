@@ -14,3 +14,7 @@ body>.con980,body>.tradenav,body>.layout,#main {
 	width: 300px;
 	/*background-color: red;*/
 }
+
+.shumi-topbar,.channel {
+	float: none;
+}

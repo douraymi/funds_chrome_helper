@@ -1,6 +1,7 @@
 ;(function() {
+	window.GIRAFEEEWINDOW = "content_script";
 	var $ = require('jquery');
-	var MSG_CON = require("./modules/chrome-msg");
+	var MSG_CON = require("./modules/chrome_msg");
 	var URI = require('URIjs');
 
 	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
@@ -12,7 +13,7 @@
 	switch(thisUri){
 		case "http://my.fund123.cn/RealFundDefault.aspx":
 			//我的基金
-			require('./part/my-fund');
+			require('./part/my_fund');
 			break;
 		case "https://trade.fund123.cn/home/agreementquery/":
 			//定投页面
