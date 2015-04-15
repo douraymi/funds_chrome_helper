@@ -31,19 +31,30 @@ module.exports = function(){
 
 
 
-	var time = new Date().getTime();
+	// var time = new Date().getTime();
+	var counter1 = 0;
+	var counter2 = 0;
+	// var msgHome = M.connectAfter("my-fund-one", msgHome2);
 	var msgHome = M.connect("my-fund-one");
 	msgHome.onMsg(function(msg, port){
 		console.log("msg:", msg, "port:", port);
-		if(new Date().getTime() < time + 20000) port.send("msgHome");
+		// if(new Date().getTime() < time + 20000) port.send("msgHome");
+		if(counter1 < 5){
+			counter1++;
+		 	port.send("msgHome");
+		}
 	});
 	msgHome.send("hello world!msgHome");
 
 	var msgHome2 = M.connect("my-fund-two");
 	msgHome2.onMsg(function(msg, port){
 		console.log("msg2:", msg, "port:", port);
-		if(new Date().getTime() < time + 30000) port.send("msgHome2");
+		// if(new Date().getTime() < time + 30000) port.send("msgHome2");
+		if(counter2 < 5){
+			counter2++;
+		 	port.send("msgHome2");
+		}
 	});
-	msgHome2.send("hello world!msgHome2");
+	msgHome2.send("hello world!msgHome");
 
 }();
