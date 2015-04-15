@@ -1,5 +1,6 @@
 body {
 	padding-right:25px !important;
+	background-color: red;
 }
 
 body>.con980,body>.tradenav,body>.layout,#main {
@@ -15,6 +16,3 @@ body>.con980,body>.tradenav,body>.layout,#main {
 	/*background-color: red;*/
 }
 
-.shumi-topbar,.channel {
-	float: none;
-}

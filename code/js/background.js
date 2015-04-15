@@ -8,39 +8,39 @@
 
   console.log("bg begin");
 
-  var conListner = function(port){
-  	console.log("fun1");
-  	port.onMsg(funcs, filter);
-  	port.onMsg(funcs2, filter2);
-  }
-  var m = M.onConnect(conListner);
-  var filter = {
-  	name 	: "my-fund-one",
-  	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
-  }
-  var filter2 = {
-  	name 	: "my-fund-two"
-  }
-  var funcs = {
-  	a1: function(msg, pt){
-  		console.log("msg:", msg);
-  		pt.send("a1");
-  	},
-  	a2: function(msg, pt){
-  		console.log("msg:", msg);
-  		pt.send("a2");
-  	}
-  }
-  var funcs2 = {
-  	b1: function(msg, pt){
-  		console.log("msg:", msg);
-  		pt.send("b1");
-  	},
-  	b2: function(msg, pt){
-  		console.log("msg:", msg);
-  		pt.send("b2");
-  	}
-  }
+  // var conListner = function(port){
+  // 	console.log("fun1");
+  // 	port.onMsg(funcs, filter);
+  // 	port.onMsg(funcs2, filter2);
+  // }
+  // var m = M.onConnect(conListner);
+  // var filter = {
+  // 	name 	: "my-fund-one",
+  // 	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
+  // }
+  // var filter2 = {
+  // 	name 	: "my-fund-two"
+  // }
+  // var funcs = {
+  // 	a1: function(msg, pt){
+  // 		console.log("msg:", msg);
+  // 		pt.send("a1");
+  // 	},
+  // 	a2: function(msg, pt){
+  // 		console.log("msg:", msg);
+  // 		pt.send("a2");
+  // 	}
+  // }
+  // var funcs2 = {
+  // 	b1: function(msg, pt){
+  // 		console.log("msg:", msg);
+  // 		pt.send("b1");
+  // 	},
+  // 	b2: function(msg, pt){
+  // 		console.log("msg:", msg);
+  // 		pt.send("b2");
+  // 	}
+  // }
 
   // C.alm(function(){
   // 	console.log("m:", m);

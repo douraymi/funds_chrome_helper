@@ -1,0 +1,45 @@
+<link rel="alternate" href="__MSG_@@extension_id__/css/part/my_fund.css">
+
+<div class="girMain">
+	<div class="girNav">
+		<ul class="am-nav am-nav-pills">
+		  <li><a href="#">首页</a></li>
+		  <li><a href="#" id="testButton">开始使用</a></li>
+		  <li class="am-active"><a href="#" id="testButton2">按需定制</a></li>
+		  <li><a href="#" id="testButton3">哈哈</a></li>
+		</ul>
+
+	</div>
+	<div class="girBody"></div>
+</div>
+
+<script>
+
+
+
+
+	// 用这段代码来刷新页面
+	// $("#testButton").click(function(){
+	// 	$.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data, textStatus){
+
+	// 			$("#main").html(data);
+
+	// 	} });
+	// });
+
+
+	// $("#testButton2").click(function(){
+	// 	var content_port = chrome.runtime.connect();
+	// 	content_port.postMessage("post from content_script");
+
+	// 	content_port.onMessage.addListener(function(info){
+	// 		console.log("info get in content_script:", info);
+	// 	});
+	// });
+
+		//UDP like way
+		// chrome.runtime.sendMessage("messa", function(response){
+		// 	console.log("get Response:", response);
+		// 	$("#main").html(response);
+		// });
+</script>

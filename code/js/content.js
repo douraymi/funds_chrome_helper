@@ -13,11 +13,11 @@
 	switch(thisUri){
 		case "http://my.fund123.cn/RealFundDefault.aspx":
 			//我的基金
-			require('./part/my_fund');
+			require('./part/fund123_my_fund');
 			break;
 		case "https://trade.fund123.cn/home/agreementquery/":
 			//定投页面
-
+			require('./part/fund123_dingtou');
 			break;
 		default:
 
