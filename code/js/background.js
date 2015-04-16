@@ -9,74 +9,75 @@
   console.log("bg begin");
 
 
-  // var connector = {
-  // 	filter: {
-  // 	name 	: "my-fund-one",
-  // 	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
-  // 	}
-  // }
-  // var connector2 = {
-  // 	filter: {
-  // 	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
-  // 	}
-  // }
-  // var connector3 = {
-  // 	filter: {
-  // 	name 	: "my-fund-two"
-  // 	}
-  // }
-  // M.onConnect([connector, connector2, connector3], function(c1, c2, c3){
-  // 	// console.log("in muti");
-  // 	// console.log("c1:", c1);
-  // 	c1.onMsg("hello world!msgHome", function(){
-  // 		c3.send("hhhhhh")
-  // 		console.log("hhhhhh");
-  // 	});
-  // 	// c2.onMsg("hello world!msgHome", function(){
-  // 	// 	console.log("ggggggg");
-  // 	// });
-  // 	// c3.onMsg("hello world!msgHome", function(){
-  // 	// 	console.log("XXXXXXX");
-  // 	// });
-  // });
-
-
   var connector = {
   	filter: {
-  	name 	: "my-fund-one",
-  	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
-  	},
-  	funcs: {
-	   	a1: function(msg, pt){
-	  		console.log("11:", msg);
-	  		pt.send("a1");
-	  	},
-	  	a2: function(msg, pt){
-	  		console.log("12:", msg);
-	  		pt.send("a2");
-	  	}
+  	name 	: "my-fund-two",
+  	url 	: "https://www.baidu.com/"
   	}
   }
   var connector2 = {
   	filter: {
-  	name 	: "my-fund-two"
-  	},
-  	funcs: {
-	   	b1: function(msg, pt){
-	  		console.log("22:", msg);
-	  		pt.send("b1");
-	  	}
+  	url 	: "https://www.baidu.com/"
   	}
   }
-  var listner = function(port){
-  	port.onMsg(connector);
-  	port.onMsg(connector2);
+  var connector3 = {
+  	filter: {
+  	name 	: "my-fund-five"
+  	}
   }
-  // var m = M.onConnect(listner);
-
-  var m = M.onConnect([connector, connector2], function(){
-
+  M.onConnect([connector, connector2, connector3], function(c1, c2, c3){
+  	// console.log("in muti");
+  	// console.log("c1:", c1);
+  	c2.onMsg("hello world!msgHome", function(){
+  		// c2.send("hhhhhh");
+  		console.log("waeeeee! :", c2);
+  	});
+  	// c2.onMsg("hello world!msgHome", function(){
+  	// 	console.log("ggggggg");
+  	// });
+  	// c3.onMsg("hello world!msgHome", function(){
+  	// 	console.log("XXXXXXX");
+  	// });
+  return false;
   });
+
+
+  // var connector = {
+  // 	filter: {
+  // 	name 	: "my-fund-one",
+  // 	url 	: "http://my.fund123.cn/RealFundDefault.aspx"
+  // 	},
+  // 	funcs: {
+	 //   	a1: function(msg, pt){
+	 //  		console.log("11:", msg);
+	 //  		pt.send("a1");
+	 //  	},
+	 //  	a2: function(msg, pt){
+	 //  		console.log("12:", msg);
+	 //  		pt.send("a2");
+	 //  	}
+  // 	}
+  // }
+  // var connector2 = {
+  // 	filter: {
+  // 	name 	: "my-fund-two"
+  // 	},
+  // 	funcs: {
+	 //   	b1: function(msg, pt){
+	 //  		console.log("22:", msg);
+	 //  		pt.send("b1");
+	 //  	}
+  // 	}
+  // }
+  // var listner = function(port){
+  // 	port.onMsg(connector);
+  // 	port.onMsg(connector2);
+  // }
+  // // var m = M.onConnect(listner);
+
+  // var m = M.onConnect([connector, connector2], function(){
+
+  // });
 
   // var conListner = function(port){
   // 	console.log("fun1");

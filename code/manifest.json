@@ -24,7 +24,8 @@
       "run_at": "document_end",
       "matches": [
         "https://trade.fund123.cn/home/agreementquery/",
-        "http://my.fund123.cn/RealFundDefault.aspx"
+        "http://my.fund123.cn/RealFundDefault.aspx",
+        "https://www.baidu.com/"
       ],
       "js": [ "js/content.js" ],
       "css": [
@@ -42,7 +43,8 @@
     "alarms",
     "storage",
     "*://*.fund123.cn/*",
-    "*://*.eastmoney.com/*"
+    "*://*.eastmoney.com/*",
+    "*://*.baidu.com/*"
   ],
   "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
   "content_security_policy": "script-src 'self'; object-src 'self'"

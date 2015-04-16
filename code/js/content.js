@@ -8,9 +8,10 @@
 	// 开发阶段开启
 	window.$ = $;
 	// =======================
-
+	// console.log("in content");
 	var thisUri = new URI().query("").fragment("").toString();
 	switch(thisUri){
+		case "https://www.baidu.com/":
 		case "http://my.fund123.cn/RealFundDefault.aspx":
 			//我的基金
 			require('./part/fund123_my_fund');

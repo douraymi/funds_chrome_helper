@@ -15,7 +15,7 @@
 
 (function (root, factory) {
   // 'use strict';
-  //只适应了Node模块,别的模块以后再修正
+
   if (typeof exports === 'object') {
     // Node
     module.exports = factory(require('underscore'), require('./girafeee_vendor'), require('URIjs'));
@@ -55,7 +55,6 @@
   	return self;
 	}
 	chromeMsgCT.prototype.onDsc = function(onDscFunc){
-		// 没测试过 以后再测试了
 		this.port.onDisconnect.addListener(function(portOd){
 			onDscFunc(portOd);
 		});
@@ -67,6 +66,11 @@
 
 	// chromeMsgBG
 	//uniqe object for same background
+	var answerBG = {
+		isOnConnect : {
+			type : "isOnConnect"
+		}
+	}
 	function chromeMsgBG(){return this;}
 	chromeMsgBG.prototype.ports = new Object();
 	chromeMsgBG.prototype.onConnect = function(){
@@ -81,29 +85,54 @@
 	};
 
 	function _mutiConnector(ths, obj){
+		var self = this;
 		var _chromeMsgBG = ths;
-		this.filter = obj.filter;
-		this.funcs = obj.funcs;
-		this.send = function(msg){
-			var _ports = _.where(_chromeMsgBG.ports, this.filter);
-			console.log(this.filter);
+		self.filter = obj.filter;
+		self.funcs = obj.funcs;
+		self.send = function (msg){
+			var _ports = _.where(_chromeMsgBG.ports, self.filter);
+			// console.log(this.filter);
 		  _.each(_ports, function(port){
 		  	// console.log(port);
 		  	port.postMessage(msg);
 		  });
-		  return this;
+		  return self;
 		}
-		this.onMsg = function(msg, callback){
-			// console.log("msg:",msg," callback:",callback);
-			var _ports = _.where(_chromeMsgBG.ports, this.filter);
-			// console.log(_chromeMsgBG.ports);
+		self.msgs = {};
+		self.onMsg = function(msgObj, callback){
+			// console.log("onMsg times");
+			var _ports = _.where(_chromeMsgBG.ports, self.filter);
+			console.log("(1)_ports:", _ports);
+			var key = msgKey(msgObj);
+			if(_.has(self.msgs, key ) ){
+				_ports = _.difference(_ports, self.msgs[key].ports);
+				console.log("(2)_ports:", _ports);
+				self.msgs[key].ports = self.msgs[key].ports.concat(_ports);
+			}else{
+				self.msgs[key] = {};
+				self.msgs[key].ports = [];
+				self.msgs[key].func = function(_msg){
+					var compareKey = _msg.key || (_.isString(_msg)?_msg:false);
+	  			if(compareKey === key) callback();
+		  		self.msgs[key].ports = _ports;
+	  		};
+			}
+			console.log("(3)_ports:", _ports);
 		  _.each(_ports, function(port){
-	  		port.onMessage.addListener(function(_msg){
-	  			if(_msg === msg) callback();
-	  		});
-		  });
-		  return this;
+	  		port.onMessage.addListener(self.msgs[key].func);
+		  });	
+		  return self;
 		}
+		var msgKey = function(msgObj){
+			if(_.isString(msgObj)){
+				return msgObj;
+			}else if(_.isObject(msgObj) && msgObj.key ){
+				return msgObj.key;
+			}else{
+				throw "msgObj without msgObj.key or not a string"
+			}
+		}
+
 		return this;
 	}
 
@@ -111,7 +140,7 @@
 		var self = this;
 		var _mutiConnectors = new Array();
 		_.each(mutiConnectorArray, function(obj){
-			obj.funcs = vendor.OBJnw(obj.funcs);
+			obj.funcs = (obj.funcs !== undefined) ? vendor.OBJnw(obj.funcs) : undefined;
 			_mutiConnectors.push(new _mutiConnector(self, obj));
 			// if(obj.funcs){
 			// 	self.onConnect(function(port){
@@ -119,12 +148,32 @@
 			// 	});
 			// }
 		});
+		self.isLocked = false;
 		chrome.runtime.onConnect.addListener(function(port){
-			initPort.call(self, port);
-			_.each(_mutiConnectors, function(cntor){
-				port.onMsg(cntor);
-			});
+				initPort.call(self, port);
+				port.postMessage(answerBG.isOnConnect);
+				_.each(_mutiConnectors, function(cntor){
+					port.onMsg(cntor);
+				});
+				// while(self.isLocked === false){
+				// 	self.isLocked = true;
 			callback.apply(callback, _mutiConnectors);
+				
+				// console.log("abc:", self.isLocked);
+				// var t;
+				// var timeCount = function(){
+				// 	if(self.isLocked === false){
+				// 		clearTimeout(t);
+				// 		self.isLocked = true;
+				// 		self.isLocked = callback.apply(callback, _mutiConnectors);
+				// 	}else{
+				// 		t=setTimeout("timedCount()",1000);
+				// 		console.log("time");
+				// 	}
+				// }();
+				
+			// }
+
 		});
 		return this;
 	}
@@ -147,11 +196,13 @@
 		port.url = new URI(port.sender.url).query("").fragment("").toString();
 		port.onMsg = function(obj){
 			// asyn mode, use it in onConnect
-			if(obj.filter === undefined || _.isMatch(port, obj.filter)){
-				obj.funcs = vendor.OBJnw(obj.funcs);
-		  	_.each(obj.funcs, function(func){
-		  		port.onMessage.addListener(func);
-		  	});
+			if( (obj.filter === undefined) || _.isMatch(port, obj.filter)){
+				if(obj.funcs !== undefined){
+					obj.funcs = vendor.OBJnw(obj.funcs);
+			  	_.each(obj.funcs, function(func){
+			  		port.onMessage.addListener(func);
+			  	});				
+				}
 			}
 		}
 	}
