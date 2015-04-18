@@ -3,43 +3,50 @@
   var $ = require('jquery');
   var _ = require('underscore');
   var C = require('./modules/chrome_cab');
-  var M = require('./modules/chrome_msg');
+  // var M = require('./modules/chrome_msg');
   var URI = require('URIjs');
 
   console.log("bg begin");
 
 
-  var connector = {
-  	filter: {
-  	name 	: "my-fund-two",
-  	url 	: "https://www.baidu.com/"
-  	}
-  }
-  var connector2 = {
-  	filter: {
-  	url 	: "https://www.baidu.com/"
-  	}
-  }
-  var connector3 = {
-  	filter: {
-  	name 	: "my-fund-five"
-  	}
-  }
-  M.onConnect([connector, connector2, connector3], function(c1, c2, c3){
-  	// console.log("in muti");
-  	// console.log("c1:", c1);
-  	c2.onMsg("hello world!msgHome", function(){
-  		// c2.send("hhhhhh");
-  		console.log("waeeeee! :", c2);
-  	});
-  	// c2.onMsg("hello world!msgHome", function(){
-  	// 	console.log("ggggggg");
-  	// });
-  	// c3.onMsg("hello world!msgHome", function(){
-  	// 	console.log("XXXXXXX");
-  	// });
-  return false;
+  chrome.runtime.onConnect.addListener(function(port){
+    console.log("bg: onC: port: ", port);
+    port.onMessage.addListener(function(msg, portt){
+      console.log("bg: msg:", msg, "portt:", portt);
+    });
   });
+
+  // var connector = {
+  // 	filter: {
+  // 	name 	: "my-fund-two",
+  // 	url 	: "https://www.baidu.com/"
+  // 	}
+  // }
+  // var connector2 = {
+  // 	filter: {
+  // 	url 	: "https://www.baidu.com/"
+  // 	}
+  // }
+  // var connector3 = {
+  // 	filter: {
+  // 	name 	: "my-fund-five"
+  // 	}
+  // }
+  // M.onConnect([connector, connector2, connector3], function(c1, c2, c3){
+  // 	// console.log("in muti");
+  // 	// console.log("c1:", c1);
+  // 	c2.onMsg("hello world!msgHome", function(){
+  // 		// c2.send("hhhhhh");
+  // 		console.log("waeeeee! :", c2);
+  // 	});
+  // 	// c2.onMsg("hello world!msgHome", function(){
+  // 	// 	console.log("ggggggg");
+  // 	// });
+  // 	// c3.onMsg("hello world!msgHome", function(){
+  // 	// 	console.log("XXXXXXX");
+  // 	// });
+  // return false;
+  // });
 
 
   // var connector = {

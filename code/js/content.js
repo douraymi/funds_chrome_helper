@@ -11,11 +11,11 @@
 	// console.log("in content");
 	var thisUri = new URI().query("").fragment("").toString();
 	switch(thisUri){
-		case "https://www.baidu.com/":
 		case "http://my.fund123.cn/RealFundDefault.aspx":
 			//我的基金
 			require('./part/fund123_my_fund');
 			break;
+		case "https://www.baidu.com/":
 		case "https://trade.fund123.cn/home/agreementquery/":
 			//定投页面
 			require('./part/fund123_dingtou');

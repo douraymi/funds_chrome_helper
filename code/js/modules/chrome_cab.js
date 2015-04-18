@@ -2,7 +2,7 @@
 var $ = require('jquery');
 
 module.exports = {
-	alm : function(callback, delaym, periodm){
+  alm : function(callback, delaym, periodm){
 		//only work in event page, not in content script page
   	var createObj = {
 	  	delayInMinutes : delaym || 0.1,
