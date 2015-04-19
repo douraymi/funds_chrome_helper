@@ -26,70 +26,78 @@
   }
 }(this, function ( _, vendor, URI, root) {
   'use strict';
+
+  function tunnelCT(tunnelKey){
+
+    return this;
+  }
+
   function connectorCT(port){
+    var self = this;
     var _port = port;
-    this.send = function(type, msg){
+    this.send = function(type, switcher, msg){
       var _msg = {};
       _msg.type = type;
-      _msg[type] = msg;
+      _msg[type][switcher] = msg;
       _port.postMessage(_msg);
+      return this;
     }
-    this.onMsg = function(type, func){
-      _port.onMessage.addListener(function(msg){
-        if(msg.type===type && msg[type]){     
-        func(msg[type]);
-        }
+    this.onMsg = function(msgsObj){
+      _.each(msgsObj, function(typeObj, typeKey){
+        _.each(typeobj, function(switchObj, switchKey){
+          _port.onMessage.addListener(function(msg){
+            parseMsg(msg, typeKey, switchKey, switchObj);
+          });
+        });
       });
+      return this;
+    }
+    this.close = function(){
+      _port.disconnect();
+    }
+    this.tunnel = function(tunnelKey, callback){
+      _port.postMessage({
+        type : "connect",
+        connect : "tunnelKey",
+        tunnelKey : tunnelKey
+      });
+      var preConnect = function (msg, port){
+        parseMsg(msg, "connect", "status", {
+          tunnelKeyOK : function(msg){
+            new tunnelCT(tunnelKey, self, function(_tunnel){
+              callback(_tunnel);  
+            });
+            port.onMessage.removeListener(preConnect);
+          }
+        });
+      }
+      _port.onMessage.addListener(preConnect);
+      return this;
     }
     return this;
   }
-  function chromeMsgCT(){
-    // portName, tunnelKey, callback
-    var args = arguments;
-    var tunnelKey, callback,
-      portName = args[0];
-    if(args.length===2 && _.isString(args[0]) && _.isFunction(args[1])){
-      callback = args[1];
-    }else if(args.length===3 && _.isString(args[0]) && _.isString(args[1]) && _.isFunction(args[2])){
-      tunnelKey = args[1];
-      callback = args[2];
-    }else{
-      throw "error arguments in chromeMsgCT"
-    }
+  connectorCT.prototype.testnew = "12345678";
 
-    var _connector = new connectorCT(chrome.runtime.connect({name:portName}));
-    var preConnect = function (msg, port){
-      parseMsg("connect", "status", {
-        connectOk : function(){
-          var _tunnelKey = tunnelKey || undefined;
-          port.postMessage({type:"connect",connect:{tunnelKey:_tunnelKey}});
-        },
-        tunnelKey : function(){
+  function chromeMsgCT(portName, callback){
+    var _port = chrome.runtime.connect({name:portName});
+    var _connector = new connectorCT(_port);
+    var preConnect = function (msg){
+      parseMsg(msg, "connect", "status", {
+        connectOk : function(msg){
           callback(_connector);
-          port.onMessage.removeListener(preConnect);
+          _port.onMessage.removeListener(preConnect);
         }
       });
-
-      // if(msg.type==="connect" && msg.connect){
-      //   if(msg.connect.status==="connectOk"){
-      //     var _tunnelKey = tunnelKey || undefined;
-      //     port.postMessage({type:"connect",connect:{tunnelKey:_tunnelKey}});
-      //   }
-      //   if(msg.connect.status==="tunnelOk"){
-      //     callback(_connector);
-      //     port.onMessage.removeListener(preConnect);
-      //   }        
-      // }
     }
-    _connector.onMessage.addListener(preConnect);
+    _port.onMessage.addListener(preConnect);
     return _connector;
   }
 
-  function parseMsg(type, switcher, funcs){
+  function parseMsg(msg, type, switcher, switchObj){
     if(msg.type===type && msg[type]){
-      _.each(funcs, function(func, index){
-        if(msg[type][switcher] === index){
-          func();
+      _.each(switchObj, function(func, key){
+        if(msg[type][switcher] === key){
+          func(msg);
         }
       });      
     }
@@ -111,12 +119,26 @@
       case "content_script":
         return {
           connect : function(){
-            return new chromeMsgCT.call(chromeMsgCT, arguments);
+            // portName, tunnelKey, callback
+            var args = arguments;
+            var tunnelKey, callback,
+              portName = args[0];
+            if(args.length===2 && _.isString(args[0]) && _.isFunction(args[1])){
+              callback = args[1];
+            }else if(args.length===3 && _.isString(args[0]) && _.isString(args[1]) && _.isFunction(args[2])){
+              tunnelKey = args[1];
+              callback = args[2];
+            }else{
+              throw "error arguments in chromeMsgCT"
+            }
+            if(tunnelKey === undefined){
+              return chromeMsgCT(portName, callback);
+            }else{
+              return chromeMsgCT(portName, function(connector){
+                connector.tunnel(tunnelKey, callback);
+              });
+            }
           }
-          // ,
-          // mutiConnect : function(portName, callback){
-          //   return new chromeMsgCT(portName, "muti", callback);
-          // }
         }
         break;
       default:
