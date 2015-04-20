@@ -3,18 +3,28 @@
   var $ = require('jquery');
   var _ = require('underscore');
   var C = require('./modules/chrome_cab');
-  // var M = require('./modules/chrome_msg');
+  var M = require('./modules/chrome_msg');
   var URI = require('URIjs');
 
   console.log("bg begin");
 
-
-  chrome.runtime.onConnect.addListener(function(port){
-    console.log("bg: onC: port: ", port);
-    port.onMessage.addListener(function(msg, portt){
-      console.log("bg: msg:", msg, "portt:", portt);
+  M.onConnect(function(cntor){
+    cntor.onMsg({
+      test1 : {
+        abab : function(msg, p){
+          console.log("msg:", msg);
+          p.send({type:"test1rep", code:"rep", body:{bbb: "bbbbbb"}});
+        },
+        gogo : function(){console.log("gogo");}
+      }
     });
   });
+  // chrome.runtime.onConnect.addListener(function(port){
+  //   console.log("bg: onC: port: ", port);
+  //   port.onMessage.addListener(function(msg, portt){
+  //     console.log("bg: msg:", msg, "portt:", portt);
+  //   });
+  // });
 
   // var connector = {
   // 	filter: {

@@ -27,27 +27,37 @@
 }(this, function ( _, vendor, URI, root) {
   'use strict';
 
-  function tunnelCT(tunnelKey){
-
+  function tunnelCT(tunnelKey, connector){
+  	this.send = function(msg){
+  		msg.tunnelKey = tunnelKey;
+  		connector.send(msg);
+  		return this;
+  	}
+  	this.onMsg = function(msgsObj){
+  		connector.onMsg(msgsObj);
+  		return this;
+  	}
+  	this.onClose = {
+  		listener : [],
+  		addListener : function(listener){
+  			this.listener.push(listener);
+  		}
+  	};
+  	// callback(this);
     return this;
   }
 
   function connectorCT(port){
     var self = this;
     var _port = port;
-    this.send = function(type, switcher, msg){
-      var _msg = {};
-      _msg.type = type;
-      _msg[type][switcher] = msg;
-      _port.postMessage(_msg);
+    this.send = function(msg){
+      _port.postMessage(msg);
       return this;
     }
     this.onMsg = function(msgsObj){
-      _.each(msgsObj, function(typeObj, typeKey){
-        _.each(typeobj, function(switchObj, switchKey){
-          _port.onMessage.addListener(function(msg){
-            parseMsg(msg, typeKey, switchKey, switchObj);
-          });
+      _.each(msgsObj, function(codeObj, typeKey){
+        _port.onMessage.addListener(function(msg){
+          parseMsg(msg, typeKey, codeObj);
         });
       });
       return this;
@@ -58,31 +68,36 @@
     this.tunnel = function(tunnelKey, callback){
       _port.postMessage({
         type : "connect",
-        connect : "tunnelKey",
-        tunnelKey : tunnelKey
+        code : "tunnelKey",
+        body : {
+        	tunnelKey : tunnelKey
+        }
       });
-      var preConnect = function (msg, port){
-        parseMsg(msg, "connect", "status", {
+      var tn = new tunnelCT(tunnelKey, self);
+      var preConnect = function (msg){
+        parseMsg(msg, "connect", {
           tunnelKeyOK : function(msg){
-            new tunnelCT(tunnelKey, self, function(_tunnel){
-              callback(_tunnel);  
-            });
-            port.onMessage.removeListener(preConnect);
+            callback(tn);
+          },
+          tunnelClose : function(msg){
+          	_.each(tn.onClose.listener, function(func, key){
+          		func(tn);
+          	});
+            _port.onMessage.removeListener(preConnect);
           }
         });
       }
       _port.onMessage.addListener(preConnect);
-      return this;
+      return tn;
     }
     return this;
   }
-  connectorCT.prototype.testnew = "12345678";
 
   function chromeMsgCT(portName, callback){
     var _port = chrome.runtime.connect({name:portName});
     var _connector = new connectorCT(_port);
     var preConnect = function (msg){
-      parseMsg(msg, "connect", "status", {
+      parseMsg(msg, "connect", {
         connectOk : function(msg){
           callback(_connector);
           _port.onMessage.removeListener(preConnect);
@@ -93,26 +108,120 @@
     return _connector;
   }
 
-  function parseMsg(msg, type, switcher, switchObj){
-    if(msg.type===type && msg[type]){
-      _.each(switchObj, function(func, key){
-        if(msg[type][switcher] === key){
-          func(msg);
+  // 解释msg定义体
+  function parseMsg(msg, type, codeObj, p){
+    if(msg.type===type){
+      _.each(codeObj, function(func, key){
+        if(msg.code === key){
+          // func(msg.body, p);
+          func(msg, p);
         }
       });      
     }
+  }
+
+
+
+  // function connectorBG(){
+  //   var msgsObj;
+  //   this.onMsg = function(_msgsObj){
+  //     msgsObj = _msgsObj;
+  //   }
+  //   return this;
+  // }
+
+  function chromeMsgBG(callback){
+  	var self = this;
+    // var _connectorBG = new connectorBG();
+  	var tnCtner = {};
+		// 通道port握手
+		var tunnelShake = function(tunnelKey, head, foot){
+			var replyMsg = {
+				type: "connect",
+				code: "tunnelKeyOK"
+			}
+			tnCtner[tunnelKey].headFunc = function(msg){
+				if(msg.tunnelKey === tunnelKey){
+					foot.postMessage(msg);
+				}
+			};
+			tnCtner[tunnelKey].footFunc = function(msg){
+				if(msg.tunnelKey === tunnelKey){
+					head.postMessage(msg);
+				}
+			};
+			head.onMessage.addListener(tnCtner[tunnelKey].headFunc);
+			foot.onMessage.addListener(tnCtner[tunnelKey].footFunc);
+			head.postMessage(replyMsg);
+			foot.postMessage(replyMsg);
+		}
+		// 通道接收port关闭通知
+		var onDsc = function(port){
+			//	处理tunnel缓存
+			var head = _.findKey(tnCtner, {head:port});
+			var foot = _.findKey(tnCtner, {foot:port});
+			if(head && tnCtner[head].foot!==undefined){
+				tnCtner[head].foot.postMessage({type:"connect",code:"tunnelClose"});
+				tnCtner[head].foot.onMessage.removeListener(tnCtner[head].footFunc);
+				delete tnCtner[head];
+			}else if(foot && tnCtner[foot].head!==undefined){
+				tnCtner[foot].head.postMessage({type:"connect",code:"tunnelClose"});
+				tnCtner[foot].head.onMessage.removeListener(tnCtner[foot].headFunc);
+				delete tnCtner[foot];
+			}else if(head){
+				delete tnCtner[head];
+			}
+		}
+    // 通道握手listener
+    var onTnKey = function(msg, port){
+      parseMsg(msg, "connect", {
+        tunnelKey : function(_msg){
+          // console.log("(1)tunnelCan:", tnCtner);
+          var _tk = _msg.body.tunnelKey;
+          if(tnCtner[_tk]&&tnCtner[_tk].foot===undefined){
+            tnCtner[_tk].foot=port;
+            tunnelShake(_tk, tnCtner[_tk].head, port);
+          }else{
+            //  暂放第一个port等待另外一个port来搞
+            tnCtner[_tk] = tnCtner[_tk] || {};
+            tnCtner[_tk].head = port;
+          }
+          // console.log("(2)tunnelCan:", tnCtner);
+        }
+      });
+    }
+
+		chrome.runtime.onConnect.addListener(function(port){
+  		port.postMessage({type:"connect", code:"connectOk"});
+  		port.onDisconnect.addListener(onDsc);
+  		port.onMessage.addListener(onTnKey);
+
+      port.onMsg = function(msgsObj){
+        _.each(msgsObj, function(codeObj, typeKey){
+          port.onMessage.addListener(function(msg, _port){
+            parseMsg(msg, typeKey, codeObj, _port);
+          });
+        });     
+      }
+      port.send = port.postMessage;
+		  callback(port);
+
+    });
+
+  	// return _connectorBG;
   }
 
   // export
   function chromeMsgExport(){
     switch (window.GIRAFEEEWINDOW){
       case "background":
-        var uniqueBG = vendor.UNQ(  function(){
-          return new chromeMsgBG();
-        })();
+        // var uniqueBG = vendor.UNQ(  function(){
+        //   return new chromeMsgBG();
+        // })();
         return {
-          onConnect : function(){
-            return uniqueBG.onConnect.apply(uniqueBG, arguments);
+          onConnect : function(callback){
+          	return new chromeMsgBG(callback);
+            // return uniqueBG.onConnect.apply(uniqueBG, arguments);
           }
         };
         break;
@@ -132,9 +241,9 @@
               throw "error arguments in chromeMsgCT"
             }
             if(tunnelKey === undefined){
-              return chromeMsgCT(portName, callback);
+              return new chromeMsgCT(portName, callback);
             }else{
-              return chromeMsgCT(portName, function(connector){
+              return new chromeMsgCT(portName, function(connector){
                 connector.tunnel(tunnelKey, callback);
               });
             }

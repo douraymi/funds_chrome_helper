@@ -3,7 +3,7 @@
 
 var $ = require('jquery');
 var C = require('../modules/chrome_cab');
-// var M = require("../modules/chrome_msg");
+var M = require("../modules/chrome_msg");
 
 module.exports = function(){
 	console.log("dingtou");
@@ -13,11 +13,34 @@ module.exports = function(){
 		$("html").append('<div id="newBody"></div>');
 	});
 
-	chrome.runtime.onConnect.addListener(function(port){
-		console.log("dingtou: onC: port: ", port);
-		port.onMessage.addListener(function(msg, portt){
-			console.log("dingtou: msg:", msg, "portt:", portt);
+
+	var dingtou = M.connect("dingtou", function(connector){
+		connector.tunnel("abcdef", function(tunnel){
+			tunnel.send({type:"normal", code:"dingtou", body:"who are you"});
+			tunnel.onMsg({
+				normal:{
+					abc: function(msg){console.log("abc:", msg);},
+					my_fund: function(msg){console.log("my_fund:", msg);}
+				}
+			});
 		});
+
+		connector.send({type:"test1", code:"abab", body:{gggg:"ggggggg"}});
+		connector.onMsg({
+			test1rep : {
+				rep : function(msg){
+					console.log(msg);
+				}
+			}
+		});
+	
 	});
+
+	// chrome.runtime.onConnect.addListener(function(port){
+	// 	console.log("dingtou: onC: port: ", port);
+	// 	port.onMessage.addListener(function(msg, portt){
+	// 		console.log("dingtou: msg:", msg, "portt:", portt);
+	// 	});
+	// });
 
 }();
