@@ -19,6 +19,12 @@
       }
     });
   });
+
+  console.log(chrome.storage);
+  chrome.storage.onChanged.addListener(function(changes, nameSpace){
+    console.log(nameSpace);
+  });
+
   // chrome.runtime.onConnect.addListener(function(port){
   //   console.log("bg: onC: port: ", port);
   //   port.onMessage.addListener(function(msg, portt){

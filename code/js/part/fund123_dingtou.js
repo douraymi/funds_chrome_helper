@@ -14,27 +14,34 @@ module.exports = function(){
 	});
 
 
-	var dingtou = M.connect("dingtou", function(connector){
-		connector.tunnel("abcdef", function(tunnel){
-			tunnel.send({type:"normal", code:"dingtou", body:"who are you"});
-			tunnel.onMsg({
-				normal:{
-					abc: function(msg){console.log("abc:", msg);},
-					my_fund: function(msg){console.log("my_fund:", msg);}
-				}
-			});
-		});
-
-		connector.send({type:"test1", code:"abab", body:{gggg:"ggggggg"}});
-		connector.onMsg({
-			test1rep : {
-				rep : function(msg){
-					console.log(msg);
-				}
-			}
-		});
-	
+	chrome.storage.sync.get(null, function(items){
+		// console.log(items);
 	});
+	console.log(chrome.storage);
+  chrome.storage.onChanged.addListener(function(changes, nameSpace){
+    console.log(nameSpace);
+  });
+	// var dingtou = M.connect("dingtou", function(connector){
+	// 	connector.tunnel("abcdef", function(tunnel){
+	// 		tunnel.send({type:"normal", code:"dingtou", body:"who are you"});
+	// 		tunnel.onMsg({
+	// 			normal:{
+	// 				abc: function(msg){console.log("abc:", msg);},
+	// 				my_fund: function(msg){console.log("my_fund:", msg);}
+	// 			}
+	// 		});
+	// 	});
+
+	// 	connector.send({type:"test1", code:"abab", body:{gggg:"ggggggg"}});
+	// 	connector.onMsg({
+	// 		test1rep : {
+	// 			rep : function(msg){
+	// 				console.log(msg);
+	// 			}
+	// 		}
+	// 	});
+	
+	// });
 
 	// chrome.runtime.onConnect.addListener(function(port){
 	// 	console.log("dingtou: onC: port: ", port);

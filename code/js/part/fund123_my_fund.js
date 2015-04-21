@@ -15,7 +15,7 @@ module.exports = function(){
 		$(data).appendTo("html").find("#testButton").click(function(){
 			console.log("click work!");
 			// console.log("my_tn:", my_tn);
-			my_tn.send({type:"normal", code:"my_fund", body:"who are you"});
+			// my_tn.send({type:"normal", code:"my_fund", body:"who are you"});
 
 			// msgHome1.send("hello world!msgHome");
 			// msgHome2.send("hello world!msgHome");
@@ -26,6 +26,11 @@ module.exports = function(){
 		$("html").append('<div id="newBody"></div>');
 	});
 
+	// console.log(chrome);
+	chrome.storage.sync.set({'test':new Date().getTime()});
+  chrome.storage.onChanged.addListener(function(changes, nameSpace){
+    console.log(nameSpace);
+  });
 	// var my_fund = M.connect("my_fund", function(connector){
 	// 	// console.log("connector:", connector);
 	// 	connector.tunnel("abcdef", function(tunnel){
@@ -43,15 +48,15 @@ module.exports = function(){
 	// });
 
 	// var my_fund = M.connect("my_fund", "abcdef");
-	var my_fund = M.connect("my_fund", function(){});
+	// var my_fund = M.connect("my_fund", function(){});
 
-	var my_tn = my_fund.tunnel("abcdef", function(tn){});
-	my_tn.onMsg({
-		normal:{
-			abc: function(msg){console.log("abc:", msg);},
-			dingtou: function(msg){console.log("dingtou:", msg);}
-		}
-	});
+	// var my_tn = my_fund.tunnel("abcdef", function(tn){});
+	// my_tn.onMsg({
+	// 	normal:{
+	// 		abc: function(msg){console.log("abc:", msg);},
+	// 		dingtou: function(msg){console.log("dingtou:", msg);}
+	// 	}
+	// });
 
 	// $.ajax({ url: chrome.extension.getURL('../css/part/fund123_my_fund.css'), async:true, success: function(data, textStatus){
 	// 	$("<style>")

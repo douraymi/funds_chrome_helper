@@ -12,11 +12,6 @@ module.exports = {
   	chrome.alarms.onAlarm.addListener(callback);
   },
   css : function(url){
-		// $.ajax({ url: chrome.extension.getURL(url), async:true, success: function(data, textStatus){
-		// 	$("<style>")
-		// 	.append(data)
-		// 	.appendTo("head");
-		// } });
 		$.ajax(chrome.extension.getURL(url))
 		.done(function(data){
 			$("<style>")
@@ -25,9 +20,6 @@ module.exports = {
 		})
   },
   html : function(url, callback){
-		// $.ajax({ url: chrome.extension.getURL(url), async:true, success: function(data, textStatus){
-		// 	callback(data, textStatus);
-		// } });
 		$.ajax(chrome.extension.getURL(url))
 		.done(function(data){
 			callback(data);			
