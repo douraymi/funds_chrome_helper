@@ -4,12 +4,25 @@ module.exports = function(grunt) {
   var mnf = grunt.file.readJSON('code/manifest.json');
 
   var fileMaps = { browserify: {}, uglify: {} };
-  var file, files = grunt.file.expand({cwd:'code/js'}, ['*.js']);
+  // var file, files = grunt.file.expand({cwd:'code/js'}, ['*.js']);
+  var file, files = grunt.file.expand({cwd:'code/js'}, ['**/*.js']);
   for (var i = 0; i < files.length; i++) {
     file = files[i];
     fileMaps.browserify['build/unpacked-dev/js/' + file] = 'code/js/' + file;
     fileMaps.uglify['build/unpacked-prod/js/' + file] = 'build/unpacked-dev/js/' + file;
   }
+  // var file2, files2 = grunt.file.expand({cwd:'code/js/client/'}, ['*.js']);
+  // for (var i = 0; i < files2.length; i++) {
+  //   file2 = files2[i];
+  //   fileMaps.browserify['build/unpacked-dev/js/client/' + file2] = 'code/js/client/' + file2;
+  //   fileMaps.uglify['build/unpacked-prod/js/client/' + file2] = 'build/unpacked-dev/js/client/' + file2;
+  // }
+  // var file3, files3 = grunt.file.expand({cwd:'code/js/libs/'}, ['*.js']);
+  // for (var i = 0; i < files3.length; i++) {
+  //   file3 = files3[i];
+  //   fileMaps.browserify['build/unpacked-dev/js/libs/' + file3] = 'code/js/libs/' + file3;
+  //   fileMaps.uglify['build/unpacked-prod/js/libs/' + file3] = 'build/unpacked-dev/js/libs/' + file3;
+  // }
 
   //
   // config
@@ -21,7 +34,7 @@ module.exports = function(grunt) {
 
     mkdir: {
       unpacked: { options: { create: ['build/unpacked-dev', 'build/unpacked-prod'] } },
-      js: { options: { create: ['build/unpacked-dev/js'] } }
+      js: { options: { create: ['build/unpacked-dev/js', 'build/unpacked-dev/js/client', 'build/unpacked-dev/js/libs'] } }
     },
 
     jshint: {

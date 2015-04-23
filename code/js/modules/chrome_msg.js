@@ -16,15 +16,15 @@
 
   if (typeof exports === 'object') {
     // Node
-    module.exports = factory(require('underscore'), require('./girafeee_vendor'), require('URIjs'));
+    module.exports = factory(require('underscore'), require('./chrome_cab'), require('URIjs'));
   } else if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['underscore', 'girafeee_vendor', 'URIjs'], factory);
+    define(['underscore', 'chrome_cab', 'URIjs'], factory);
   } else {
     // Browser globals (root is window)
-    root.chromeMsg = factory(root._, root.girafeee_vendor, root.URI, root);
+    root.chromeMsg = factory(root._, root.chrome_cab, root.URI, root);
   }
-}(this, function ( _, vendor, URI, root) {
+}(this, function ( _, _C, URI, root) {
   'use strict';
 
   function tunnelCT(tunnelKey, connector){
@@ -215,7 +215,7 @@
   function chromeMsgExport(){
     switch (window.GIRAFEEEWINDOW){
       case "background":
-        // var uniqueBG = vendor.UNQ(  function(){
+        // var uniqueBG = _C.UNQ(  function(){
         //   return new chromeMsgBG();
         // })();
         return {

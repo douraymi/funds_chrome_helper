@@ -14,6 +14,9 @@ module.exports = function(){
 	});
 
 
+	// var test = C.chromeUrl("http://girafeee.com");
+	// console.log("test:", test);
+
 	chrome.storage.sync.get(null, function(items){
 		// console.log(items);
 	});
@@ -21,6 +24,7 @@ module.exports = function(){
   chrome.storage.onChanged.addListener(function(changes, nameSpace){
     console.log(nameSpace);
   });
+
 	// var dingtou = M.connect("dingtou", function(connector){
 	// 	connector.tunnel("abcdef", function(tunnel){
 	// 		tunnel.send({type:"normal", code:"dingtou", body:"who are you"});
