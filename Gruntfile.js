@@ -4,8 +4,8 @@ module.exports = function(grunt) {
   var mnf = grunt.file.readJSON('code/manifest.json');
 
   var fileMaps = { browserify: {}, uglify: {} };
-  // var file, files = grunt.file.expand({cwd:'code/js'}, ['*.js']);
-  var file, files = grunt.file.expand({cwd:'code/js'}, ['**/*.js']);
+  var file, files = grunt.file.expand({cwd:'code/js'}, ['*.js', 'client/*.js']);
+  // var file, files = grunt.file.expand({cwd:'code/js'}, ['**/*.js']);
   for (var i = 0; i < files.length; i++) {
     file = files[i];
     fileMaps.browserify['build/unpacked-dev/js/' + file] = 'code/js/' + file;
@@ -34,7 +34,8 @@ module.exports = function(grunt) {
 
     mkdir: {
       unpacked: { options: { create: ['build/unpacked-dev', 'build/unpacked-prod'] } },
-      js: { options: { create: ['build/unpacked-dev/js', 'build/unpacked-dev/js/client', 'build/unpacked-dev/js/libs'] } }
+      js: { options: { create: ['build/unpacked-dev/js'] } }
+      // js: { options: { create: ['build/unpacked-dev/js', 'build/unpacked-dev/js/client', 'build/unpacked-dev/js/libs'] } }
     },
 
     jshint: {
@@ -99,7 +100,7 @@ module.exports = function(grunt) {
         tasks: ['test']
       },
       hc: {
-        files: ['code/css/**/*.css', 'code/html/**/*.html'],
+        files: ['code/css/**/*.css', 'code/html/**/*.html', 'code/**/*.mdx'],
         tasks: ['hc']
       }
     }
