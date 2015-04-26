@@ -1,7 +1,7 @@
 // http://my.fund123.cn/RealFundDefault.aspx
 // for this url page
 
-var $ = require('jquery');
+var $ = window.$ ? window.$ : require('jquery');
 var C = require('../modules/chrome_cab');
 var M = require("../modules/chrome_msg");
 
@@ -9,28 +9,37 @@ var M = require("../modules/chrome_msg");
 
 module.exports = function(){
 	console.log("my_fund");
-	C.css('../css/part/fund123_my_fund.css');
-	C.html('../html/part/fund123_my_fund.html', function(data){
+	C.css('css/part/fund123_my_fund.css');
+	C.html('html/part/fund123_my_fund.html', function(data){
+		// console.log("data", data);
 		// $("html").append(data);
-		$(data).appendTo("html").find("#testButton").click(function(){
-			console.log("click work!");
-			// console.log("my_tn:", my_tn);
-			// my_tn.send({type:"normal", code:"my_fund", body:"who are you"});
+		$(data)
+		.find("#testButton").click(function(){
+			// console.log($("#myfund"));
+			// $.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data2, textStatus){
 
-			// msgHome1.send("hello world!msgHome");
-			// msgHome2.send("hello world!msgHome");
-			// msgHome3.send("hello world!msgHome");
-			// msgHome4.send("hello world!msgHome");
-			// msgHome5.send("hello world!msgHome");
-		})
+					$("#myfund").html("hahahahahahahahahahaha");
+
+			// } });
+
+		}).end()
+		.find("#testButton2").click(function(){
+			$.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data, textStatus){
+
+					$("#myfund").html(data);
+
+			} });
+		}).end().appendTo("html");
+
 		$("html").append('<div id="newBody"></div>');
 	});
 
+
 	// console.log(chrome);
-	chrome.storage.sync.set({'test':new Date().getTime()});
-  chrome.storage.onChanged.addListener(function(changes, nameSpace){
-    console.log(nameSpace);
-  });
+	// chrome.storage.sync.set({'test':new Date().getTime()});
+ //  chrome.storage.onChanged.addListener(function(changes, nameSpace){
+ //    console.log(nameSpace);
+ //  });
 	// var my_fund = M.connect("my_fund", function(connector){
 	// 	// console.log("connector:", connector);
 	// 	connector.tunnel("abcdef", function(tunnel){

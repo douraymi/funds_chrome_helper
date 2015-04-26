@@ -1,7 +1,9 @@
 // 'use strict';
-var $ = require('jquery');
 
 module.exports = function(){
+	var $ = window.$ ? window.$ : require('jquery');
+	var M = require('./chrome_msg');
+	// console.log("M:", M);
 	return {
 	  alm : function(callback, delaym, periodm){
 			//only work in event page, not in content script page
@@ -35,8 +37,24 @@ module.exports = function(){
 		chromeUrl : function(url){
 			return (url.slice(0,4) === "http")?url:chrome.extension.getURL(url);
 		},
+		xhr : function(url, callback){
+			if(url.slice(0,4) === "http"){
+
+			}else{
+				url = chrome.extension.getURL(url);
+				// $.ajax(url)
+				// .done(function(data){
+				// 	callback(data);			
+				// });
+			}
+			M.connect("xhr", function(cntor){
+				cntor.xhr(url, callback);
+			});
+		},
 	  css : function(url){
-			$.ajax(this.chromeUrl(url))
+	  	var _url = this.chromeUrl(url);
+	  	console.log(_url);
+			$.ajax(_url)
 			.done(function(data){
 				$("<style>")
 				.append(data)
@@ -44,10 +62,7 @@ module.exports = function(){
 			})
 	  },
 	  html : function(url, callback){
-			$.ajax(this.chromeUrl(url))
-			.done(function(data){
-				callback(data);			
-			})
+	  	this.xhr(url, callback);
 	  },
 	  storage : function(){
 			this.set = function(items, callback){

@@ -1,6 +1,7 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "background";
-  var $ = require('jquery');
+  // var $ = require('jquery');
+  var $ = window.$ ? window.$ : require('jquery');
   var _ = require('underscore');
   var C = require('./modules/chrome_cab');
   var M = require('./modules/chrome_msg');
@@ -9,21 +10,24 @@
   console.log("bg begin");
 
   M.onConnect(function(cntor){
-    cntor.onMsg({
-      test1 : {
-        abab : function(msg, p){
-          console.log("msg:", msg);
-          p.send({type:"test1rep", code:"rep", body:{bbb: "bbbbbb"}});
-        },
-        gogo : function(){console.log("gogo");}
-      }
-    });
-  });
 
-  console.log(chrome.storage);
-  chrome.storage.onChanged.addListener(function(changes, nameSpace){
-    console.log(nameSpace);
   });
+  // M.onConnect(function(cntor){
+  //   cntor.onMsg({
+  //     test1 : {
+  //       abab : function(msg, p){
+  //         console.log("msg:", msg);
+  //         p.send({type:"test1rep", code:"rep", body:{bbb: "bbbbbb"}});
+  //       },
+  //       gogo : function(){console.log("gogo");}
+  //     }
+  //   });
+  // });
+
+  // console.log(chrome.storage);
+  // chrome.storage.onChanged.addListener(function(changes, nameSpace){
+  //   console.log(nameSpace);
+  // });
 
   // chrome.runtime.onConnect.addListener(function(port){
   //   console.log("bg: onC: port: ", port);

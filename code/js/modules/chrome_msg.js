@@ -16,15 +16,15 @@
 
   if (typeof exports === 'object') {
     // Node
-    module.exports = factory(require('underscore'), require('./chrome_cab'), require('URIjs'));
+    module.exports = factory(require('underscore'), require('URIjs'), require('jquery'));
   } else if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['underscore', 'chrome_cab', 'URIjs'], factory);
+    define(['underscore', 'URIjs', 'jquery'], factory);
   } else {
     // Browser globals (root is window)
-    root.chromeMsg = factory(root._, root.chrome_cab, root.URI, root);
+    root.chromeMsg = factory(root._, root.URI, root.jquery, root);
   }
-}(this, function ( _, _C, URI, root) {
+}(this, function ( _, URI, $, root) {
   'use strict';
 
   function tunnelCT(tunnelKey, connector){
@@ -90,6 +90,20 @@
       _port.onMessage.addListener(preConnect);
       return tn;
     }
+    this.xhr = function(url, callback){
+      // console.log("in xhr");
+      _port.postMessage({
+        type : "connect",
+        code : "xhr",
+        body : {
+          url : url
+        }
+      });
+      _port.onMessage.addListener(function(msg){
+        // console.log(msg);
+        callback(msg.body);
+      });
+    }
     return this;
   }
 
@@ -99,6 +113,7 @@
     var preConnect = function (msg){
       parseMsg(msg, "connect", {
         connectOk : function(msg){
+          // console.log("in connectOK");
           callback(_connector);
           _port.onMessage.removeListener(preConnect);
         }
@@ -192,19 +207,55 @@
     }
 
 		chrome.runtime.onConnect.addListener(function(port){
-  		port.postMessage({type:"connect", code:"connectOk"});
-  		port.onDisconnect.addListener(onDsc);
-  		port.onMessage.addListener(onTnKey);
-
-      port.onMsg = function(msgsObj){
-        _.each(msgsObj, function(codeObj, typeKey){
+      // console.log("port:", port);
+      switch (port.name){
+        case "xhr":
+          // console.log("in switch xhr");
           port.onMessage.addListener(function(msg, _port){
-            parseMsg(msg, typeKey, codeObj, _port);
+            // console.log("msg:", msg);
+            var _url = msg.body.url;
+            $.ajax({
+              url: _url //'/path/to/file',
+              // type: 'default GET (Other values: POST)',
+              // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+              // data: {param1: 'value1'},
+            })
+            .done(function(data) {
+              _port.postMessage({body:data});
+              // console.log("success");
+            })
+            .fail(function() {
+              console.log("error");
+            })
+            .always(function() {
+              // console.log("complete");
+            });
+            
+            // request(_url, function (error, response, body) {
+            //   if (!error && response.statusCode == 200) {
+            //     console.log(body); // Show the HTML for the Google homepage.
+            //     _port.postMessage({body:body});
+            //   }else{
+            //     console.log("error:", error, "response:", response, "body:", body);
+            //   }
+            // })
           });
-        });     
+          break;
+        default :
+      		port.onDisconnect.addListener(onDsc);
+      		port.onMessage.addListener(onTnKey);
+
+          port.onMsg = function(msgsObj){
+            _.each(msgsObj, function(codeObj, typeKey){
+              port.onMessage.addListener(function(msg, _port){
+                parseMsg(msg, typeKey, codeObj, _port);
+              });
+            });     
+          }
+          port.send = port.postMessage;
+    		  callback(port);
       }
-      port.send = port.postMessage;
-		  callback(port);
+      port.postMessage({type:"connect", code:"connectOk"});
 
     });
 

@@ -1,13 +1,15 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "content_script";
-	var $ = require('jquery');
-	var MSG_CON = require("./modules/chrome_msg");
+	// var $ = require('jquery');
+	var $ = window.$ ? window.$ : require('jquery');
+	var M = require("./modules/chrome_msg");
 	var URI = require('URIjs');
 
 	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
 	// 开发阶段开启
 	window.$ = $;
 	// =======================
+
 	// console.log("in content");
 	var thisUri = new URI().query("").fragment("").toString();
 	switch(thisUri){

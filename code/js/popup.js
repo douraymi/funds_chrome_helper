@@ -1,5 +1,6 @@
 ;(function() {
-	var $ = require('jquery');
+	// var $ = require('jquery');
+	var $ = window.$ ? window.$ : require('jquery');
 
 	function closePopup() {
 	    window.close();
