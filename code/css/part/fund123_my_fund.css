@@ -7,11 +7,11 @@ body {
 	padding-right:25px !important;
 }
 
-body>.con980,body>.tradenav,body>.layout,#main {
+#form1>.con980,#form1>#ManagerAreaUC,#form1>#myfund {
 	float: right;
 }
 
-.girMain {
+#grf_main {
 	z-index: 10000;
   position: fixed;
   top: 40px;

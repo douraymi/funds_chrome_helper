@@ -8,9 +8,8 @@ var M = require("../modules/chrome_msg");
 module.exports = function(){
 	console.log("dingtou");
 	C.css('../css/part/fund123_dingtou.css');
-	// C.html('../html/part/fund123_dingtou.html', function(data){
-	C.html('http://www.163.com', function(data){
-		console.log("data:",data);
+	C.html('../html/part/fund123_dingtou.html', function(data){
+		// console.log("data:",data);
 		$("html").append(data);
 		// $("html").append('<div id="newBody"></div>');
 	});

@@ -24,7 +24,6 @@ module.exports = function(){
 		OBJnw : function(obj){
 			var objContainer = {};
 			if(_.isFunction(obj)){
-				// var rand = randConflict(self.msgList);
 				var _uniqueId = _.uniqueId('random_id_');
 				objContainer[_uniqueId] = obj;
 			}else if(_.isObject(obj) ){
@@ -37,32 +36,21 @@ module.exports = function(){
 		chromeUrl : function(url){
 			return (url.slice(0,4) === "http")?url:chrome.extension.getURL(url);
 		},
-		xhr : function(url, callback){
-			if(url.slice(0,4) === "http"){
-
-			}else{
-				url = chrome.extension.getURL(url);
-				// $.ajax(url)
-				// .done(function(data){
-				// 	callback(data);			
-				// });
-			}
+	  css : function(url){
+			url = this.chromeUrl(url);
+			M.connect("xhr", function(cntor){
+				cntor.xhr(url, function(data){
+					$("<style>")
+					.append(data)
+					.appendTo("head");	
+				});
+			});
+	  },
+	  html : function(url, callback){
+			url = this.chromeUrl(url);
 			M.connect("xhr", function(cntor){
 				cntor.xhr(url, callback);
 			});
-		},
-	  css : function(url){
-	  	var _url = this.chromeUrl(url);
-	  	console.log(_url);
-			$.ajax(_url)
-			.done(function(data){
-				$("<style>")
-				.append(data)
-				.appendTo("head");			
-			})
-	  },
-	  html : function(url, callback){
-	  	this.xhr(url, callback);
 	  },
 	  storage : function(){
 			this.set = function(items, callback){

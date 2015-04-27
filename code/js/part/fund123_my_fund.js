@@ -4,35 +4,50 @@
 var $ = window.$ ? window.$ : require('jquery');
 var C = require('../modules/chrome_cab');
 var M = require("../modules/chrome_msg");
-
-
+var angular = window.angular ? window.angular : false;
+if(angular === false) throw "no angular !!!!!";
 
 module.exports = function(){
 	console.log("my_fund");
 	C.css('css/part/fund123_my_fund.css');
-	C.html('html/part/fund123_my_fund.html', function(data){
+
+	angular.module('myApp', [])
+	.config(['$routeProvider',function($routeProvider) {
+		$routeProvider
+			.when('/', {templateUrl: C.chromeUrl('html/part/fund123_my_fund.html'), controller: appController})
+			.otherwise({redirectTo: '/'});
+	}]);
+
+	function appController($scope){
+		$scope.abc = "ok work!!@!!!!";
+	}
+
+	var ele = $('html').find('#girafeeeApp');
+	angular.bootstrap(ele, ['myApp']);
+
+	// C.html('html/part/fund123_my_fund.html', function(data){
 		// console.log("data", data);
 		// $("html").append(data);
-		$(data)
-		.find("#testButton").click(function(){
+		// $(data)
+		// .find("#testButton").click(function(){
 			// console.log($("#myfund"));
 			// $.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data2, textStatus){
 
-					$("#myfund").html("hahahahahahahahahahaha");
+					// $("#myfund").html("hahahahahahahahahahaha");
 
 			// } });
 
-		}).end()
-		.find("#testButton2").click(function(){
-			$.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data, textStatus){
+		// }).end()
+		// .find("#testButton2").click(function(){
+		// 	$.ajax({ url: "https://trade.fund123.cn/home/agreementquery/", async:true, success: function(data, textStatus){
 
-					$("#myfund").html(data);
+		// 			$("#myfund").html(data);
 
-			} });
-		}).end().appendTo("html");
+		// 	} });
+		// }).end().appendTo("html");
 
-		$("html").append('<div id="newBody"></div>');
-	});
+		// $("html").append('<div id="newBody"></div>');
+	// });
 
 
 	// console.log(chrome);

@@ -7,17 +7,22 @@
 
 	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
 	// 开发阶段开启
-	window.$ = $;
+	// window.$ = $;
+	// 已经menifest文件中导入jquery和bootstrap
 	// =======================
 
 	// console.log("in content");
+	// $('html').attr("ng-app", "");
+	// $('html').attr("ng-csp", "");
+	$('html').append('<div id="girafeeeApp"><div ng-view></div></div>');
+
 	var thisUri = new URI().query("").fragment("").toString();
 	switch(thisUri){
 		case "http://my.fund123.cn/RealFundDefault.aspx":
+		case "https://www.baidu.com/":
 			//我的基金
 			require('./part/fund123_my_fund');
 			break;
-		case "https://www.baidu.com/":
 		case "https://trade.fund123.cn/home/agreementquery/":
 			//定投页面
 			require('./part/fund123_dingtou');
