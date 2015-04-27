@@ -1,8 +1,8 @@
 // 'use strict';
 
 module.exports = function(){
-	var $ = window.$ ? window.$ : require('jquery');
-	var M = require('./chrome_msg');
+	// var $ = window.$ ? window.$ : require('jquery');
+	// var M = require('./chrome_msg');
 	// console.log("M:", M);
 	return {
 	  alm : function(callback, delaym, periodm){
@@ -51,6 +51,17 @@ module.exports = function(){
 			M.connect("xhr", function(cntor){
 				cntor.xhr(url, callback);
 			});
+	  },
+	  ng : function(tplUrl, contrlFunc){
+			angular.module('myApp', [])
+			.config(['$routeProvider',function($routeProvider) {
+				$routeProvider
+					.when('/', {templateUrl: C.chromeUrl(tplUrl), controller: contrlFunc})
+					.otherwise({redirectTo: '/'});
+			}]);
+
+			var ele = $('html').find('#girafeeeApp');
+			angular.bootstrap(ele, ['myApp']);	  	
 	  },
 	  storage : function(){
 			this.set = function(items, callback){

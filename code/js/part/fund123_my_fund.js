@@ -1,29 +1,25 @@
 // http://my.fund123.cn/RealFundDefault.aspx
 // for this url page
 
-var $ = window.$ ? window.$ : require('jquery');
-var C = require('../modules/chrome_cab');
-var M = require("../modules/chrome_msg");
-var angular = window.angular ? window.angular : false;
-if(angular === false) throw "no angular !!!!!";
-
 module.exports = function(){
 	console.log("my_fund");
 	C.css('css/part/fund123_my_fund.css');
-
-	angular.module('myApp', [])
-	.config(['$routeProvider',function($routeProvider) {
-		$routeProvider
-			.when('/', {templateUrl: C.chromeUrl('html/part/fund123_my_fund.html'), controller: appController})
-			.otherwise({redirectTo: '/'});
-	}]);
-
-	function appController($scope){
+	C.ng('html/part/fund123_my_fund.html', function($scope){
 		$scope.abc = "ok work!!@!!!!";
-	}
+	});
+	// angular.module('myApp', [])
+	// .config(['$routeProvider',function($routeProvider) {
+	// 	$routeProvider
+	// 		.when('/', {templateUrl: C.chromeUrl('html/part/fund123_my_fund.html'), controller: appController})
+	// 		.otherwise({redirectTo: '/'});
+	// }]);
 
-	var ele = $('html').find('#girafeeeApp');
-	angular.bootstrap(ele, ['myApp']);
+	// function appController($scope){
+	// 	$scope.abc = "ok work!!@!!!!";
+	// }
+
+	// var ele = $('html').find('#girafeeeApp');
+	// angular.bootstrap(ele, ['myApp']);
 
 	// C.html('html/part/fund123_my_fund.html', function(data){
 		// console.log("data", data);

@@ -1,20 +1,23 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "content_script";
-	// var $ = require('jquery');
-	var $ = window.$ ? window.$ : require('jquery');
-	var M = require("./modules/chrome_msg");
-	var URI = require('URIjs');
+	window.$ = window.$ ? window.$ : false;
+	window.angular = window.angular ? window.angular : false;
+	window.URI = window.URI ? window.URI : require('URIjs');
+	window.M = window.M ? window.M : require("./modules/chrome_msg");
+	window.C = window.C ? window.C : require('./modules/chrome_cab');
 
-	// 如果要在content.html中使用jquery 必须把jquery导入window全局对象中
-	// 开发阶段开启
-	// window.$ = $;
-	// 已经menifest文件中导入jquery和bootstrap
+	// girafeeeApp必须插入DOM，C.ng中直接注入angularjs模块
+	if(angular === false) throw "no angular !!!!!";
+	$('html').append('<div id="girafeeeApp"><div ng-view></div></div>');
+	// jquery等导入window全局对象中方便别的文件使用
+	// menifest文件中导入jquery、angularjs和bootstrap
 	// =======================
+
+
 
 	// console.log("in content");
 	// $('html').attr("ng-app", "");
 	// $('html').attr("ng-csp", "");
-	$('html').append('<div id="girafeeeApp"><div ng-view></div></div>');
 
 	var thisUri = new URI().query("").fragment("").toString();
 	switch(thisUri){
