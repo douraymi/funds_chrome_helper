@@ -1,15 +1,12 @@
 <div id="grf_main">
 	<div class="container-fluid">
-		<div>
-			{{abc}}
-		</div>
 		<!-- Button trigger modal -->
 <!-- 		<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
 		  Launch demo modal
 		</button> -->
 
 		<!-- Modal -->
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -31,7 +28,7 @@
 			<ul class="nav nav-pills">
 			  <li role="presentation"><a href="#">仓库</a></li>
 			  <li role="presentation" class="active"><a href="#">计划</a></li>
-			  <li role="presentation"><a href="#" data-toggle="modal" data-target="#myModal">设置</a></li>
+			  <li role="presentation"><a href="#" data-toggle="modal" data-target="#settingModal">设置</a></li>
 			</ul>
 	  	
 	  </div>
@@ -51,13 +48,18 @@
 		    <div class="panel-heading" role="tab" id="headingOne">
 		      <h4 class="panel-title">
 		        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-		          Collapsible Group Item #1
+		          黄沙漫天,韩玉青蓝
 		        </a>
 		      </h4>
 		    </div>
 		    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+		    	随机提款
 		      <div class="panel-body">
-		        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+						<div class="btn-group btn-group" role="group" aria-label="...">
+							 	<button type="button" class="btn btn-default" ng-click="randomSale(3000)">3000</button>
+							  <button type="button" class="btn btn-default" ng-click="randomSale(5000)">5000</button>
+							  <button type="button" class="btn btn-default" ng-click="randomSale(8000)">8000</button>
+						</div>
 		      </div>
 		    </div>
 		  </div>

@@ -2,11 +2,24 @@
 // for this url page
 
 module.exports = function(){
-	console.log("my_fund");
+	// console.log("my_fund");
 	C.css('css/part/fund123_my_fund.css');
-	C.ng('html/part/fund123_my_fund.html', function($scope){
-		$scope.abc = "ok work!!@!!!!";
-	});
+	C.ng('html/part/fund123_my_fund.html', appController);
+
+	function appController($scope){
+		$scope.randomSale = function(amount){
+			var mTb = $("#m_Table_open tbody tr.bb");
+			mTb.removeClass("hight_light");
+			var tmpAry = [];
+			var count = 0;
+			while(count<amount){
+				count = count+100;
+				console.log($("#m_Table_open tbody tr.bb").size());
+				tmpAry.push($("#m_Table_open tbody tr.bb").eq(1).remove());
+				console.log(tmpAry);
+			}
+		}
+	}
 	// angular.module('myApp', [])
 	// .config(['$routeProvider',function($routeProvider) {
 	// 	$routeProvider

@@ -1,6 +1,7 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "content_script";
 	window.$ = window.$ ? window.$ : false;
+	// window.jQuery = window.jQuery ? window.jQuery : false;
 	window.angular = window.angular ? window.angular : false;
 	window.URI = window.URI ? window.URI : require('URIjs');
 	window.M = window.M ? window.M : require("./modules/chrome_msg");
