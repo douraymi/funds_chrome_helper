@@ -8,15 +8,31 @@ module.exports = function(){
 
 	function appController($scope){
 
+		// localStorage方式统计当天赎回总额
+		C.storage.ngBind($scope, "todayRedeem", function(item){
+			var today = new Date();
+			if(item && item.date===today.toDateString()){
+			}else{
+				C.storage.set({
+					todayRedeem:{
+						date 					: today.toDateString(),
+						redeemAmount 	: 0
+					}
+				});
+			}
+		});
 
-
-
-
-
-
+			// var today = new Date();
+			// C.storage.set({
+			// 	todayRedeem:{
+			// 		date 					: today.toDateString(),
+			// 		redeemAmount 	: 666
+			// 	}
+			// });
+			// console.log($scope.todayRedeem);
 
 		// 根据金额随机选择 卖出基金
-		$scope.randomSale = function(amount){
+		$scope.randomRedeem = function(amount){
 			var mTb = "#m_Table_open tbody tr.bb";
 			$(mTb).removeClass("hight_light");
 			var tmpAry = [];

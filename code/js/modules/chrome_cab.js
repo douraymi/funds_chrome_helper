@@ -4,7 +4,7 @@ module.exports = function(){
 	// var $ = window.$ ? window.$ : require('jquery');
 	// var M = require('./chrome_msg');
 	// console.log("M:", M);
-	return {
+	var rt = {
 	  alm : function(callback, delaym, periodm){
 			//only work in event page, not in content script page
 	  	var createObj = {
@@ -22,6 +22,7 @@ module.exports = function(){
 			}
 		},
 		OBJnw : function(obj){
+			if(obj===undefined) return null;
 			var objContainer = {};
 			if(_.isFunction(obj)){
 				var _uniqueId = _.uniqueId('random_id_');
@@ -70,27 +71,49 @@ module.exports = function(){
 			this.get = function(keys, callback){
 				chrome.storage.sync.get(keys, callback);
 			};
-			this.onKeyChange = function(listenerObj){
-				var _obj = vendor.OBJnw(listenerObj);
+			this.onChange = function(listenerObj){
+				var _obj = rt.OBJnw(listenerObj);
 				_.each(_obj, function(func, key){
-					chrome.onChanged.addListener(func);		
+					chrome.storage.onChanged.addListener(func);		
 				});
-			}
-			this.rmKeyChange = function(listenerObj){
-				var _obj = vendor.OBJnw(listenerObj);
+			};
+			this.rmChange = function(listenerObj){
+				var _obj = rt.OBJnw(listenerObj);
 				_.each(_obj, function(func, key){
-					chrome.onChanged.addListener(func);		
+					chrome.storage.onChanged.removeListener(func);		
 				});
+			};
+			this.ngBind = function(scope, storageKey, callback, optionOnChange){
+				this.get(storageKey, function(items){
+					if(items[storageKey]){
+						scope.$apply(function(){
+							scope[storageKey] = items[storageKey];
+						});
+						if(callback) callback(items[storageKey]);					
+					}else{
+						if(callback) callback();
+					}
+				});
+				this.onChange(function(changes){
+					if(changes[storageKey]){
+						scope[storageKey] = changes[storageKey].newValue;
+					}
+				});
+				if(optionOnChange) this.onChange(optionOnChange);
+			};
+			this.remove = function(keys, callback){
+				// chrome.storage.sync.clear();
+				chrome.storage.sync.remove(keys, callback);
 			}
-			this.bind = function(domObj, key){
+			this.clear = function(callback){
+				chrome.storage.sync.clear(callback);
+			}
 
-			}
-			this.unBind = function(){
-
-			}
 			return this;
 		}()
 
 	}
+
+	return rt;
 
 }()

@@ -1,11 +1,11 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "content_script";
 	window.$ = window.$ ? window.$ : false;
-	// window.jQuery = window.jQuery ? window.jQuery : false;
 	window.angular = window.angular ? window.angular : false;
 	window.URI = window.URI ? window.URI : require('URIjs');
 	window.M = window.M ? window.M : require("./modules/chrome_msg");
 	window.C = window.C ? window.C : require('./modules/chrome_cab');
+	window._ = window._ ?	window._ : require('underscore');
 
 	// girafeeeApp必须插入DOM，C.ng中直接注入angularjs模块
 	if(angular === false) throw "no angular !!!!!";
