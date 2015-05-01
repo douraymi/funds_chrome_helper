@@ -31,6 +31,9 @@
 			//定投页面
 			require('./part/fund123_dingtou');
 			break;
+		case "https://trade.fund123.cn/Trading/Do/RedeemDone":
+			require('./part/redeem_done');
+			break;
 		default:
 
 	}

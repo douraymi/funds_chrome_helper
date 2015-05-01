@@ -39,15 +39,16 @@ module.exports = function(){
 			var count = 0;
 			while(count<amount){
 				var size = $(mTb).size();
-				var mvTr = $(mTb).eq( _.random(0, size) ).remove();	// 随机选一行
-				count += mvTr.text().trim() * 1;
+				var mvTr = $(mTb).eq( _.random(0, size-1) ).remove();	// 随机选一行
+				count += mvTr.find("td:eq(4)").text().trim() * 1;
 				tmpAry.push(mvTr);
 			}
 			_.each(tmpAry, function(trObj){
 				trObj.addClass("hight_light");
-				// 处理另外一行
-				$(mTb+" #"+trObj.attr("id")).remove().insertBefore($(mTb).eq(0));
 				trObj.insertBefore($(mTb).eq(0));
+				// 处理另外一行
+				var anotherTr = "#TR2"+trObj.attr("id").slice(2);
+				$(anotherTr).remove().insertAfter($(mTb).eq(0));
 			});
 		}
 
