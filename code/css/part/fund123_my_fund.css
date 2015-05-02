@@ -7,7 +7,7 @@ body {
 	padding-right:25px !important;
 }
 
-#form1>.con980,#form1>#ManagerAreaUC,#form1>#myfund {
+#form1>.con980, #form1>#ManagerAreaUC, #form1>#myfund, body>.layout {
 	float: right;
 }
 

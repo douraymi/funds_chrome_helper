@@ -40,8 +40,9 @@ module.exports = function(){
 			while(count<amount){
 				var size = $(mTb).size();
 				var mvTr = $(mTb).eq( _.random(0, size-1) ).remove();	// 随机选一行
-				count += mvTr.find("td:eq(4)").text().trim() * 1;
+				count += mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"") * 1;
 				tmpAry.push(mvTr);
+				console.log(count);
 			}
 			_.each(tmpAry, function(trObj){
 				trObj.addClass("hight_light");

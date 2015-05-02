@@ -7,16 +7,26 @@ body {
 	padding-right:25px !important;
 }
 
-#form1>.con980,#form1>#ManagerAreaUC,#form1>#myfund {
+#trading_intro_list, body>.con980, #main, body>.layout {
 	float: right;
+}
+
+body>.shumi-kefu, body>.shumi-baiba {
+	display: none;
 }
 
 #grf_main {
 	z-index: 10000;
-  position: fixed;
-  top: 40px;
-  left: 10px;
+  	position: fixed;
+  	top: 40px;
+  	left: 10px;
 	width: 300px;
 	/*background-color: red;*/
 }
 
+.hight_light {
+	background-color: green !important;
+}
+.hight_light_done {
+	background-color: green !important;
+}
