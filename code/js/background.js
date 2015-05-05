@@ -1,11 +1,17 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "background";
-  // var $ = require('jquery');
-  var $ = window.$ ? window.$ : require('jquery');
-  var _ = require('underscore');
-  var C = require('./modules/chrome_cab');
-  var M = require('./modules/chrome_msg');
-  var URI = require('URIjs');
+
+  window.$ = window.$ ? window.$ : false;
+  window.angular = window.angular ? window.angular : false;
+  window.URI = window.URI ? window.URI : require('URIjs');
+  window.M = window.M ? window.M : require("./modules/chrome_msg");
+  window.C = window.C ? window.C : require('./modules/chrome_cab');
+  window._ = window._ ? window._ : require('underscore');  
+  // var $ = window.$ ? window.$ : require('jquery');
+  // var _ = require('underscore');
+  // var C = require('./modules/chrome_cab');
+  // var M = require('./modules/chrome_msg');
+  // var URI = require('URIjs');
 
   console.log("bg begin");
 

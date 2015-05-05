@@ -34,6 +34,10 @@ module.exports = function(){
 			}
 			return objContainer;
 		},
+		fxNum : function(number,fractionDigits){
+			var rt = Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits);
+			return rt;   
+		},
 		chromeUrl : function(url){
 			return (url.slice(0,4) === "http")?url:chrome.extension.getURL(url);
 		},
@@ -96,7 +100,9 @@ module.exports = function(){
 				});
 				this.onChange(function(changes){
 					if(changes[storageKey]){
-						scope[storageKey] = changes[storageKey].newValue;
+						scope.$apply(function(){
+							scope[storageKey] = changes[storageKey].newValue;
+						});
 					}
 				});
 				if(optionOnChange) this.onChange(optionOnChange);

@@ -43,6 +43,9 @@
   			this.listener.push(listener);
   		}
   	};
+    this.close = function(){
+      connector.close();
+    }
   	// callback(this);
     return this;
   }
@@ -264,7 +267,9 @@
             var args = arguments;
             var tunnelKey, callback,
               portName = args[0];
-            if(args.length===2 && _.isString(args[0]) && _.isFunction(args[1])){
+            if(args.length===1 && _.isString(args[0])){
+              callback = function(){};
+            }else if(args.length===2 && _.isString(args[0]) && _.isFunction(args[1])){
               callback = args[1];
             }else if(args.length===3 && _.isString(args[0]) && _.isString(args[1]) && _.isFunction(args[2])){
               tunnelKey = args[1];

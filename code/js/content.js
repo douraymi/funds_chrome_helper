@@ -21,15 +21,20 @@
 	// $('html').attr("ng-csp", "");
 
 	var thisUri = new URI().query("").fragment("").toString();
+	console.log('thisUri:',thisUri);
 	switch(thisUri){
+		//我的基金
 		case "http://my.fund123.cn/RealFundDefault.aspx":
-		case "https://www.baidu.com/":
-			//我的基金
 			require('./part/fund123_my_fund');
 			break;
+		//定投页面
 		case "https://trade.fund123.cn/home/agreementquery/":
-			//定投页面
 			require('./part/fund123_dingtou');
+			break;
+		// 基金赎回
+		// case "https://trade.fund123.cn/Trading/Do/Redeem":
+		case "https://trade.fund123.cn/Trading/Do/RedeemConfirm":
+			require('./part/redeem_confirm');
 			break;
 		case "https://trade.fund123.cn/Trading/Do/RedeemDone":
 			require('./part/redeem_done');
