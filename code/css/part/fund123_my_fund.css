@@ -21,8 +21,8 @@ body {
 }
 
 .hight_light {
-	background-color: green !important;
+	background-color: khaki !important;
 }
-.hight_light_done {
-	background-color: green !important;
+.today_is_redeemed {
+	background-color: gray !important;
 }

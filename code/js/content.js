@@ -27,17 +27,16 @@
 		case "http://my.fund123.cn/RealFundDefault.aspx":
 			require('./part/fund123_my_fund');
 			break;
-		//定投页面
-		case "https://trade.fund123.cn/home/agreementquery/":
-			require('./part/fund123_dingtou');
-			break;
 		// 基金赎回
-		// case "https://trade.fund123.cn/Trading/Do/Redeem":
 		case "https://trade.fund123.cn/Trading/Do/RedeemConfirm":
 			require('./part/redeem_confirm');
 			break;
 		case "https://trade.fund123.cn/Trading/Do/RedeemDone":
 			require('./part/redeem_done');
+			break;
+		//定投页面
+		case "https://trade.fund123.cn/home/agreementquery/":
+			require('./part/fund123_dingtou');
 			break;
 		default:
 

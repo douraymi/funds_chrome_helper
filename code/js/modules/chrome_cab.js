@@ -51,11 +51,33 @@ module.exports = function(){
 				});
 			});
 	  },
-	  html : function(url, callback){
-			url = this.chromeUrl(url);
-			M.connect("xhr", function(cntor){
-				cntor.xhr(url, callback);
-			});
+	  html : function(){
+	  	if(arguments.length != 2 && arguments.length != 3) throw "C:html() wrong arguments";
+	  	// url, isNeedScript, callback
+	  	// console.log("arguments:", arguments);
+	  	var url = this.chromeUrl(arguments[0]);
+	  	var isNeedScript, callback;
+	  	if(arguments.length == 2 && _.isFunction(arguments[1])){
+	  		isNeedScript = false;
+	  		callback = arguments[1];
+	  	}else if(arguments.length == 3 && _.isFunction(arguments[2])){
+	  		isNeedScript = arguments[1];
+	  		callback = arguments[2];
+	  	}else{
+	  		throw "C:html() wrong arguments[2]";
+	  	};
+	  	if(isNeedScript){
+				$.ajax({ url: url, async:true, success: function(data, textStatus){
+						callback(data);
+				} });	  		
+	  	}else{
+				M.connect("xhr", function(cntor){
+					cntor.xhr(url, function(data){
+						// 一般情况callback里不要直接操作DOM刷html
+						callback(data);
+					});
+				});
+	  	}
 	  },
 	  ng : function(tplUrl, contrlFunc){
 			angular.module('myApp', [])

@@ -104,6 +104,9 @@
       });
       _port.onMessage.addListener(function(msg){
         // console.log(msg);
+        // msg = {
+        //   body:"data"
+        // }
         callback(msg.body);
       });
     }
@@ -207,22 +210,26 @@
           port.onMessage.addListener(function(msg, _port){
             // console.log("msg:", msg);
             var _url = msg.body.url;
-            $.ajax({
-              url: _url //'/path/to/file',
-              // type: 'default GET (Other values: POST)',
-              // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
-              // data: {param1: 'value1'},
-            })
-            .done(function(data) {
+            $.ajax({ url: _url, async:true, success: function(data, textStatus){
               _port.postMessage({body:data});
-              // console.log("success");
-            })
-            .fail(function() {
-              console.log("error");
-            })
-            .always(function() {
-              // console.log("complete");
-            });
+            } });
+
+            // $.ajax({
+            //   url: _url //'/path/to/file',
+            //   // type: 'default GET (Other values: POST)',
+            //   // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+            //   // data: {param1: 'value1'},
+            // })
+            // .done(function(data) {
+            //   _port.postMessage({body:data});
+            //   // console.log("success");
+            // })
+            // .fail(function() {
+            //   console.log("error");
+            // })
+            // .always(function() {
+            //   // console.log("complete");
+            // });
           });
           break;
         default :

@@ -11,6 +11,7 @@ body {
 	float: right;
 }
 
+/*隐藏客服div*/
 body>.shumi-kefu, body>.shumi-baiba {
 	display: none;
 }
@@ -21,12 +22,14 @@ body>.shumi-kefu, body>.shumi-baiba {
   	top: 40px;
   	left: 10px;
 	width: 300px;
-	/*background-color: red;*/
 }
 
 .hight_light {
-	background-color: green !important;
+	background-color: khaki !important;
 }
-.hight_light_done {
-	background-color: green !important;
+.today_is_dted {
+	background-color: gray !important;
+}
+.today_need_dt {
+	background-color: gray !important;
 }
