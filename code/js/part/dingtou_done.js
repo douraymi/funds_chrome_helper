@@ -3,19 +3,19 @@
 // 判断是否成功,如果成功通过message回传
 
 module.exports = function(){
-	var _isRedeemOk = false;
-	var _result = $("#success_message").text().trim();
+	var _isOk = false;
+	var _result = $("#RegularForm h3:eq(0)").text().trim();
 	// console.log("_result:", _result);
-	if($("#success_message").length>0 && _result==="基金赎回完成"){
-		_isRedeemOk = true;
+	if(_result=="操作完成"){
+		_isOk = true;
 	}
-	var _url = new URI();
-	_url.hasQuery("fundCode", function(val){
-		M.connect("redeemConfirm", val+"done", function(tn){
-			tn.send({type:"redeemDone", code:"onLoad", body:{isRedeemOk:_isRedeemOk}});
-			// console.log("_isRedeemOk:", _isRedeemOk);
+	// var _url = new URI();
+	// _url.hasQuery("fundCode", function(val){
+	// 	M.connect("redeemConfirm", val+"done", function(tn){
+	// 		tn.send({type:"redeemDone", code:"onLoad", body:{isRedeemOk:_isRedeemOk}});
+	// 		// console.log("_isRedeemOk:", _isRedeemOk);
 
-		});
-	});
+	// 	});
+	// });
 
 }()
