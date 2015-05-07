@@ -108,6 +108,8 @@
         //   body:"data"
         // }
         callback(msg.body);
+        // ×Ô¶¯¹Ø±Õport
+        _port.disconnect();
       });
     }
     return this;

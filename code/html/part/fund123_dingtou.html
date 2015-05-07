@@ -37,8 +37,13 @@
 					</ul>
 			  </div>
 			  <div>
-			    今天已赎回金额:
-			    <span style="color:red;font-size:15px;">{{todayRedeem.redeemAmount}}</span>元
+			    今天已暂停:
+			    <span style="color:darkgoldenrod;font-size:15px;">{{todayDT.zantingAmount}}</span>元 /
+			    计划<span style="color:darkgreen;font-size:15px;">{{setting.exchangeDaily}}</span>元
+			    <br>
+			    定投金额/月:
+			    <span style="color:darkgoldenrod;font-size:15px;">{{buyAmountNow}}</span>元 /
+			    计划<span style="color:darkgreen;font-size:15px;">{{setting.buyMonthlyAmount}}</span>元
 			  </div>
 		  </div>
 		</div>
@@ -48,15 +53,14 @@
 		    <div class="panel-heading" role="tab" id="headingOne">
 		      <h4 class="panel-title">
 		        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-		          黄沙漫天,韩玉青蓝
+		          工具
 		        </a>
 		      </h4>
 		    </div>
 		    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-		    	随机提款
 		      <div class="panel-body">
 						<div class="btn-group btn-group" role="group" aria-label="...">
-							 	<button type="button" class="btn btn-default" ng-click="randomRedeem(3000)">3000</button>
+							 	<button type="button" class="btn btn-default" ng-click="dingTouPause()">暂停</button>
 							  <button type="button" class="btn btn-default" ng-click="randomRedeem(5000)">5000</button>
 							  <button type="button" class="btn btn-default" ng-click="test()">kefu</button>
 						</div>
@@ -67,7 +71,7 @@
 		    <div class="panel-heading" role="tab" id="headingTwo">
 		      <h4 class="panel-title">
 		        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-		          Collapsible Group Item #2
+		          黄沙漫天
 		        </a>
 		      </h4>
 		    </div>
@@ -81,7 +85,7 @@
 		    <div class="panel-heading" role="tab" id="headingThree">
 		      <h4 class="panel-title">
 		        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-		          Collapsible Group Item #3
+		          韩玉青蓝
 		        </a>
 		      </h4>
 		    </div>

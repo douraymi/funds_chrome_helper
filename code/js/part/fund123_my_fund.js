@@ -37,7 +37,7 @@ module.exports = function(){
 				// console.log("tn:", tnConfirm);
 				var confirmMsgObj = {
 					redeemConfirm : {
-						onLoad : function(msg, _p){
+						onLoad : function(msg){
 							redeemQ = msg.body.redeemQ;
 							// for fake test
 							// tnConfirm.send({type:"test", code:"test", body:{}});
@@ -79,7 +79,7 @@ module.exports = function(){
 					M.connect("my_fund", fundCode+"done", function(tnDone){
 						var doneMsgObj = {
 							redeemDone : {
-								onLoad : function(msg, _p){
+								onLoad : function(msg){
 									// console.log("onDoneMsg:", msg);
 									if(msg.body.isRedeemOk){
 										$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
@@ -125,34 +125,34 @@ module.exports = function(){
 
 		// localStorage方式统计当天赎回总额
 		C.storage.ngBind($scope, "todayRedeem", function(item){
-			var today = new Date();
 			// C.storage.clear();
+			var today = new Date();
 			if(item && item.date===today.toDateString() && item.redeemTr){
+				// redeemTr渲染
+				_.each(item, function(parentid){
+					$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
+				});
 			}else{
-				C.storage.remove('todayRedeem');
-				C.storage.set({
+				var newItem = {
 					todayRedeem:{
 						date 					: today.toDateString(),
 						redeemTr			: [],
 						redeemAmount 	: 0
 					}
-				});
+				};
+				C.storage.remove('todayRedeem');
+				C.storage.set(newItem);
 			}
 		}, function(changes){
 			// console.log("changes:", changes);
 		});
-		// redeemTr渲染
-		C.storage.get("todayRedeem", function(items){
-			// console.log("items:", items);
-			if(items && items['todayRedeem'] && items['todayRedeem']['redeemTr']){
-				_.each(items['todayRedeem']['redeemTr'], function(parentid){
-					$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
-				});
 
-			}
 
-		});
+
 
 	}
+
+
+
 
 }();
