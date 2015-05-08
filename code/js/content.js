@@ -1,11 +1,12 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "content_script";
+	
 	window.$ = window.$ ? window.$ : false;
-	window.angular = window.angular ? window.angular : false;
+	window._ = window._ ?	window._ : require('underscore');
 	window.URI = window.URI ? window.URI : require('URIjs');
+	window.angular = window.angular ? window.angular : false;
 	window.M = window.M ? window.M : require("./modules/chrome_msg");
 	window.C = window.C ? window.C : require('./modules/chrome_cab');
-	window._ = window._ ?	window._ : require('underscore');
 
 	// girafeeeApp必须插入DOM，C.ng中直接注入angularjs模块
 	if(angular === false) throw "no angular !!!!!";
@@ -14,7 +15,8 @@
 	// menifest文件中导入jquery、angularjs和bootstrap
 	// =======================
 
-
+	// 清空storage
+	// C.storage.clear();
 
 	// console.log("in content");
 	// $('html').attr("ng-app", "");

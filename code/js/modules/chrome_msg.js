@@ -189,17 +189,23 @@
     var onTnKey = function(msg, port){
       parseMsg(msg, "connect", {
         tunnelKey : function(_msg){
-          // console.log("(1)tunnelCan:", tnCtner);
           var _tk = _msg.body.tunnelKey;
           if(tnCtner[_tk]&&tnCtner[_tk].foot===undefined){
-            tnCtner[_tk].foot=port;
-            tunnelShake(_tk, tnCtner[_tk].head, port);
+            //  防止同路链接
+            if(tnCtner[_tk].head.name===port.name){
+              tnCtner[_tk].head.postMessage({type:"connect",code:"tunnelClose"});
+              tnCtner[_tk].head = port;
+            }else{
+              tnCtner[_tk].foot=port;
+              tunnelShake(_tk, tnCtner[_tk].head, port);     
+            }
           }else{
             //  暂放第一个port等待另外一个port来搞
-            tnCtner[_tk] = tnCtner[_tk] || {};
+            // tnCtner[_tk] = tnCtner[_tk] || {};  // 忘了为啥这样写
+            // 如果已经有一对一样的通道port, 这里会移出tnCtner队列,但依然起作用
+            tnCtner[_tk] = {};
             tnCtner[_tk].head = port;
           }
-          // console.log("(2)tunnelCan:", tnCtner);
         }
       });
     }
