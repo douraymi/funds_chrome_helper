@@ -25,7 +25,11 @@
 	var thisUri = new URI().query("").fragment("").toString();
 	console.log('thisUri:',thisUri);
 	switch(thisUri){
-		//我的基金
+		// test
+		case "https://www.baidu.com/":
+			require('./test');
+			break;
+		// 我的基金
 		case "http://my.fund123.cn/RealFundDefault.aspx":
 			require('./part/fund123_my_fund');
 			break;
