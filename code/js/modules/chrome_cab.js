@@ -4,7 +4,7 @@ module.exports = function(){
 	// var $ = window.$ ? window.$ : require('jquery');
 	// var M = require('./chrome_msg');
 	// console.log("M:", M);
-	var rt = {
+	var cab = {
 	  alm : function(callback, delaym, periodm){
 			//only work in event page, not in content script page
 	  	var createObj = {
@@ -42,7 +42,7 @@ module.exports = function(){
 			return (url.slice(0,4) === "http")?url:chrome.extension.getURL(url);
 		},
 	  css : function(url){
-			url = this.chromeUrl(url);
+			url = cab.chromeUrl(url);
 			M.connect("xhr", function(cntor){
 				cntor.xhr(url, function(data){
 					$("<style>")
@@ -55,7 +55,7 @@ module.exports = function(){
 	  	if(arguments.length != 2 && arguments.length != 3) throw "C:html() wrong arguments";
 	  	// url, isNeedScript, callback
 	  	// console.log("arguments:", arguments);
-	  	var url = this.chromeUrl(arguments[0]);
+	  	var url = cab.chromeUrl(arguments[0]);
 	  	var isNeedScript, callback;
 	  	if(arguments.length == 2 && _.isFunction(arguments[1])){
 	  		isNeedScript = false;
@@ -66,19 +66,42 @@ module.exports = function(){
 	  	}else{
 	  		throw "C:html() wrong arguments[2]";
 	  	};
+	  	var _df = $.Deferred();
 	  	if(isNeedScript){
 				$.ajax({ url: url, async:true, success: function(data, textStatus){
-						callback(data);
+						callback(data, _df);
 				} });	  		
 	  	}else{
 				M.connect("xhr", function(cntor){
 					cntor.xhr(url, function(data){
 						// 一般情况callback里不要直接操作DOM刷html
-						callback(data);
+						callback(data, _df);
 					});
 				});
 	  	}
+	  	return _df;
 	  },
+	  df : function(){
+			var tempAry = [];
+			this.loop = undefined;
+			this.loopF = function(args, lp){
+				var func = args[0];
+				Array.prototype.shift.call(args);
+				return function(){
+					$.when(func.apply(func, args) ).done(lp);
+				}
+			}
+			this.next = function(){
+				tempAry.push(arguments);
+			}
+			this.go = function(){
+				for (var i = tempAry.length - 1; i >= 0; i--) {
+					this.loop = this.loopF(tempAry[i], this.loop);
+				};
+				if(_.isFunction(this.loop)) this.loop();
+			}
+			return this;
+		},
 	  ng : function(tplUrl, contrlFunc){
 			angular.module('myApp', [])
 			.config(['$routeProvider',function($routeProvider) {
@@ -98,13 +121,13 @@ module.exports = function(){
 				chrome.storage.sync.get(keys, callback);
 			};
 			this.onChange = function(listenerObj){
-				var _obj = rt.OBJnw(listenerObj);
+				var _obj = cab.OBJnw(listenerObj);
 				_.each(_obj, function(func, key){
 					chrome.storage.onChanged.addListener(func);		
 				});
 			};
 			this.rmChange = function(listenerObj){
-				var _obj = rt.OBJnw(listenerObj);
+				var _obj = cab.OBJnw(listenerObj);
 				_.each(_obj, function(func, key){
 					chrome.storage.onChanged.removeListener(func);		
 				});
@@ -142,6 +165,6 @@ module.exports = function(){
 
 	}
 
-	return rt;
+	return cab;
 
 }()
