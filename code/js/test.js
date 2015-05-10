@@ -48,10 +48,17 @@ module.exports = function(){
 			newdef.next(dfFunc, i);
 		}
 
-		newdef.next(C.html, "http://www.baidu.com", function(data, df){
-			console.log(data);
-			df.resolve();
-		});
+		// newdef.next(C.html, "http://www.baidu.com", function(data, df){
+		// 	console.log(data);
+		// 	df.resolve();
+		// });
+
+		newdef.next(function(){
+			return C.html("http://www.xxx.com", function(data, df){
+				console.log(data);
+				df.resolve();
+			});
+		})
 
 		for(var i = 1; i < 5; i++){
 			newdef.next(dfFunc, i);

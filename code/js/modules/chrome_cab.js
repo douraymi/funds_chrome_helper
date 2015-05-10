@@ -69,12 +69,13 @@ module.exports = function(){
 	  	var _df = $.Deferred();
 	  	if(isNeedScript){
 				$.ajax({ url: url, async:true, success: function(data, textStatus){
+						// 一般情况callback里不要直接操作DOM刷html
 						callback(data, _df);
-				} });	  		
+				}, error : function(){ callback(undefined, _df);} });	  		
 	  	}else{
 				M.connect("xhr", function(cntor){
 					cntor.xhr(url, function(data){
-						// 一般情况callback里不要直接操作DOM刷html
+						// 如果请求失败data是undefined
 						callback(data, _df);
 					});
 				});
