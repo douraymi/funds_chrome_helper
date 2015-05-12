@@ -38,6 +38,12 @@ module.exports = function(){
 			var rt = Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits);
 			return rt;   
 		},
+		closeWindow : function(){
+			if (window.confirm("您查看的页面正在试图关闭窗口。是否关闭此窗口？")) {
+        window.open('', '_self', '');
+        window.close();
+      }
+		},
 		chromeUrl : function(url){
 			return (url.slice(0,4) === "http")?url:chrome.extension.getURL(url);
 		},
@@ -68,6 +74,7 @@ module.exports = function(){
 	  	};
 	  	var _df = $.Deferred();
 	  	if(isNeedScript){
+	  		console.log("html isNeedScript");
 				$.ajax({ url: url, async:true, success: function(data, textStatus){
 						// 一般情况callback里不要直接操作DOM刷html
 						callback(data, _df);

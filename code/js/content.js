@@ -34,6 +34,9 @@
 			require('./part/fund123_my_fund');
 			break;
 		// 基金赎回
+		case "https://trade.fund123.cn/Trading/Do/Redeem":
+			require('./part/redeem_redeem');
+			break;
 		case "https://trade.fund123.cn/Trading/Do/RedeemConfirm":
 			require('./part/redeem_confirm');
 			break;

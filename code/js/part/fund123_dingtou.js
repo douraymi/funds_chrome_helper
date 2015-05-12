@@ -1,4 +1,4 @@
-// http://my.fund123.cn/RealFundDefault.aspx
+// https://trade.fund123.cn/home/agreementquery/
 // for this url page
 
 module.exports = function(){
@@ -35,24 +35,6 @@ module.exports = function(){
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
 				M.connect("dingtou", _xyh+"_dt", function(tunnel){
-					// var omObj = {
-					// 	confirm : {
-					// 		zanting : function(msg){
-					// 			if(msg.tunnelKey==_xyh+"_dt" && msg.body.isOk){
-					// 				console.log(msg);
-					// 				reloadList(function(){
-					// 					$(".rectitle li[status='']").trigger("click");
-					// 					if($scope.randomContine=="status0"){
-					// 						$(".rectitle li[status=0]").trigger("click");
-					// 						randomSelect("status0");
-					// 					}
-										
-					// 				});
-					// 			}
-					// 		}
-					// 	}
-					// };
-					// tunnel.onMsg(omObj);
 					tunnel.onClose.addListener(function(){
 						var buyAmountNow_tmp = $scope.buyAmountNow;
 						reloadList(function(){
@@ -87,9 +69,7 @@ module.exports = function(){
 				case "每周":
 					_money = money*4;
 					break;
-
 				default:
-
 			}
 			return _money;
 		}
@@ -169,21 +149,12 @@ module.exports = function(){
 		}, function(changes){
 		});
 
-		// C.storage.ngBind($scope, "today_dt", function(item){
-		// 	var today = new Date();
-		// 	if(item && item.date===today.toDateString()){
-		// 	}else{
-		// 		var newItem = {	today_dt:{	date : today.toDateString(), zantingAmount : 0}	};
-		// 		C.storage.remove('today_dt');
-		// 		C.storage.set(newItem);
-		// 	}
-		// }, function(changes){
-		// });
-		
-		// 外端每日数据处理
 		
 
 	}
 
+
+	// 处理排名数据
+	require('../etc/fundRank');
 
 }();
