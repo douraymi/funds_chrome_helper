@@ -27,23 +27,39 @@ module.exports = function(){
 		month: 'http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&ft=gp&sd=&ed=&sc=1y&st=desc&pi=1&pn=20&zf=diy&sh=list&rnd='+_.random(0, 1)
 	};
 
-	var obj = {};
+	var obj = {shumi:{}, tt:{}};
 	// shumi处理程序
 	function shumiGet(shumiObj){
 		var _df = C.df();
 		_.each(shumiUrl, function(val, key){
+			shumiObj[key] = [];
 			_df.next(C.html, val, function(data, df){
 				var _data = data.replace('http://gg.fund123.cn/UploadFiles/20150302/ymq.gif', '');
 				$(_data).find('#resutlTbody tr').each(function(idx, elm){
-					console.log(elm);
+					var _elm = $(elm).find("td");
+					var _fund = {
+						sort 			: _elm.eq(1).text().trim(),
+						fundcode 	: _elm.eq(2).find("a:eq(0)").text().trim(),
+						fundname 	: _elm.eq(3).find("a:eq(0)").text().trim()
+					};
+					switch (key){
+						case 'day':
+							_fund['rate'] = _elm.eq(6).text().trim();
+							break;
+						case 'month':
+							_fund['rate'] = _elm.eq(7).text().trim();
+							break;
+					}
+					shumiObj[key].push(_fund);
 				});
-				// var ln = $('#resutlTbody tr', _data).length;
-				// console.log(ln);
 				df.resolve();
 			});
 		});
+		_df.next(function(){console.log(obj);});
 		_df.go();
 	}
 	shumiGet(obj);
+
+
 
 }()

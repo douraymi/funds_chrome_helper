@@ -1,4 +1,5 @@
 module.exports = function(){
+	console.log("in test");
 	C.ng('html/test.html', appController);
 
 	function appController($scope){
@@ -54,8 +55,8 @@ module.exports = function(){
 		// });
 
 		newdef.next(function(){
-			return C.html("http://www.xxx.com", function(data, df){
-				console.log(data);
+			return C.html("http://www.baidu.com", function(data, df){
+				console.log("OK html");
 				df.resolve();
 			});
 		})

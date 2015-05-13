@@ -99,12 +99,40 @@ module.exports = function(){
 					$.when(func.apply(func, args) ).done(lp);
 				}
 			}
+			this.loopFm = function(arr, lp){
+				return function(){
+					console.log("in loopFm");
+					// $.when.apply($.when, arr).done(lp);
+					// $.when(arr[0]()).done(lp);
+					$.when(arr).done(lp);
+				}
+			}
 			this.next = function(){
 				tempAry.push(arguments);
 			}
 			this.go = function(){
 				for (var i = tempAry.length - 1; i >= 0; i--) {
-					this.loop = this.loopF(tempAry[i], this.loop);
+					var arr = Array.prototype.slice.call(tempAry[i]);
+					var _isLoopFm = true;
+					for(var j=0; j<arr.length; j++){
+						if(!_.isFunction(arr[j])){
+							_isLoopFm = false;
+							break;
+						}
+					}
+					// _.each(arr, function(val, key){
+					// 	if(!_.isFunction(val)){
+					// 		_isLoopFm = false;
+					// 		break;
+					// 	}
+					// });
+					if(_isLoopFm){
+						console.log("_isLoopFm:", 1);
+						this.loop = this.loopFm(arr, this.loop);
+					}else{
+						console.log("_isLoopFm:", 2);
+						this.loop = this.loopF(tempAry[i], this.loop);
+					}
 				};
 				if(_.isFunction(this.loop)) this.loop();
 			}
