@@ -2,7 +2,7 @@
 // for this url page
 
 module.exports = function(){
-	// console.log("my_fund");
+	console.log("my_fund");
 	C.css('css/part/fund123_my_fund.css');
 	C.ng('html/part/fund123_my_fund.html', appController);
 
@@ -133,9 +133,7 @@ module.exports = function(){
 			var today = new Date();
 			if(item && item.date===today.toDateString() && item.redeemTr){
 				// redeemTr渲染
-				_.each(item.redeemTr, function(parentid){
-					$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
-				});
+				redeemClass(item.redeemTr);
 			}else{
 				var newItem = {
 					todayRedeem:{
@@ -151,7 +149,19 @@ module.exports = function(){
 			// console.log("changes:", changes);
 		});
 
+		function redeemClass(redeemTrAry){
+			_.each(redeemTrAry, function(parentid){
+				$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
+			});
+		}
 
+		$("#OpenTable").bind("DOMNodeInserted", function(elm){
+			if(elm.target.id == "m_Table_open" ){
+				C.storage.get('todayRedeem', function(items){
+					if(items.todayRedeem && items.todayRedeem.redeemTr) redeemClass(items.todayRedeem.redeemTr);
+				});
+			}
+		})
 
 
 	}

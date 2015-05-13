@@ -59,7 +59,33 @@ module.exports = function(){
 				console.log("OK html");
 				df.resolve();
 			});
+		}, function(){
+			return C.html("http://fund.eastmoney.com/", function(data, df){
+				console.log("OK html");
+				df.resolve();
+			});
+		}, function(){
+			return C.html("http://www.163.com", function(data, df){
+				console.log("OK html");
+				df.resolve();
+			});
+		}, function(){
+			return C.html("http://www.kuqin.com/", function(data, df){
+				console.log("OK html");
+				df.resolve();
+			});
+		}, function(){
+			return C.html("http://www.cnblogs.com/", function(data, df){
+				console.log("OK html");
+				df.resolve();
+			});
+		}, function(){
+			return C.html("http://aijezdm915.iteye.com/", function(data, df){
+				console.log("OK html");
+				df.resolve();
+			});
 		})
+
 
 		for(var i = 1; i < 5; i++){
 			newdef.next(dfFunc, i);

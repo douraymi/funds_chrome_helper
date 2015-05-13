@@ -91,20 +91,21 @@ module.exports = function(){
 	  },
 	  df : function(){
 			var tempAry = [];
-			this.loop = undefined;
-			this.loopF = function(args, lp){
+			var loop = undefined;
+			var loopF = function(args, lp){
 				var func = args[0];
 				Array.prototype.shift.call(args);
 				return function(){
 					$.when(func.apply(func, args) ).done(lp);
 				}
 			}
-			this.loopFm = function(arr, lp){
+			var loopFm = function(arr, lp){
 				return function(){
-					console.log("in loopFm");
-					// $.when.apply($.when, arr).done(lp);
-					// $.when(arr[0]()).done(lp);
-					$.when(arr).done(lp);
+					var _arr = [];
+					_.each(arr, function(val){
+						_arr.push(val());
+					});
+					$.when.apply($.when, _arr).done(lp);
 				}
 			}
 			this.next = function(){
@@ -120,21 +121,13 @@ module.exports = function(){
 							break;
 						}
 					}
-					// _.each(arr, function(val, key){
-					// 	if(!_.isFunction(val)){
-					// 		_isLoopFm = false;
-					// 		break;
-					// 	}
-					// });
 					if(_isLoopFm){
-						console.log("_isLoopFm:", 1);
-						this.loop = this.loopFm(arr, this.loop);
+						loop = loopFm(arr, loop);
 					}else{
-						console.log("_isLoopFm:", 2);
-						this.loop = this.loopF(tempAry[i], this.loop);
+						loop = loopF(tempAry[i], loop);
 					}
 				};
-				if(_.isFunction(this.loop)) this.loop();
+				if(_.isFunction(loop)) loop();
 			}
 			return this;
 		},
