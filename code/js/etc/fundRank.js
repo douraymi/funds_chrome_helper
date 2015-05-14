@@ -28,14 +28,14 @@ module.exports = function(){
 	};
 
 	var obj = {shumi:{}, tt:{}};
-
+	var fakeImg = C.chromeUrl('/images/favicon.png');
 	// shumi处理程序
 	function shumiGet(shumiObj){
 		var shumiDf = C.df();
 		_.each(shumiUrl, function(val, key){
 			shumiObj[key] = [];
 			shumiDf.next(C.html, val, function(data, _df){
-				data = data.replace('http://gg.fund123.cn/UploadFiles/20150302/ymq.gif', '');
+				data = data.replace(/http:\/\/\S+(\.(png|jpg|jpeg|gif))/g, fakeImg);
 				$(data).find('#resutlTbody tr').each(function(idx, elm){
 					var _elm = $(elm).find("td");
 					var _fund = {
@@ -111,9 +111,7 @@ module.exports = function(){
 			function checkdtOk(fundObj, loopDf){
 				return C.html('http://fund.fund123.cn/html/'+fundObj.fundcode+'/index.html', function(data, _df){
 					var checkDf = loopDf? loopDf: _df;
-					data = data.replace('http://hqqd.fund123.cn/ev/big_pt/000988.png', '');
-					data = data.replace('http://hqqd.fund123.cn/fm/single/000988%e4%b8%81%e6%9d%b0%e4%ba%ba.png', '');
-					data = data.replace('http://inc.fund123.cn/companys/manager/%e4%b8%81%e6%9d%b0%e4%ba%ba.jpg', '');
+					data = data.replace(/http:\/\/\S+(\.(png|jpg|jpeg|gif))/g, fakeImg);
 					var eq = $(data).find("div.zhetwo span:eq(2)").text().trim();
 					if(eq=="开放"){
 						fundObj.dtOk = true;
