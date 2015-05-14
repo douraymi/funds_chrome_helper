@@ -21,77 +21,67 @@ module.exports = function(){
 			// return df.promise();
 		}
 
-		// var defler = function(){
-		// 	var tempAry = [];
-		// 	this.loop = undefined;
-		// 	this.loopF = function(args, lp){
-		// 		var func = args[0];
-		// 		Array.prototype.shift.call(args);
-		// 		return function(){
-		// 			$.when(func.apply(func, args) ).done(lp);
-		// 		}
-		// 	}
-		// 	this.next = function(){
-		// 		tempAry.push(arguments);
-		// 	}
-		// 	this.go = function(){
-		// 		for (var i = tempAry.length - 1; i >= 0; i--) {
-		// 			this.loop = this.loopF(tempAry[i], this.loop);
-		// 		};
-		// 		if(_.isFunction(this.loop)) this.loop();
-		// 	}
-		// 	return this;
+		// var newdef = C.df();
+
+		// for(var i = 1; i < 3; i++){
+		// 	newdef.next(dfFunc, i);
 		// }
 
-		var newdef = C.df();
-
-		for(var i = 1; i < 3; i++){
-			newdef.next(dfFunc, i);
-		}
-
 		// newdef.next(C.html, "http://www.baidu.com", function(data, df){
-		// 	console.log(data);
+		// 	console.log("FMFMFMFM");
 		// 	df.resolve();
 		// });
 
-		newdef.next(function(){
-			return C.html("http://www.baidu.com", function(data, df){
-				console.log("OK html");
-				df.resolve();
-			});
-		}, function(){
-			return C.html("http://fund.eastmoney.com/", function(data, df){
-				console.log("OK html");
-				df.resolve();
-			});
-		}, function(){
-			return C.html("http://www.163.com", function(data, df){
-				console.log("OK html");
-				df.resolve();
-			});
-		}, function(){
-			return C.html("http://www.kuqin.com/", function(data, df){
-				console.log("OK html");
-				df.resolve();
-			});
-		}, function(){
-			return C.html("http://www.cnblogs.com/", function(data, df){
-				console.log("OK html");
-				df.resolve();
-			});
-		}, function(){
-			return C.html("http://aijezdm915.iteye.com/", function(data, df){
-				console.log("OK html");
-				df.resolve();
-			});
-		})
+		// newdef.next(function(){
+		// 	return C.html("http://www.baidu.com", function(data, df){
+		// 		console.log("OK html");
+		// 		df.resolve();
+		// 	});
+		// }, function(){
+		// 	return C.html("http://fund.eastmoney.com/", function(data, df){
+		// 		console.log("OK html");
+		// 		df.resolve();
+		// 	});
+		// }, function(){
+		// 	return C.html("http://www.163.com", function(data, df){
+		// 		console.log("OK html");
+		// 		df.resolve();
+		// 	});
+		// }, function(){
+		// 	return C.html("http://www.kuqin.com/", function(data, df){
+		// 		console.log("OK html");
+		// 		df.resolve();
+		// 	});
+		// }, function(){
+		// 	return C.html("http://www.cnblogs.com/", function(data, df){
+		// 		console.log("OK html");
+		// 		df.resolve();
+		// 	});
+		// }, function(){
+		// 	return C.html("http://aijezdm915.iteye.com/", function(data, df){
+		// 		console.log("OK html");
+		// 		df.resolve();
+		// 	});
+		// })
 
 
-		for(var i = 1; i < 5; i++){
-			newdef.next(dfFunc, i);
-		}
+		// for(var i = 1; i < 5; i++){
+		// 	newdef.next(dfFunc, i);
+		// }
 
-		newdef.go();
+		// newdef.go();
+
+
+		// var df = $.Deferred();
+		// console.log(df);
+		// console.log("====================================");
+		// console.log("(1)", dfFunc(12).state === df.state);
+		// console.log("(2)", dfFunc(12).state == df.state);
+
+
+
+
+
 
 		// C.html("http://www.baidu.com", function(data){
 		// 	console.log(data);

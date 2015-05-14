@@ -90,6 +90,7 @@ module.exports = function(){
 	  	return _df;
 	  },
 	  df : function(){
+	  	var self = this;
 			var tempAry = [];
 			var loop = undefined;
 			var loopF = function(args, lp){
@@ -110,6 +111,7 @@ module.exports = function(){
 			}
 			this.next = function(){
 				tempAry.push(arguments);
+				return self;
 			}
 			this.go = function(){
 				for (var i = tempAry.length - 1; i >= 0; i--) {
