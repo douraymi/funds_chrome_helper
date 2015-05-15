@@ -21,16 +21,28 @@ module.exports = function(){
 			// return df.promise();
 		}
 
-		// var newdef = C.df();
+		var newdef = C.df();
 
 		// for(var i = 1; i < 3; i++){
 		// 	newdef.next(dfFunc, i);
 		// }
 
-		// newdef.next(C.html, "http://www.baidu.com", function(data, df){
-		// 	console.log("FMFMFMFM");
-		// 	df.resolve();
-		// });
+		newdef.next(C.html, "http://market.fund123.cn/", function(data, df){
+			if(data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
+				console.log("pause");
+			}else if(data.indexOf("<b>定投：</b><span>开放</span>")>-1){
+				console.log("goon");
+			}else{
+				console.log("null");
+			}
+			// if(data.match('<b>定投：</b><span>暂停</span>')){
+			// 	console.log(data.match('<b>定投：</b><span>暂停</span>'));
+			// }else if(data.match('<b>定投：</b><span>开放</span>')){
+			// 	console.log(data.match('<b>定投：</b><span>开放</span>'));
+			// }
+			// console.log(data);
+			df.resolve();
+		});
 
 		// newdef.next(function(){
 		// 	return C.html("http://www.baidu.com", function(data, df){
@@ -69,7 +81,7 @@ module.exports = function(){
 		// 	newdef.next(dfFunc, i);
 		// }
 
-		// newdef.go();
+		newdef.go();
 
 
 		// var df = $.Deferred();

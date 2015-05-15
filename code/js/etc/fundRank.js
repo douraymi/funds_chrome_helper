@@ -1,20 +1,24 @@
 // 获取数据
 
-module.exports = function(){
+module.exports = function($scope){
 	console.log("fundRank");
-	// C.storage.ngBind($scope, "today_dt", function(item){
-	// 	var today = new Date();
-	// 	if(item && item.date===today.toDateString()){
-	// 	}else{
-	// 		var newItem = {	today_dt:{	date : today.toDateString(), ranking : {
-	// 			shumi : {},
-	// 			tt : {}
-	// 		} }	};
-	// 		C.storage.remove('today_dt');
-	// 		C.storage.set(newItem);
-	// 	}
-	// }, function(changes){
-	// });
+	if(!$scope) throw "need $scope!";
+	C.storageL.ngBind($scope, "today_dt", function(item){
+		var today = new Date();
+		if(item && item.date===today.toDateString()){
+		}else{
+			var newItem = {	today_dt:{	date : today.toDateString(), ranking : {
+				shumi : {},
+				tt : {}
+			} }	};
+			todayDtNgBind(newItem.today_dt.ranking, function(){
+				console.log(newItem.today_dt);
+				C.storage.remove('today_dt');
+				C.storage.set(newItem);
+			});
+		}
+	}, function(changes){
+	});
 	
 	// 外端每日数据处理
 	var shumiUrl = {
@@ -27,7 +31,6 @@ module.exports = function(){
 		month: 'http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&ft=gp&sd=&ed=&sc=1y&st=desc&pi=1&pn=20&zf=diy&sh=list&rnd='+_.random(0, 1)
 	};
 
-	var obj = {shumi:{}, tt:{}};
 	var fakeImg = C.chromeUrl('/images/favicon.png');
 	// shumi处理程序
 	function shumiGet(shumiObj){
@@ -97,51 +100,53 @@ module.exports = function(){
 		return defer;
 	}
 
-	C.df()
-	.next(
-		function(){
-			return shumiGet(obj.shumi);
-		}, 
-		function(){
-			return ttGet(obj.tt);
-		}
-	)
-	.next(
-		function(){
-			function checkdtOk(fundObj, loopDf){
-				return C.html('http://fund.fund123.cn/html/'+fundObj.fundcode+'/index.html', function(data, _df){
-					var checkDf = loopDf? loopDf: _df;
-					data = data.replace(/http:\/\/\S+(\.(png|jpg|jpeg|gif))/g, fakeImg);
-					var eq = $(data).find("div.zhetwo span:eq(2)").text().trim();
-					if(eq=="开放"){
-						fundObj.dtOk = true;
-						checkDf.resolve();
-					}else if(eq=="暂停"){
-						fundObj.dtOk = false;
-						checkDf.resolve();
-					}else{
-						checkdtOk(fundObj, checkDf);
-					}
-				});
+	// ngbind处理程序
+	function todayDtNgBind(rankingData, callback){
+		C.df()
+		.next(
+			function(){
+				return shumiGet(rankingData.shumi);
+			}, 
+			function(){
+				return ttGet(rankingData.tt);
 			}
-			var ehDf = C.df();
-			_.each(obj, function(vi){
-				_.each(vi, function(vj){
-					_.each(vj, function(vk){
-						ehDf.next(checkdtOk, vk);
+		)
+		.next(
+			function(){
+				function checkdtOk(fundObj, loopDf){
+					return C.html('http://fund.fund123.cn/html/'+fundObj.fundcode+'/index.html', function(data, _df){
+						var checkDf = loopDf? loopDf: _df;
+						if(data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
+							fundObj.dtOk = false;
+							checkDf.resolve();
+						}else if(data.indexOf("<b>定投：</b><span>开放</span>")>-1){
+							fundObj.dtOk = true;
+							checkDf.resolve();
+						}else{
+							checkdtOk(fundObj, checkDf);
+						}
+					});
+				}
+				var ehDf = C.df();
+				_.each(rankingData, function(vi){
+					_.each(vi, function(vj){
+						_.each(vj, function(vk){
+							ehDf.next(checkdtOk, vk);
+						});
 					});
 				});
-			});
-			var defer = $.Deferred();
-			ehDf.next(function(){defer.resolve();}).go();
-			return defer;
-		}
-	)
-	.next(
-		function(){
-			console.log(obj);
-		}
-	)
-	.go();
+				var defer = $.Deferred();
+				ehDf.next(function(){defer.resolve();}).go();
+				return defer;
+			}
+		)
+		.next(
+			function(){
+				callback();
+			}
+		)
+		.go();
+	}
 
-}()
+
+}

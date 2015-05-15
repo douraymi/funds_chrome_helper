@@ -149,12 +149,12 @@ module.exports = function(){
 		}, function(changes){
 		});
 
+		// 处理排名数据
+		require('../etc/fundRank')($scope);
 		
 
 	}
 
 
-	// 处理排名数据
-	require('../etc/fundRank');
 
 }();

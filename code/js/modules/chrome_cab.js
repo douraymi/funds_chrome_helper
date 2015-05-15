@@ -190,10 +190,56 @@ module.exports = function(){
 			this.clear = function(callback){
 				chrome.storage.sync.clear(callback);
 			}
-
+			return this;
+		}(),
+		storageL : function(){
+			this.set = function(items, callback){
+				chrome.storage.local.set(items, callback);
+			};
+			this.get = function(keys, callback){
+				chrome.storage.local.get(keys, callback);
+			};
+			this.onChange = function(listenerObj){
+				var _obj = cab.OBJnw(listenerObj);
+				_.each(_obj, function(func, key){
+					chrome.storage.onChanged.addListener(func);		
+				});
+			};
+			this.rmChange = function(listenerObj){
+				var _obj = cab.OBJnw(listenerObj);
+				_.each(_obj, function(func, key){
+					chrome.storage.onChanged.removeListener(func);		
+				});
+			};
+			this.ngBind = function(scope, storageKey, callback, optionOnChange){
+				this.get(storageKey, function(items){
+					if(items[storageKey]){
+						scope.$apply(function(){
+							scope[storageKey] = items[storageKey];
+						});
+						if(callback) callback(items[storageKey]);					
+					}else{
+						if(callback) callback();
+					}
+				});
+				this.onChange(function(changes){
+					if(changes[storageKey]){
+						scope.$apply(function(){
+							scope[storageKey] = changes[storageKey].newValue;
+						});
+					}
+				});
+				if(optionOnChange) this.onChange(optionOnChange);
+			};
+			this.remove = function(keys, callback){
+				chrome.storage.local.remove(keys, callback);
+			}
+			this.clear = function(callback){
+				chrome.storage.local.clear(callback);
+			}
 			return this;
 		}()
-
+		
 	}
 
 	return cab;
