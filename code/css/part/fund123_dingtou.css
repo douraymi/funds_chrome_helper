@@ -18,10 +18,16 @@ body>.shumi-kefu, body>.shumi-baiba {
 
 #grf_main {
 	z-index: 10000;
-  	position: fixed;
-  	top: 40px;
-  	left: 10px;
-	width: 300px;
+  position: fixed;
+  top: 40px;
+  left: 10px;
+	width: 360px;
+}
+
+.scrollPan {
+	overflow:	scroll;
+	height:	260px;
+	padding-right: 5px;
 }
 
 .hight_light {
