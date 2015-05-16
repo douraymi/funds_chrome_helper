@@ -3,6 +3,7 @@
 // 判断是否成功,如果成功通过message回传
 
 module.exports = function(){
+	console.log("dingtou_genggai");
 	var _url = new URI();
 	_url.hasQuery("a", function(val){
 		if(val=='A'){

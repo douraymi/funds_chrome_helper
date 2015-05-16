@@ -12,23 +12,10 @@ module.exports = function(){
 			exchangeDaily 		: 1000
 		}
 
-		// reload列表预处理
-		$("#return-list").bind("DOMNodeInserted", function(elm){
-			if(elm.target.className == "NewTable30"){
-				// 统计金额
-				$scope.buyAmountNow = 0;	// 统计现月投资
-				$(".NewTable30 tbody tr[status=status0]").each(function(i){
-					var _period = $(this).find("td:eq(4)").text().trim();
-					var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
-					$scope.buyAmountNow += calr(_period, _money);
-				});
+		// 恢复A链接事件
+		function addDt(){
 
-				// 暂停A链接处理
-				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
-
-				$scope.$apply();
-			}
-		})
+		}
 
 		// 暂停A链接事件
 		function zanting(){
@@ -80,19 +67,6 @@ module.exports = function(){
 			var _length = $(".NewTable30 tbody tr[status="+status+"]").length;
 			var _random = _.random(0, _length-1);
 			$(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0)).find("a:contains('暂停')").click(zanting);
-		}
-		
-		// 暂停定投控件
-		$scope.dingTouPause = function(){
-			$scope.randomContine = "status0";
-			// $(".rectitle li:contains('正常')").trigger("click");
-			$(".rectitle li[status=0]").trigger("click");
-			randomSelect("status0");
-		}
-
-		// 客服控件
-		$scope.kefu = function(){
-			$("body>.shumi-kefu").css('display')=='none'? $("body>.shumi-kefu").css('display', 'block') : $("body>.shumi-kefu").css('display', 'none');
 		}
 
 		// 原网站的刷新脚本
@@ -152,6 +126,63 @@ module.exports = function(){
 		// 处理排名数据
 		require('../etc/fundRank')($scope);
 		
+		// 处理scope	
+		// 暂停定投控件
+		$scope.dingTouPause = function(){
+			$scope.randomContine = "status0";
+			// $(".rectitle li:contains('正常')").trigger("click");
+			$(".rectitle li[status=0]").trigger("click");
+			randomSelect("status0");
+		}
+		// 客服控件
+		$scope.kefu = function(){
+			$("body>.shumi-kefu").css('display')=='none'? $("body>.shumi-kefu").css('display', 'block') : $("body>.shumi-kefu").css('display', 'none');
+		}
+		// 定投button
+		$scope.toDt = function(fundcode){
+			var thsCodeTr = ".NewTable30 tbody tr[status='status1']:contains('"+fundcode+"')";
+			var _len = $(thsCodeTr).length;
+			if(_len>0){
+				$(".rectitle li:contains('暂停')").trigger("click");
+				$(".NewTable30 tbody tr").removeClass("hight_light");
+				$(thsCodeTr).each(function(i){
+					$(this).addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
+				});
+			}else{
+				var _url = 'https://trade.fund123.cn/Trade/RegularInvestment/ai?fundCode='+fundcode;
+				window.open(_url, '_blank');
+				// chrome.tabs.create({
+			 //    url:_url
+			 //  }, function(tab){
+			 //  	console.log(tab);
+			 //  });
+			}
+
+		}
+
+		// 处理DOM
+		// reload列表预处理
+		$("#return-list").bind("DOMNodeInserted", function(elm){
+			if(elm.target.className == "NewTable30"){
+				// 统计金额
+				$scope.buyAmountNow = 0;	// 统计现月投资
+				$(".NewTable30 tbody tr[status=status0]").each(function(i){
+					var _period = $(this).find("td:eq(4)").text().trim();
+					var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
+					$scope.buyAmountNow += calr(_period, _money);
+				});
+
+				// 暂停A链接处理
+				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
+				$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
+
+				$scope.$apply();
+			}
+		})
+		// 改变collapse高度以scroll
+		$('#collapseTwo').on('shown.bs.collapse', function () {
+		  $("#collapseTwo").height($(window).height()/2.2);
+		})
 
 	}
 
