@@ -25,7 +25,9 @@ body>.shumi-kefu, body>.shumi-baiba {
 }
 
 .scrollPan {
-	overflow:	scroll;
+	/*overflow:	scroll;*/
+	overflow-x: visible;
+	overflow-x: scroll;
 	height:	260px;
 	padding-right: 5px;
 }
