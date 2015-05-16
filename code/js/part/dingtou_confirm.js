@@ -8,12 +8,17 @@ module.exports = function(){
 	_url.hasQuery("a", function(val){
 		if(val=='A'){
 			// 从暂停到打开
+			_url.hasQuery('xyh', function(_xyh){
+				console.log("_xyh:", _xyh);
+				M.connect('dt_confirm', _xyh+"_dtgo", function(tn){
+					// 通过检测通道关闭事件触发动作
+				});
+			});
 		}else if(val=='P'){
 			// 从打开到暂停
 			_url.hasQuery('xyh', function(_xyh){
-				M.connect('dt_confirm', _xyh+"_dt", function(tn){
+				M.connect('dt_confirm', _xyh+"_dtzt", function(tn){
 					// 通过检测通道关闭事件触发动作
-					// tn.send({type:"confirm", code:"zanting", body:{isOk:true}});
 				});
 			});
 		}

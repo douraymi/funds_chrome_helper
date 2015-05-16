@@ -11,17 +11,46 @@ module.exports = function(){
 			buyMonthlyAmount 	: 20000,
 			exchangeDaily 		: 1000
 		}
+		// 处理排名数据
+		require('../etc/fundRank')($scope);		
+		// localStorage方式统计当天定投情况
+		C.storage.ngBind($scope, "today_zanting", function(item){
+			var today = new Date();
+			if(item && item.date===today.toDateString()){
+			}else{
+				var newItem = {	today_zanting:{	date : today.toDateString(), zantingAmount : 0}	};
+				C.storage.remove('today_zanting');
+				C.storage.set(newItem);
+			}
+		}, function(changes){
+		});
 
 		// 恢复A链接事件
 		function addDt(){
-
-		}
-
-		// 暂停A链接事件
-		function zanting(){
+			console.log("in addDt");
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
-				M.connect("dingtou", _xyh+"_dt", function(tunnel){
+				console.log("_xyh:", _xyh);
+				M.connect("dingtou", _xyh+"_dtgo", function(tunnel){
+					tunnel.onClose.addListener(function(){
+						reloadList(function(){
+							$(".rectitle li[status='']").trigger("click");
+							if($scope.randomContine=="status1"){
+								$(".rectitle li[status=1]").trigger("click");
+								randomSelect("status1");
+							}
+						});
+						tunnel.close();
+					});
+				});
+			});
+		}
+		// 暂停A链接事件
+		function zanting(){
+			console.log("in zanting");
+			var _url = new URI($(this).attr('href'));
+			_url.hasQuery('xyh', function(_xyh){
+				M.connect("dingtou", _xyh+"_dtzt", function(tunnel){
 					tunnel.onClose.addListener(function(){
 						var buyAmountNow_tmp = $scope.buyAmountNow;
 						reloadList(function(){
@@ -41,8 +70,7 @@ module.exports = function(){
 					});
 				});
 			});
-		}		
-
+		}
 		// 周期金额计算
 		function calr(period, money){
 			var _money = 0;
@@ -60,15 +88,19 @@ module.exports = function(){
 			}
 			return _money;
 		}
-
 		// 随机选择一行定投操作对象 status0:正常 status1:暂停 status2:终止
 		function randomSelect(status){
 			$(".NewTable30 tbody tr").removeClass("hight_light");
 			var _length = $(".NewTable30 tbody tr[status="+status+"]").length;
 			var _random = _.random(0, _length-1);
-			$(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0)).find("a:contains('暂停')").click(zanting);
+			var _trObj = $(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
+			fixA(_trObj);
 		}
-
+		function fixA(trObj){
+			trObj.find("a:contains('暂停')").click(zanting);
+			trObj.find("a:contains('恢复')").click(addDt);
+			trObj.find("a:contains('更改')").click(addDt);
+		}
 		// 原网站的刷新脚本
 		function reloadList(callback){
 			$('#return-list').html('<div class="alert alert-info" role="alert"><strong>加载中!</strong><span> 请稍等 ... </span></div>');
@@ -111,32 +143,24 @@ module.exports = function(){
 	    });
 		}
 
-		// localStorage方式统计当天定投情况
-		C.storage.ngBind($scope, "today_zanting", function(item){
-			var today = new Date();
-			if(item && item.date===today.toDateString()){
-			}else{
-				var newItem = {	today_zanting:{	date : today.toDateString(), zantingAmount : 0}	};
-				C.storage.remove('today_zanting');
-				C.storage.set(newItem);
-			}
-		}, function(changes){
-		});
-
-		// 处理排名数据
-		require('../etc/fundRank')($scope);
-		
 		// 处理scope	
-		// 暂停定投控件
+		// 客服控件
+		$scope.kefu = function(){
+			$("body>.shumi-kefu").css('display')=='none'? $("body>.shumi-kefu").css('display', 'block') : $("body>.shumi-kefu").css('display', 'none');
+		}
+		// 随机开启定投控件
+		$scope.dingTouGo = function(){
+			$scope.randomContine = "status1";
+			// $(".rectitle li:contains('正常')").trigger("click");
+			$(".rectitle li[status=1]").trigger("click");
+			randomSelect("status1");			
+		}
+		// 随机暂停定投控件
 		$scope.dingTouPause = function(){
 			$scope.randomContine = "status0";
 			// $(".rectitle li:contains('正常')").trigger("click");
 			$(".rectitle li[status=0]").trigger("click");
 			randomSelect("status0");
-		}
-		// 客服控件
-		$scope.kefu = function(){
-			$("body>.shumi-kefu").css('display')=='none'? $("body>.shumi-kefu").css('display', 'block') : $("body>.shumi-kefu").css('display', 'none');
 		}
 		// 定投button
 		$scope.toDt = function(fundcode){
@@ -146,16 +170,21 @@ module.exports = function(){
 				$(".rectitle li:contains('暂停')").trigger("click");
 				$(".NewTable30 tbody tr").removeClass("hight_light");
 				$(thsCodeTr).each(function(i){
-					$(this).addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
+					var _trObj = $(this).addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
+					fixA(_trObj);
 				});
 			}else{
+				M.connect("dingtou", fundcode+"_dtgo", function(tunnel){
+					tunnel.onClose.addListener(function(){
+						console.log("from toDt");
+						reloadList(function(){
+							$(".rectitle li[status='']").trigger("click");
+						});
+						tunnel.close();
+					});
+				});
 				var _url = 'https://trade.fund123.cn/Trade/RegularInvestment/ai?fundCode='+fundcode;
 				window.open(_url, '_blank');
-				// chrome.tabs.create({
-			 //    url:_url
-			 //  }, function(tab){
-			 //  	console.log(tab);
-			 //  });
 			}
 
 		}
@@ -175,13 +204,14 @@ module.exports = function(){
 				// 暂停A链接处理
 				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
 				$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
+				$(".NewTable30 tbody tr a:contains('更改')").click(addDt);
 
 				$scope.$apply();
 			}
 		})
 		// 改变collapse高度以scroll
-		$('#collapseTwo').on('shown.bs.collapse', function () {
-		  $("#collapseTwo").height($(window).height()/2.2);
+		$('.scrollPan').on('shown.bs.collapse', function () {
+		  $(this).height($(window).height()/2.2);
 		})
 
 	}

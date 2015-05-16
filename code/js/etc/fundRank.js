@@ -75,7 +75,7 @@ module.exports = function($scope){
 				_.each(jData, function(v, k){
 					var vAry = v.split(",");
 					var _fund = {
-						sort 			: k,
+						sort 			: k+1,
 						fundcode 	: vAry[0],
 						fundname 	: vAry[1]
 					};

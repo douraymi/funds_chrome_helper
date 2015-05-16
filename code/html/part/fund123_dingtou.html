@@ -59,9 +59,9 @@
 		    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 		      <div class="panel-body">
 						<div class="btn-group btn-group" role="group" aria-label="...">
-							 	<button type="button" class="btn btn-default" ng-click="dingTouPause()">暂停</button>
-							  <button type="button" class="btn btn-default" ng-click="randomRedeem(5000)">5000</button>
-							  <button type="button" class="btn btn-default" ng-click="test()">kefu</button>
+							 	<button type="button" class="btn btn-default" ng-click="dingTouPause()">随机暂停</button>
+							  <button type="button" class="btn btn-default" ng-click="dingTouGo()">随机开启</button>
+							  <button type="button" class="btn btn-default" ng-click="test()">test</button>
 						</div>
 		      </div>
 		    </div>
@@ -70,7 +70,7 @@
 		    <div class="panel-heading" role="tab" id="headingTwo">
 		      <h4 class="panel-title">
 		        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-		          黄沙漫天
+		          数米基金
 		        </a>
 		      </h4>
 		    </div>
@@ -89,7 +89,15 @@
 						</thead>
 					  <tbody>
 					  	<tr ng-repeat="(key, value) in today_dt.ranking.shumi.day">
-					  		<td>{{value.sort}}</td>
+					  		<td>日 {{value.sort}}</td>
+					  		<td>{{value.fundcode}}</td>
+					  		<td>{{value.fundname}}</td>
+					  		<td>{{value.rate}}</td>
+					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  	</tr>
+
+					  	<tr ng-repeat="(key, value) in today_dt.ranking.shumi.month">
+					  		<td>月 {{value.sort}}</td>
 					  		<td>{{value.fundcode}}</td>
 					  		<td>{{value.fundname}}</td>
 					  		<td>{{value.rate}}</td>
@@ -103,14 +111,49 @@
 		    <div class="panel-heading" role="tab" id="headingThree">
 		      <h4 class="panel-title">
 		        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-		          韩玉青蓝
+		          天天基金
 		        </a>
 		      </h4>
 		    </div>
-		    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+		    <div id="collapseThree" class="panel-collapse collapse scrollPan" role="tabpanel" aria-labelledby="headingThree">
 		      <div class="panel-body">
-		        XXXX
 		      </div>
+		      <table class="table table-striped table-hover table-condensed">
+						<thead>
+							<tr>
+			          <th>#</th>
+			          <th>代码</th>
+			          <th>名称</th>
+			          <th>涨幅</th>
+			          <th>操作</th>
+			        </tr>
+						</thead>
+					  <tbody>
+					  	<tr ng-repeat="(key, value) in today_dt.ranking.tt.day">
+					  		<td>日 {{value.sort}}</td>
+					  		<td>{{value.fundcode}}</td>
+					  		<td>{{value.fundname}}</td>
+					  		<td>{{value.rate}}</td>
+					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  	</tr>
+
+					  	<tr ng-repeat="(key, value) in today_dt.ranking.tt.week">
+					  		<td>周 {{value.sort}}</td>
+					  		<td>{{value.fundcode}}</td>
+					  		<td>{{value.fundname}}</td>
+					  		<td>{{value.rate}}</td>
+					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  	</tr>
+
+					  	<tr ng-repeat="(key, value) in today_dt.ranking.tt.month">
+					  		<td>月 {{value.sort}}</td>
+					  		<td>{{value.fundcode}}</td>
+					  		<td>{{value.fundname}}</td>
+					  		<td>{{value.rate}}</td>
+					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  	</tr>
+					  </tbody>
+					</table>
 		    </div>
 		  </div>
 		</div>
