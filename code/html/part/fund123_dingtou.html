@@ -72,10 +72,14 @@
 		        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
 		          数米基金
 		        </a>
-		      </h4>
 		    </div>
 		    <div id="collapseTwo" class="panel-collapse collapse scrollPan" role="tabpanel" aria-labelledby="headingTwo">
 		      <div class="panel-body">
+		      	<div class="checkbox">
+			        <label>
+			          <input type="checkbox" name="shumiShowX" ng-model="shumiShowX"> 显示不可定投项
+			        </label>
+			      </div>
 		      </div>
 		      <table class="table table-striped table-hover table-condensed">
 						<thead>
@@ -88,7 +92,7 @@
 			        </tr>
 						</thead>
 					  <tbody>
-					  	<tr ng-repeat="(key, value) in today_dt.ranking.shumi.day">
+					  	<tr ng-show="value.dtOk || shumiShowX" ng-repeat="(key, value) in today_dt.ranking.shumi.day">
 					  		<td>日 {{value.sort}}</td>
 					  		<td>{{value.fundcode}}</td>
 					  		<td>{{value.fundname}}</td>
@@ -117,6 +121,11 @@
 		    </div>
 		    <div id="collapseThree" class="panel-collapse collapse scrollPan" role="tabpanel" aria-labelledby="headingThree">
 		      <div class="panel-body">
+		      	<div class="checkbox">
+			        <label>
+			          <input type="checkbox" name="ttShowX" ng-model="ttShowX"> 显示不可定投项
+			        </label>
+			      </div>
 		      </div>
 		      <table class="table table-striped table-hover table-condensed">
 						<thead>
@@ -129,7 +138,7 @@
 			        </tr>
 						</thead>
 					  <tbody>
-					  	<tr ng-repeat="(key, value) in today_dt.ranking.tt.day">
+					  	<tr ng-show="value.dtOk || ttShowX" ng-repeat="(key, value) in today_dt.ranking.tt.day">
 					  		<td>日 {{value.sort}}</td>
 					  		<td>{{value.fundcode}}</td>
 					  		<td>{{value.fundname}}</td>

@@ -9,7 +9,9 @@ module.exports = function(){
 	function appController($scope){
 		$scope.setting = {
 			buyMonthlyAmount 	: 20000,
-			exchangeDaily 		: 1000
+			exchangeDaily 		: 1000,
+			shumiShowX 				: false,
+			ttShowX 					: false
 		}
 		// 处理排名数据
 		require('../etc/fundRank')($scope);		
@@ -151,14 +153,12 @@ module.exports = function(){
 		// 随机开启定投控件
 		$scope.dingTouGo = function(){
 			$scope.randomContine = "status1";
-			// $(".rectitle li:contains('正常')").trigger("click");
 			$(".rectitle li[status=1]").trigger("click");
 			randomSelect("status1");			
 		}
 		// 随机暂停定投控件
 		$scope.dingTouPause = function(){
 			$scope.randomContine = "status0";
-			// $(".rectitle li:contains('正常')").trigger("click");
 			$(".rectitle li[status=0]").trigger("click");
 			randomSelect("status0");
 		}
@@ -211,6 +211,7 @@ module.exports = function(){
 		})
 		// 改变collapse高度以scroll
 		$('.scrollPan').on('shown.bs.collapse', function () {
+			console.log($(this));
 		  $(this).height($(window).height()/2.2);
 		})
 
