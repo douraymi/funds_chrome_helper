@@ -31,6 +31,7 @@ module.exports = function(){
 
 		// 赎回信息传递
 		function redeemTunnel(parentid, fundCode, perVal, fenE){
+			$("#TR2_"+parentid).css("display","none");
 			// 赎回出错修正
 			M.connect("my_fund", fundCode+"redeem", function(tnRedeem){
 				var redeemMsgObj = {
@@ -39,6 +40,7 @@ module.exports = function(){
 							if(msg.body.fixFenE){
 								var _newBalance = Number(fenE) - Number(msg.body.fixFenE);
 								if(_newBalance>0){
+									// $("#TR2_"+parentid).css("display","none");
 									$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
 									C.storage.get('todayRedeem', function(items){
 										var _ra = items["todayRedeem"]["redeemAmount"]+ _newBalance*1*perVal;
@@ -87,6 +89,7 @@ module.exports = function(){
 							redeemDone : {
 								onLoad : function(msg){
 									if(msg.body.isRedeemOk){
+										// $("#TR2_"+parentid).css("display","none");
 										$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
 										C.storage.get('todayRedeem', function(items){
 											var _ra = items["todayRedeem"]["redeemAmount"]+redeemQ*1*perVal;

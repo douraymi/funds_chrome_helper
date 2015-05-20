@@ -3,22 +3,6 @@
 module.exports = function($scope){
 	console.log("fundRank");
 	if(!$scope) throw "need $scope!";
-	C.storageL.ngBind($scope, "today_dt", function(item){
-		var today = new Date();
-		if(item && item.date===today.toDateString()){
-		}else{
-			var newItem = {	today_dt:{	date : today.toDateString(), ranking : {
-				shumi : {},
-				tt : {}
-			} }	};
-			todayDtNgBind(newItem.today_dt.ranking, function(){
-				console.log(newItem.today_dt);
-				C.storage.remove('today_dt');
-				C.storage.set(newItem);
-			});
-		}
-	}, function(changes){
-	});
 	
 	// 外端每日数据处理
 	var shumiUrl = {
@@ -148,5 +132,33 @@ module.exports = function($scope){
 		.go();
 	}
 
+	C.storage.ngBind($scope, "today_dt", function(item){
+		var today = new Date();
+		if(item && item.date===today.toDateString()){
+		}else{
+			C.storage.remove('today_dt');
+			var newItem = {	today_dt:{	date : today.toDateString(), ranking : {
+				shumi : {},
+				tt : {}
+			} }	};
+			todayDtNgBind(newItem.today_dt.ranking, function(){
+				console.log(newItem.today_dt);
+				C.storage.remove('today_dt');
+				C.storage.set(newItem);
+			});
+		}
+	}, function(changes){
+	});
+
+	return function(jj, pp, key){
+		C.storage.get('today_dt', function(items){
+			var _item = items.today_dt;
+			if(_item != undefined){
+				_item.ranking[jj][pp][key].doneToday = true;
+				C.storage.set({today_dt:_item});
+			}
+		});
+
+	}
 
 }

@@ -14,7 +14,8 @@ module.exports = function(){
 			ttShowX 					: false
 		}
 		// 处理排名数据
-		require('../etc/fundRank')($scope);		
+		var doRank = require('../etc/fundRank')($scope);
+
 		// localStorage方式统计当天定投情况
 		C.storage.ngBind($scope, "today_zanting", function(item){
 			var today = new Date();
@@ -26,16 +27,57 @@ module.exports = function(){
 			}
 		}, function(changes){
 		});
-
+		// 更改A链接事件
+		function changeDt(){
+			var _fundcode = $(this).parent(":eq(0)").parent(":eq(0)").find("td:eq(0)").text().trim();
+			M.connect("dingtou", _fundcode+"_dtgo", function(tunnel){
+				var doRankData;
+				tunnel.onMsg({
+					xxx : {
+						xxx : function(msg){
+							doRankData = msg.body;
+						}
+					}
+				});
+				tunnel.onClose.addListener(function(){
+						var buyAmountNow_tmp = $scope.buyAmountNow;
+					reloadList(function(){
+						if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
+							doRank(doRankData.jj, doRankData.pp, doRankData.key);
+						}
+						$(".rectitle li[status='']").trigger("click");
+						if($scope.randomContine=="status1"){
+							$(".rectitle li[status=1]").trigger("click");
+							randomSelect("status1");
+						}else if($scope.randomContine=="status0"){
+							$(".rectitle li[status=0]").trigger("click");
+							randomSelect("status0");
+						}
+					});
+					tunnel.close();
+				});
+			});
+		}
 		// 恢复A链接事件
 		function addDt(){
-			console.log("in addDt");
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
-				console.log("_xyh:", _xyh);
+				// console.log("_xyh:", _xyh);
 				M.connect("dingtou", _xyh+"_dtgo", function(tunnel){
+					var doRankData;
+					tunnel.onMsg({
+						xxx : {
+							xxx : function(msg){
+								doRankData = msg.body;
+							}
+						}
+					});
 					tunnel.onClose.addListener(function(){
+						var buyAmountNow_tmp = $scope.buyAmountNow;
 						reloadList(function(){
+							if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
+								doRank(doRankData.jj, doRankData.pp, doRankData.key);
+							}
 							$(".rectitle li[status='']").trigger("click");
 							if($scope.randomContine=="status1"){
 								$(".rectitle li[status=1]").trigger("click");
@@ -101,7 +143,7 @@ module.exports = function(){
 		function fixA(trObj){
 			trObj.find("a:contains('暂停')").click(zanting);
 			trObj.find("a:contains('恢复')").click(addDt);
-			trObj.find("a:contains('更改')").click(addDt);
+			trObj.find("a:contains('更改')").click(changeDt);
 		}
 		// 原网站的刷新脚本
 		function reloadList(callback){
@@ -163,7 +205,9 @@ module.exports = function(){
 			randomSelect("status0");
 		}
 		// 定投button
-		$scope.toDt = function(fundcode){
+		$scope.toDt = function(fundcode, jj, pp, key){
+			$scope.randomContine = '';
+			console.log(jj, pp, key);
 			var thsCodeTr = ".NewTable30 tbody tr[status='status1']:contains('"+fundcode+"')";
 			var _len = $(thsCodeTr).length;
 			if(_len>0){
@@ -175,9 +219,20 @@ module.exports = function(){
 				});
 			}else{
 				M.connect("dingtou", fundcode+"_dtgo", function(tunnel){
+					var doRankData;
+					tunnel.onMsg({
+						xxx : {
+							xxx : function(msg){
+								doRankData = msg.body;
+							}
+						}
+					});
 					tunnel.onClose.addListener(function(){
-						console.log("from toDt");
+						var buyAmountNow_tmp = $scope.buyAmountNow;
 						reloadList(function(){
+							if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
+								doRank(doRankData.jj, doRankData.pp, doRankData.key);
+							}
 							$(".rectitle li[status='']").trigger("click");
 						});
 						tunnel.close();
@@ -186,6 +241,13 @@ module.exports = function(){
 				var _url = 'https://trade.fund123.cn/Trade/RegularInvestment/ai?fundCode='+fundcode;
 				window.open(_url, '_blank');
 			}
+
+			M.connect("dingtou_2", fundcode+"_today_dt", function(tunnel){
+				tunnel.send({type:'xxx', code:'xxx', body:{jj:jj, pp:pp, key:key}});
+				tunnel.onClose.addListener(function(){
+					tunnel.close();
+				});
+			});
 
 		}
 
@@ -204,16 +266,25 @@ module.exports = function(){
 				// 暂停A链接处理
 				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
 				$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
-				$(".NewTable30 tbody tr a:contains('更改')").click(addDt);
+				$(".NewTable30 tbody tr a:contains('更改')").click(changeDt);
 
 				$scope.$apply();
 			}
 		})
 		// 改变collapse高度以scroll
 		$('.scrollPan').on('shown.bs.collapse', function () {
-			console.log($(this));
 		  $(this).height($(window).height()/2.2);
 		})
+		$('#shumiBn').click(function(){
+			var _str = "#shumiTb tr:not(.nodt):not(.doneToday)";
+			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").trigger('click');
+		});
+		$('#ttBn').click(function(){
+			var _str = "#ttTb tr:not(.nodt):not(.doneToday)";
+			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").trigger('click');
+		});
+
+
 
 	}
 

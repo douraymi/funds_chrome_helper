@@ -77,7 +77,8 @@
 		      <div class="panel-body">
 		      	<div class="checkbox">
 			        <label>
-			          <input type="checkbox" name="shumiShowX" ng-model="shumiShowX"> 显示不可定投项
+			          <input type="checkbox" name="shumiShowX" ng-model="shumiShowX"> 显示不可定投项 
+			          <button type="button" id="shumiBn">来一桶</button>
 			        </label>
 			      </div>
 		      </div>
@@ -91,21 +92,21 @@
 			          <th>操作</th>
 			        </tr>
 						</thead>
-					  <tbody>
-					  	<tr ng-show="value.dtOk || shumiShowX" ng-repeat="(key, value) in today_dt.ranking.shumi.day">
+					  <tbody id="shumiTb">
+					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.shumi.day">
 					  		<td>日 {{value.sort}}</td>
-					  		<td>{{value.fundcode}}</td>
-					  		<td>{{value.fundname}}</td>
+					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
+					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
-					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  		<td><button ng-click='toDt(value.fundcode, "shumi", "day", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-repeat="(key, value) in today_dt.ranking.shumi.month">
+					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.shumi.month">
 					  		<td>月 {{value.sort}}</td>
-					  		<td>{{value.fundcode}}</td>
-					  		<td>{{value.fundname}}</td>
+					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
+					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
-					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  		<td><button ng-click='toDt(value.fundcode, "shumi", "month", key)'>定投</button></td>
 					  	</tr>
 					  </tbody>
 					</table>
@@ -123,7 +124,8 @@
 		      <div class="panel-body">
 		      	<div class="checkbox">
 			        <label>
-			          <input type="checkbox" name="ttShowX" ng-model="ttShowX"> 显示不可定投项
+			          <input type="checkbox" name="ttShowX" ng-model="ttShowX"> 显示不可定投项 
+			          <button type="button" id="ttBn">来一桶</button>
 			        </label>
 			      </div>
 		      </div>
@@ -137,29 +139,29 @@
 			          <th>操作</th>
 			        </tr>
 						</thead>
-					  <tbody>
-					  	<tr ng-show="value.dtOk || ttShowX" ng-repeat="(key, value) in today_dt.ranking.tt.day">
+					  <tbody id="ttTb">
+					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.day">
 					  		<td>日 {{value.sort}}</td>
-					  		<td>{{value.fundcode}}</td>
-					  		<td>{{value.fundname}}</td>
+					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
+					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
-					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  		<td><button ng-click='toDt(value.fundcode, "tt", "day", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-repeat="(key, value) in today_dt.ranking.tt.week">
+					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.week">
 					  		<td>周 {{value.sort}}</td>
-					  		<td>{{value.fundcode}}</td>
-					  		<td>{{value.fundname}}</td>
+					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
+					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
-					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  		<td><button ng-click='toDt(value.fundcode, "tt", "week", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-repeat="(key, value) in today_dt.ranking.tt.month">
+					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.month">
 					  		<td>月 {{value.sort}}</td>
-					  		<td>{{value.fundcode}}</td>
-					  		<td>{{value.fundname}}</td>
+					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
+					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
-					  		<td><button ng-click='toDt(value.fundcode)'>定投</button></td>
+					  		<td><button ng-click='toDt(value.fundcode, "tt", "month", key)'>定投</button></td>
 					  	</tr>
 					  </tbody>
 					</table>

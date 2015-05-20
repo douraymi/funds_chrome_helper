@@ -34,9 +34,9 @@ body>.shumi-kefu, body>.shumi-baiba {
 .hight_light {
 	background-color: khaki !important;
 }
-.today_is_dted {
+.nodt {
 	background-color: gray !important;
 }
-.today_need_dt {
-	background-color: gray !important;
+.doneToday {
+	background-color: lightskyblue !important;
 }

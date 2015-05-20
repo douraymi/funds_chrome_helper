@@ -4,32 +4,34 @@
 
 module.exports = function(){
 	console.log("dingtou_confirm_AI");
-	var _url = new URI();
-	var has_xyh = _url.hasQuery('xyh', function(_xyh){
-		M.connect('dt_confirm_AI', _xyh+"_dtgo", function(tn){
-			// 通过检测通道关闭事件触发动作
-		});
-	});
-	if(has_xyh === false){
-		console.log("tunnel fundcode");
-		var _fundcode = $("div.dingfundname b:eq(0)").text().trim();
-		M.connect('dt_confirm_AI', _fundcode+"_dtgo", function(tn){
-			// 通过检测通道关闭事件触发动作
-		});
-	}
-	// _url.hasQuery("a", function(val){
-	// 	if(val=='A'){
-	// 		// 从暂停到打开
-	// 	}else if(val=='P'){
-	// 		// 从打开到暂停
-	// 		_url.hasQuery('xyh', function(_xyh){
-	// 			M.connect('dt_confirm', _xyh+"_dt", function(tn){
-	// 				// 通过检测通道关闭事件触发动作
-	// 				// tn.send({type:"confirm", code:"zanting", body:{isOk:true}});
-	// 			});
-	// 		});
-	// 	}
+	var _fundcode = $("div.dingfundname b:eq(0)").text().trim();
+	// var _url = new URI();
+	// var has_xyh = _url.hasQuery('xyh', function(_xyh){
+	// 	console.log("这他妈什么时候出现_xyh:", _xyh);
+	// 	// M.connect('dt_confirm_AI', _xyh+"_dtgo", function(tn){
+	// 	// 	// ?????
+			
+	// 	// });
 	// });
+	// if(has_xyh === false){
+		M.connect('dt_confirm_AI', _fundcode+"_dtgo", function(tn){
+			// 变更,新增行为
+			// 通过检测通道关闭事件触发动作
+			M.connect('dt_confirm_AI_2', _fundcode+"_today_dt", function(tn2){
+				// ranking列表记录
+				// 通过检测通道关闭事件触发动作
+				tn2.onMsg({
+					xxx : {
+						xxx : function(msg){
+							tn.send({type:'xxx', code:'xxx', body:msg.body});
+						}
+					}
+				});
+			});
+		});
+	// }
+
+	
 
 
 }()

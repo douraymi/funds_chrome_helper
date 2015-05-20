@@ -3,7 +3,7 @@
 // 判断是否成功,如果成功通过message回传
 
 module.exports = function(){
-	console.log("dingtou_done");
+	console.log("dingtou_done no Use");
 	// var _isOk = false;
 	// var _result = $("#RegularForm h3:eq(0)").text().trim();
 	// // console.log("_result:", _result);

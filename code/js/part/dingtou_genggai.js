@@ -3,17 +3,17 @@
 // 判断是否成功,如果成功通过message回传
 
 module.exports = function(){
-	console.log("dingtou_genggai");
-	var _url = new URI();
-	_url.hasQuery("a", function(val){
-		if(val=='A'){
-			// 从暂停打开
+	console.log("dingtou_genggai no Use");
+	// var _url = new URI();
+	// _url.hasQuery("a", function(val){
+	// 	if(val=='A'){
+	// 		// 从暂停打开
 
-		}else if(val=='P'){
-			// 从打开边暂停
+	// 	}else if(val=='P'){
+	// 		// 从打开边暂停
 			
-		}
-	});
+	// 	}
+	// });
 
 
 
