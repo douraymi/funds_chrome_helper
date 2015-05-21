@@ -168,16 +168,16 @@ module.exports = function(){
 				var _fenE = $("#TR_"+parentid).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
 				redeemTunnel(parentid, _code, _perVal, _fenE);
 				if(day90redeem != undefined){
-					console.log(day90redeem);
+					// console.log(day90redeem);
 					M.connect("my_fund", _code+"day90redeem", function(tn){
-						console.log("in day90redeem");
-						tn.onMsg({
-							day90redeem : {
-								tnOk : function(msg){
+						// console.log("in day90redeem");
+						// tn.onMsg({
+						// 	day90redeem : {
+						// 		tnOk : function(msg){
 									tn.send({type:"day90redeem", code:"day90redeem", body:{day90redeem: day90redeem}});
-								}
-							}
-						});
+						// 		}
+						// 	}
+						// });
 						tn.onClose.addListener(function(){
 							tn.close();
 						});
@@ -199,16 +199,18 @@ module.exports = function(){
 				var day90redeem = 0;
 				$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
 					var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.]+/g,"")*1;
-					if(_shyk > 0){
+					if(_shyk > 0 || _shyk < 0 ){
 						var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.]+/g,"")*1;
 						if(_fday > 92){
 							day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"")*1;
-						}else if(_fday>0 && _fday<90){
+						}else if(_fday>0 && _fday<=92){
 							 return false;
 						}
 					}
 				});
+				day90redeem = day90redeem>0?day90redeem:-1;
 				$(celm.target).click(function(){
+					console.log("day90redeem@@", day90redeem);
 					mainProcess($(celm.target).attr("href"), day90redeem);
 				});
 			});
