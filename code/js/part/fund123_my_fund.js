@@ -7,6 +7,38 @@ module.exports = function(){
 	C.ng('html/part/fund123_my_fund.html', appController);
 
 	function appController($scope){
+		$scope.setting = {
+			Bin 	: 30000,
+			rate	: 0.5
+		}
+
+		// localStorage方式统计当天赎回总额
+		C.storage.ngBind($scope, "todayRedeem", function(item){
+			// console.log("item:", item);
+			var today = new Date();
+			if(item && item.date===today.toDateString() && item.redeemTr){
+				// redeemTr渲染
+				redeemClass(item.redeemTr);
+			}else{
+				var newItem = {
+					todayRedeem:{
+						date 					: today.toDateString(),
+						redeemTr			: [],
+						redeemAmount 	: 0
+					}
+				};
+				C.storage.remove('todayRedeem');
+				C.storage.set(newItem);
+			}
+		}, function(changes){
+			// console.log("changes:", changes);
+		});
+
+		// scope 处理
+		// 市值-底仓与盈利 按比例赎回
+		var sj = $("#0 td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"") *1;
+		var ljsy = $("#0 td:eq(7)").find("font:eq(0)").text().trim().replace(/[^0-9\.]+/g,"") *1;
+		$scope.pfToday = C.fxNum( ((sj - ($scope.setting.Bin + ljsy)) * $scope.setting.rate) , 2);
 
 		// 根据金额随机选择 卖出基金
 		$scope.randomRedeem = function(amount){
@@ -37,6 +69,7 @@ module.exports = function(){
 				var redeemMsgObj = {
 					redeemRedeem : {
 						fix : function(msg){
+							console.log("in fix");
 							if(msg.body.fixFenE){
 								var _newBalance = Number(fenE) - Number(msg.body.fixFenE);
 								if(_newBalance>0){
@@ -120,37 +153,6 @@ module.exports = function(){
 				tnConfirm.onClose.addListener(confirmOnCloseFunc);
 			});
 		};
-		$("#a_trade_redeem").click(function(){
-			var _url = new URI($(this).attr("href"));
-			_url.hasQuery("parentid", function(parentid){
-				var _code = $("span[parentid="+parentid+"]").attr("code");
-				var _perVal = $("#TR_"+parentid).find("td:eq(1) a:eq(0)").text().trim().replace(/[^0-9\.]+/g,"");
-				var _fenE = $("#TR_"+parentid).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
-				redeemTunnel(parentid, _code, _perVal, _fenE);
-			});
-		});
-
-		// localStorage方式统计当天赎回总额
-		C.storage.ngBind($scope, "todayRedeem", function(item){
-			// console.log("item:", item);
-			var today = new Date();
-			if(item && item.date===today.toDateString() && item.redeemTr){
-				// redeemTr渲染
-				redeemClass(item.redeemTr);
-			}else{
-				var newItem = {
-					todayRedeem:{
-						date 					: today.toDateString(),
-						redeemTr			: [],
-						redeemAmount 	: 0
-					}
-				};
-				C.storage.remove('todayRedeem');
-				C.storage.set(newItem);
-			}
-		}, function(changes){
-			// console.log("changes:", changes);
-		});
 
 		function redeemClass(redeemTrAry){
 			_.each(redeemTrAry, function(parentid){
@@ -158,13 +160,69 @@ module.exports = function(){
 			});
 		}
 
+		function mainProcess(parentUrl, day90redeem){
+			var _url = new URI(parentUrl);
+			_url.hasQuery("parentid", function(parentid){
+				var _code = $("span[parentid="+parentid+"]").attr("code");
+				var _perVal = $("#TR_"+parentid).find("td:eq(1) a:eq(0)").text().trim().replace(/[^0-9\.]+/g,"");
+				var _fenE = $("#TR_"+parentid).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
+				redeemTunnel(parentid, _code, _perVal, _fenE);
+				if(day90redeem != undefined){
+					console.log(day90redeem);
+					M.connect("my_fund", _code+"day90redeem", function(tn){
+						console.log("in day90redeem");
+						tn.onMsg({
+							day90redeem : {
+								tnOk : function(msg){
+									tn.send({type:"day90redeem", code:"day90redeem", body:{day90redeem: day90redeem}});
+								}
+							}
+						});
+						tn.onClose.addListener(function(){
+							tn.close();
+						});
+					});
+				}
+			});
+			
+		}
+
+		// DOM 处理
+		$("#a_trade_redeem").click(function(){
+			mainProcess($(this).attr("href"));
+		});
+
+		function tradeLink(){
+			var _tUrl = "#m_Table_open div.opt>span.left>a:contains('赎回')";
+			$(_tUrl).bind("DOMNodeInsertedIntoDocument", function(celm){
+				// console.log(celm.target);
+				var day90redeem = 0;
+				$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
+					var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.]+/g,"")*1;
+					if(_shyk > 0){
+						var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.]+/g,"")*1;
+						if(_fday > 92){
+							day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"")*1;
+						}else if(_fday>0 && _fday<90){
+							 return false;
+						}
+					}
+				});
+				$(celm.target).click(function(){
+					mainProcess($(celm.target).attr("href"), day90redeem);
+				});
+			});
+
+		}
+		tradeLink();
 		$("#OpenTable").bind("DOMNodeInserted", function(elm){
 			if(elm.target.id == "m_Table_open" ){
 				C.storage.get('todayRedeem', function(items){
 					if(items.todayRedeem && items.todayRedeem.redeemTr) redeemClass(items.todayRedeem.redeemTr);
 				});
 			}
-		})
+			tradeLink();
+		});
 
 
 	}

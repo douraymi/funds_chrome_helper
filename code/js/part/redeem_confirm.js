@@ -1,6 +1,7 @@
 // case "https://trade.fund123.cn/Trading/Do/RedeemConfirm":
 
 module.exports = function(){
+	console.log("RedeemConfirm");
 	var _amount = $(".red").text().trim().replace(/[^0-9\.]+/g,"");
 	var _url = new URI();
 	_url.hasQuery("FundCode", function(val){

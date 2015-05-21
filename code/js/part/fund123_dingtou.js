@@ -40,7 +40,7 @@ module.exports = function(){
 					}
 				});
 				tunnel.onClose.addListener(function(){
-						var buyAmountNow_tmp = $scope.buyAmountNow;
+					var buyAmountNow_tmp = $scope.buyAmountNow;
 					reloadList(function(){
 						if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
 							doRank(doRankData.jj, doRankData.pp, doRankData.key);
@@ -91,7 +91,6 @@ module.exports = function(){
 		}
 		// 暂停A链接事件
 		function zanting(){
-			console.log("in zanting");
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
 				M.connect("dingtou", _xyh+"_dtzt", function(tunnel){
@@ -275,15 +274,10 @@ module.exports = function(){
 		$('.scrollPan').on('shown.bs.collapse', function () {
 		  $(this).height($(window).height()/2.2);
 		})
-		$('#shumiBn').click(function(){
-			var _str = "#shumiTb tr:not(.nodt):not(.doneToday)";
-			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").trigger('click');
+		$(".ranBt").click(function(){
+			var _str = "#"+$(this).attr("tag")+" tr:not(.nodt):not(.doneToday)";
+			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").click();
 		});
-		$('#ttBn').click(function(){
-			var _str = "#ttTb tr:not(.nodt):not(.doneToday)";
-			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").trigger('click');
-		});
-
 
 
 	}

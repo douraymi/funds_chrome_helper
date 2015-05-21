@@ -3,6 +3,7 @@
 // 判断是否成功,如果成功通过message回传
 
 module.exports = function(){
+	console.log("RedeemDone");
 	var _isRedeemOk = false;
 	var _result = $("#success_message").text().trim();
 	// console.log("_result:", _result);

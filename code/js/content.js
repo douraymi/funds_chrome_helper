@@ -47,11 +47,12 @@
 		case "https://trade.fund123.cn/home/agreementquery/":
 			require('./part/fund123_dingtou');
 			break;
-		// 定投-暂停或开启
+		// 暂停或开启
 		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm":
 			require('./part/dingtou_confirm');
 			break;
-		// 变更、新增－－下一步
+		// 变更、新增
+		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/normal":
 		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai":
 			require('./part/dingtou_confirm_AI');
 			break;

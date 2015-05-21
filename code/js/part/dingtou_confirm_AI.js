@@ -1,3 +1,4 @@
+// https://trade.fund123.cn/Trade/RegularInvestmentConfirm/normal
 // https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
 // 定投处理页面
 // 判断是否成功,如果成功通过message回传
