@@ -36,8 +36,8 @@ module.exports = function(){
 
 		// scope 处理
 		// 市值-底仓与盈利 按比例赎回
-		var sj = $("#0 td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"") *1;
-		var ljsy = $("#0 td:eq(7)").find("font:eq(0)").text().trim().replace(/[^0-9\.]+/g,"") *1;
+		var sj = $("#0 td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"") *1;
+		var ljsy = $("#0 td:eq(7)").find("font:eq(0)").text().trim().replace(/[^0-9\.-]+/g,"") *1;
 		$scope.pfToday = C.fxNum( ((sj - ($scope.setting.Bin + ljsy)) * $scope.setting.rate) , 2);
 
 		// 根据金额随机选择 卖出基金
@@ -49,7 +49,7 @@ module.exports = function(){
 			while(count<amount){
 				var size = $(mTb).size();
 				var mvTr = $(mTb).eq( _.random(0, size-1) ).remove();	// 随机选一行
-				count += mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"") * 1;
+				count += mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"") * 1;
 				tmpAry.push(mvTr);
 			}
 			_.each(tmpAry, function(trObj){
@@ -164,8 +164,8 @@ module.exports = function(){
 			var _url = new URI(parentUrl);
 			_url.hasQuery("parentid", function(parentid){
 				var _code = $("span[parentid="+parentid+"]").attr("code");
-				var _perVal = $("#TR_"+parentid).find("td:eq(1) a:eq(0)").text().trim().replace(/[^0-9\.]+/g,"");
-				var _fenE = $("#TR_"+parentid).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
+				var _perVal = $("#TR_"+parentid).find("td:eq(1) a:eq(0)").text().trim().replace(/[^0-9\.-]+/g,"");
+				var _fenE = $("#TR_"+parentid).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
 				redeemTunnel(parentid, _code, _perVal, _fenE);
 				if(day90redeem != undefined){
 					// console.log(day90redeem);
@@ -198,11 +198,11 @@ module.exports = function(){
 				// console.log(celm.target);
 				var day90redeem = 0;
 				$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
-					var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.]+/g,"")*1;
+					var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
 					if(_shyk > 0 || _shyk < 0 ){
-						var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.]+/g,"")*1;
+						var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,"")*1;
 						if(_fday > 92){
-							day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.]+/g,"")*1;
+							day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
 						}else if(_fday>0 && _fday<=92){
 							 return false;
 						}

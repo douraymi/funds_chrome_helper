@@ -3,7 +3,7 @@
 
 module.exports = function(){
 	console.log("Redeem");
-	var _fixFenE = $("#RedeemForm tr:eq(5) td:eq(1) b:eq(0)").text().trim().replace(/[^0-9\.]+/g,"");
+	var _fixFenE = $("#RedeemForm tr:eq(5) td:eq(1) b:eq(0)").text().trim().replace(/[^0-9\.-]+/g,"");
 	var _mini = $("#MinAmountValue").attr("minvalue")*1;
 	var _url = new URI();
 	_url.hasQuery("fundCode", function(val){
@@ -13,7 +13,7 @@ module.exports = function(){
 				day90redeem : {
 					day90redeem : function(msg){
 						console.log(msg);
-						var _day90redeem = C.fxNum(msg.body.day90redeem, 0);
+						var _day90redeem = C.fxNum(msg.body.day90redeem, 2);
 						if(_day90redeem == -1){
 							$('#ShowAmount').val(_fixFenE);
 							$('#Amount').val(_fixFenE);

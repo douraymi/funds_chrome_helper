@@ -140,7 +140,7 @@
 			        </tr>
 						</thead>
 					  <tbody id="ttTb">
-					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.day">
+					  	<tr ng-show="value.dtOk || ttShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.day">
 					  		<td>日 {{value.sort}}</td>
 					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
 					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
@@ -148,7 +148,7 @@
 					  		<td><button ng-click='toDt(value.fundcode, "tt", "day", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.week">
+					  	<tr ng-show="value.dtOk || ttShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.week">
 					  		<td>周 {{value.sort}}</td>
 					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
 					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
@@ -156,7 +156,7 @@
 					  		<td><button ng-click='toDt(value.fundcode, "tt", "week", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.month">
+					  	<tr ng-show="value.dtOk || ttShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.month">
 					  		<td>月 {{value.sort}}</td>
 					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
 					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>

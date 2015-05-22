@@ -2,7 +2,7 @@
 
 module.exports = function(){
 	console.log("RedeemConfirm");
-	var _amount = $(".red").text().trim().replace(/[^0-9\.]+/g,"");
+	var _amount = $(".red").text().trim().replace(/[^0-9\.-]+/g,"");
 	var _url = new URI();
 	_url.hasQuery("FundCode", function(val){
 		M.connect("redeemConfirm", val+"confirm", function(tn){

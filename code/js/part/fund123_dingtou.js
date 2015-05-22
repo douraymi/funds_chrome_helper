@@ -45,7 +45,8 @@ module.exports = function(){
 						if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
 							doRank(doRankData.jj, doRankData.pp, doRankData.key);
 						}
-						$(".rectitle li[status='']").trigger("click");
+						// console.log("in 111111111");
+						// $(".rectitle li[status='']").trigger("myclick.girafeee");
 						if($scope.randomContine=="status1"){
 							$(".rectitle li[status=1]").trigger("click");
 							randomSelect("status1");
@@ -78,7 +79,8 @@ module.exports = function(){
 							if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
 								doRank(doRankData.jj, doRankData.pp, doRankData.key);
 							}
-							$(".rectitle li[status='']").trigger("click");
+							// console.log("in 222222222");
+							// $(".rectitle li[status='']").trigger("myclick.girafeee");
 							if($scope.randomContine=="status1"){
 								$(".rectitle li[status=1]").trigger("click");
 								randomSelect("status1");
@@ -91,6 +93,7 @@ module.exports = function(){
 		}
 		// 暂停A链接事件
 		function zanting(){
+			console.log("in zanting");
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
 				M.connect("dingtou", _xyh+"_dtzt", function(tunnel){
@@ -103,7 +106,8 @@ module.exports = function(){
 								var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : items.today_zanting.zantingAmount}	};
 								C.storage.set(newItem);
 							});
-							$(".rectitle li[status='']").trigger("click");
+							// console.log("in 33333333");
+							// $(".rectitle li[status='']").trigger("myclick.girafeee");
 							if($scope.randomContine=="status0"){
 								$(".rectitle li[status=0]").trigger("click");
 								randomSelect("status0");
@@ -146,44 +150,33 @@ module.exports = function(){
 		}
 		// 原网站的刷新脚本
 		function reloadList(callback){
-			$('#return-list').html('<div class="alert alert-info" role="alert"><strong>加载中!</strong><span> 请稍等 ... </span></div>');
-			// 加Math.random()是为了防止缓存
-	    $('#return-list').load('/Controls/ListRations?r='+ Math.random(), {}, function () {
-	      var total = 0, normal = 0, pause = 0, hang = 0;
-	      $('#return-list table>tbody>tr').each(function (i, tr) {
-	        var statustxt = $.trim($('td:nth-child(11)', tr).text());
-	        if (statustxt == '终止') {
-	          hang += 1;
-	        } else if (statustxt == '暂停') {
-	          pause += 1;
-	        } else if (statustxt == '正常') {
-	          normal += 1;
-	        }
-	      });
-	      total = normal + pause + hang;
-	      $('b:nth-child(2)', '#recordareatongji').text(total);
-	      $('b:nth-child(4)', '#recordareatongji').text(normal);
-	      $('b:nth-child(6)', '#recordareatongji').text(pause);
-	      $('b:nth-child(8)', '#recordareatongji').text(hang);
-	      callback();
-	    });
-	    //订单状态过滤
-	    $('.ration_status').click(function () {
-	      var status = $(this).attr('status');
-	      var tbody = $('#return-list').find('tbody');
-	      if (status == "") {
-	        $('tr',tbody).show();
-	      }
-	      else {
-	        $('tr', tbody).hide();
-	        var showList = $('tr[status="status' + status + '"]', tbody);
-	        showList.show();
-	      }
-	      $('tr.nodata', tbody).hide();
-	      if ($('tr:visible', tbody).length == 0) {
-	        $('tr.nodata', tbody).show();
-	      }
-	    });
+			C.df().next(function(){
+				$('#return-list').html('<div class="alert alert-info" role="alert"><strong>加载中!</strong><span> 请稍等 ... </span></div>');
+				// 加Math.random()是为了防止缓存
+				var _df = $.Deferred();
+		    $('#return-list').load('/Controls/ListRations?r='+ Math.random(), {}, function () {
+		      var total = 0, normal = 0, pause = 0, hang = 0;
+		      $('#return-list table>tbody>tr').each(function (i, tr) {
+		        var statustxt = $.trim($('td:nth-child(11)', tr).text());
+		        if (statustxt == '终止') {
+		          hang += 1;
+		        } else if (statustxt == '暂停') {
+		          pause += 1;
+		        } else if (statustxt == '正常') {
+		          normal += 1;
+		        }
+		      });
+		      total = normal + pause + hang;
+		      $('b:nth-child(2)', '#recordareatongji').text(total);
+		      $('b:nth-child(4)', '#recordareatongji').text(normal);
+		      $('b:nth-child(6)', '#recordareatongji').text(pause);
+		      $('b:nth-child(8)', '#recordareatongji').text(hang);
+		      _df.resolve();
+		    });
+		    return _df;
+			}).next(function(){
+				callback();
+			}).go();
 		}
 
 		// 处理scope	
@@ -232,7 +225,8 @@ module.exports = function(){
 							if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
 								doRank(doRankData.jj, doRankData.pp, doRankData.key);
 							}
-							$(".rectitle li[status='']").trigger("click");
+							// console.log("in 4444444");
+							// $(".rectitle li[status='']").trigger("myclick.girafeee");
 						});
 						tunnel.close();
 					});
@@ -251,14 +245,25 @@ module.exports = function(){
 		}
 
 		// 处理DOM
+		// 用插件的reload替换原网页的
+		// $("#return-list").bind("DOMNodeInserted", function(elm){
+			
+		// 	$(".rectitle li[status='']").trigger("myclick.girafeee");
+		// 	// reloadList(function(){
+		// 	// 	$(".rectitle li[status='']").trigger("click");
+		// 	// });
+		// });
 		// reload列表预处理
+		function doWhenReloadList(){
+
+		}
 		$("#return-list").bind("DOMNodeInserted", function(elm){
 			if(elm.target.className == "NewTable30"){
 				// 统计金额
 				$scope.buyAmountNow = 0;	// 统计现月投资
 				$(".NewTable30 tbody tr[status=status0]").each(function(i){
 					var _period = $(this).find("td:eq(4)").text().trim();
-					var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.]+/g,"");
+					var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
 					$scope.buyAmountNow += calr(_period, _money);
 				});
 
@@ -266,7 +271,8 @@ module.exports = function(){
 				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
 				$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
 				$(".NewTable30 tbody tr a:contains('更改')").click(changeDt);
-
+				// console.log("in DOMNodeInserted");
+				$(".rectitle li[status='']").trigger("myclick.girafeee");
 				$scope.$apply();
 			}
 		})
@@ -278,6 +284,28 @@ module.exports = function(){
 			var _str = "#"+$(this).attr("tag")+" tr:not(.nodt):not(.doneToday)";
 			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").click();
 		});
+		//订单状态过滤
+		// 原生页面的事件删除不掉 这里只处理部分
+    // $('.ration_status[status=""]').unbind("myclick.girafeee");
+    $('.ration_status[status=""]').bind("myclick.girafeee", function () {
+    	console.log("in myclick.girafeee");
+      // var status = $(this).attr('status');
+      var tbody = $('#return-list').find('tbody');
+      // if (status == "") {
+        $('tr',tbody).show();
+        // // douraymi 在全部标签中隐去终止的
+        $('tr[status="status2"]', tbody).hide();
+      // }
+      // else {
+      //   $('tr', tbody).hide();
+      //   var showList = $('tr[status="status' + status + '"]', tbody);
+      //   showList.show();
+      // }
+      $('tr.nodata', tbody).hide();
+      if ($('tr:visible', tbody).length == 0) {
+        $('tr.nodata', tbody).show();
+      }
+    });
 
 
 	}

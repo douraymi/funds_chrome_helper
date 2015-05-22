@@ -4,45 +4,57 @@ module.exports = function(){
 
 	function appController($scope){
 
+		// console.log(mh.eval);
+		// var a = "-3.9"*1;
+		// var a = -3.9;
+		// var b = 2.1;
+		// // var c = mh.eval('a+b');
+		// var c = mh.chain(a).add(b).done();
+		// console.log("c:", c);
+		// var d = mh.eval(a+b);
+		// console.log("d:", d);
+
+
+
 		// var df = $.Deferred();
-		var dfFunc = function (i){
-			var adf = $.Deferred();
-			console.log("i:", i);
+		// var dfFunc = function (i){
+		// 	var adf = $.Deferred();
+		// 	console.log("i:", i);
 
-			var tfunc = function(){
-				// alert(i);
-				console.log("in setTimeout:", _r, "i:", i);
-				adf.resolve();
-			}
+		// 	var tfunc = function(){
+		// 		// alert(i);
+		// 		console.log("in setTimeout:", _r, "i:", i);
+		// 		adf.resolve();
+		// 	}
 
-			var _r = _.random(1000, 5000);
-			setTimeout(tfunc, _r);
-			return adf;
-			// return df.promise();
-		}
-
-		var newdef = C.df();
-
-		// for(var i = 1; i < 3; i++){
-		// 	newdef.next(dfFunc, i);
+		// 	var _r = _.random(1000, 5000);
+		// 	setTimeout(tfunc, _r);
+		// 	return adf;
+		// 	// return df.promise();
 		// }
 
-		newdef.next(C.html, "http://market.fund123.cn/", function(data, df){
-			if(data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
-				console.log("pause");
-			}else if(data.indexOf("<b>定投：</b><span>开放</span>")>-1){
-				console.log("goon");
-			}else{
-				console.log("null");
-			}
-			// if(data.match('<b>定投：</b><span>暂停</span>')){
-			// 	console.log(data.match('<b>定投：</b><span>暂停</span>'));
-			// }else if(data.match('<b>定投：</b><span>开放</span>')){
-			// 	console.log(data.match('<b>定投：</b><span>开放</span>'));
-			// }
-			// console.log(data);
-			df.resolve();
-		});
+		// var newdef = C.df();
+
+		// // for(var i = 1; i < 3; i++){
+		// // 	newdef.next(dfFunc, i);
+		// // }
+
+		// newdef.next(C.html, "http://market.fund123.cn/", function(data, df){
+		// 	if(data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
+		// 		console.log("pause");
+		// 	}else if(data.indexOf("<b>定投：</b><span>开放</span>")>-1){
+		// 		console.log("goon");
+		// 	}else{
+		// 		console.log("null");
+		// 	}
+		// 	// if(data.match('<b>定投：</b><span>暂停</span>')){
+		// 	// 	console.log(data.match('<b>定投：</b><span>暂停</span>'));
+		// 	// }else if(data.match('<b>定投：</b><span>开放</span>')){
+		// 	// 	console.log(data.match('<b>定投：</b><span>开放</span>'));
+		// 	// }
+		// 	// console.log(data);
+		// 	df.resolve();
+		// });
 
 		// newdef.next(function(){
 		// 	return C.html("http://www.baidu.com", function(data, df){
@@ -81,7 +93,7 @@ module.exports = function(){
 		// 	newdef.next(dfFunc, i);
 		// }
 
-		newdef.go();
+		// newdef.go();
 
 
 		// var df = $.Deferred();
