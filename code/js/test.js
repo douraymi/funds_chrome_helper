@@ -4,6 +4,32 @@ module.exports = function(){
 
 	function appController($scope){
 
+		var num1 = "3.9";
+		var num2 = "1.3";
+		var a = num1.jia(num2);
+		var b = num1.jian(num2);
+		var c = num1.cheng(num2);
+		var d = num1.chu(num2);
+		console.log("a:", a, "b:", b, "c:", c, "d:", d );
+		var num3 = "89.784568";
+		var e = num3.rnd(3);
+		console.log("e:", e);
+		// var num1 = 10;
+		// var num2 = 2;
+
+		// console.log(num1.add(num2));
+
+		// var a = "ttt";
+		// var b = a;
+		// var c = String(a);
+		// a = "ffff";
+		// console.log("a:", a, "b:", b, "c:", c);
+		// var a2 = "ttt";
+		// var b2 = a2;
+		// var c2 = new String(a2);
+		// b2 = "ffff";
+		// console.log("a2:", a2, "b2:", b2, "c2:", c2);
+
 		// console.log(mh.eval);
 		// var a = "-3.9"*1;
 		// var a = -3.9;

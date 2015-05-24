@@ -36,9 +36,10 @@ module.exports = function(){
 
 		// scope 处理
 		// 市值-底仓与盈利 按比例赎回
-		var sj = $("#0 td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"") *1;
-		var ljsy = $("#0 td:eq(7)").find("font:eq(0)").text().trim().replace(/[^0-9\.-]+/g,"") *1;
-		$scope.pfToday = C.fxNum( ((sj - ($scope.setting.Bin + ljsy)) * $scope.setting.rate) , 2);
+		var sj = $("#0 td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"");
+		var ljsy = $("#0 td:eq(7)").find("font:eq(0)").text().trim().replace(/[^0-9\.-]+/g,"");
+		// $scope.pfToday = C.fxNum( ((sj - ($scope.setting.Bin + ljsy)) * $scope.setting.rate) , 2);
+		$scope.pfToday = $scope.setting.rate.cheng(sj.jian($scope.setting.Bin.jia(ljsy)));
 
 		// 根据金额随机选择 卖出基金
 		$scope.randomRedeem = function(amount){
@@ -49,7 +50,8 @@ module.exports = function(){
 			while(count<amount){
 				var size = $(mTb).size();
 				var mvTr = $(mTb).eq( _.random(0, size-1) ).remove();	// 随机选一行
-				count += mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"") * 1;
+				// count += mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"") * 1;
+				count = count.jia(mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
 				tmpAry.push(mvTr);
 			}
 			_.each(tmpAry, function(trObj){
@@ -69,15 +71,18 @@ module.exports = function(){
 				var redeemMsgObj = {
 					redeemRedeem : {
 						fix : function(msg){
-							console.log("in fix");
+							// console.log("in fix");
 							if(msg.body.fixFenE){
-								var _newBalance = Number(fenE) - Number(msg.body.fixFenE);
+								// var _newBalance = Number(fenE) - Number(msg.body.fixFenE);
+								var _newBalance = fenE.jian(msg.body.fixFenE);
 								if(_newBalance>0){
 									// $("#TR2_"+parentid).css("display","none");
 									$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
 									C.storage.get('todayRedeem', function(items){
-										var _ra = items["todayRedeem"]["redeemAmount"]+ _newBalance*1*perVal;
-										_ra = C.fxNum(_ra, 2);
+										// var _ra = items["todayRedeem"]["redeemAmount"]+ _newBalance*1*perVal;
+										var _ra = items["todayRedeem"]["redeemAmount"].jia(_newBalance.cheng(perVal));
+										// _ra = C.fxNum(_ra, 2);
+										_ra = _ra.rnd(2);
 										items["todayRedeem"]["redeemTr"].push(parentid);
 										C.storage.set({
 											todayRedeem:{
@@ -125,8 +130,10 @@ module.exports = function(){
 										// $("#TR2_"+parentid).css("display","none");
 										$("#TR_"+parentid).removeClass('hight_light').addClass('today_is_redeemed');
 										C.storage.get('todayRedeem', function(items){
-											var _ra = items["todayRedeem"]["redeemAmount"]+redeemQ*1*perVal;
-											_ra = C.fxNum(_ra, 2);
+											// var _ra = items["todayRedeem"]["redeemAmount"]+redeemQ*1*perVal;
+											var _ra = items["todayRedeem"]["redeemAmount"].jia(redeemQ.cheng(perVal));
+											// _ra = C.fxNum(_ra, 2);
+											_ra = _ra.rnd(2);
 											items["todayRedeem"]["redeemTr"].push(parentid);
 											C.storage.set({
 												todayRedeem:{
@@ -198,11 +205,14 @@ module.exports = function(){
 				// console.log(celm.target);
 				var day90redeem = 0;
 				$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
-					var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
+					// var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
+					var _shyk = Number($(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,""));
 					if(_shyk > 0 || _shyk < 0 ){
-						var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,"")*1;
+						// var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,"")*1;
+						var _fday = Number($(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,""));
 						if(_fday > 92){
-							day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
+							// day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
+							day90redeem = day90redeem.jia($(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
 						}else if(_fday>0 && _fday<=92){
 							 return false;
 						}
@@ -210,7 +220,7 @@ module.exports = function(){
 				});
 				day90redeem = day90redeem>0?day90redeem:-1;
 				$(celm.target).click(function(){
-					console.log("day90redeem@@", day90redeem);
+					// console.log("day90redeem@@", day90redeem);
 					mainProcess($(celm.target).attr("href"), day90redeem);
 				});
 			});

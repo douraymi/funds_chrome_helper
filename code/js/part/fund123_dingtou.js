@@ -102,8 +102,9 @@ module.exports = function(){
 						reloadList(function(){
 							// 记录当天新增暂停量
 							C.storage.get('today_zanting', function(items){
-								items.today_zanting.zantingAmount += (buyAmountNow_tmp-$scope.buyAmountNow);
-								var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : items.today_zanting.zantingAmount}	};
+								// items.today_zanting.zantingAmount += (buyAmountNow_tmp-$scope.buyAmountNow);
+								var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
+								var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
 								C.storage.set(newItem);
 							});
 							// console.log("in 33333333");
@@ -123,13 +124,13 @@ module.exports = function(){
 			var _money = 0;
 			switch (period){
 				case "每月":
-					_money = money*1;
+					_money = money.cheng(1);
 					break;
 				case "每两周":
-					_money = money*2;
+					_money = money.cheng(2);
 					break;
 				case "每周":
-					_money = money*4;
+					_money = money.cheng(4);
 					break;
 				default:
 			}
@@ -199,7 +200,7 @@ module.exports = function(){
 		// 定投button
 		$scope.toDt = function(fundcode, jj, pp, key){
 			$scope.randomContine = '';
-			console.log(jj, pp, key);
+			// console.log(jj, pp, key);
 			var thsCodeTr = ".NewTable30 tbody tr[status='status1']:contains('"+fundcode+"')";
 			var _len = $(thsCodeTr).length;
 			if(_len>0){
@@ -264,7 +265,8 @@ module.exports = function(){
 				$(".NewTable30 tbody tr[status=status0]").each(function(i){
 					var _period = $(this).find("td:eq(4)").text().trim();
 					var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
-					$scope.buyAmountNow += calr(_period, _money);
+					// $scope.buyAmountNow += calr(_period, _money);
+					$scope.buyAmountNow = $scope.buyAmountNow.jia(calr(_period, _money));
 				});
 
 				// 暂停A链接处理
@@ -278,7 +280,7 @@ module.exports = function(){
 		})
 		// 改变collapse高度以scroll
 		$('.scrollPan').on('shown.bs.collapse', function () {
-		  $(this).height($(window).height()/2.2);
+		  $(this).height($(window).height().chu(2.2));
 		})
 		$(".ranBt").click(function(){
 			var _str = "#"+$(this).attr("tag")+" tr:not(.nodt):not(.doneToday)";
@@ -288,7 +290,7 @@ module.exports = function(){
 		// 原生页面的事件删除不掉 这里只处理部分
     // $('.ration_status[status=""]').unbind("myclick.girafeee");
     $('.ration_status[status=""]').bind("myclick.girafeee", function () {
-    	console.log("in myclick.girafeee");
+    	// console.log("in myclick.girafeee");
       // var status = $(this).attr('status');
       var tbody = $('#return-list').find('tbody');
       // if (status == "") {

@@ -1,19 +1,141 @@
 // 'use strict';
 
 module.exports = function(){
-	// var $ = window.$ ? window.$ : require('jquery');
-	// var M = require('./chrome_msg');
-	// console.log("M:", M);
+	// extend to Number
+	//加法函数
+	function accAdd(arg1, arg2) {
+		var r1, r2, m;
+    try {  
+      r1 = arg1.toString().split(".")[1].length;  
+    }
+    catch (e) {  
+      r1 = 0;  
+    }
+    try {  
+      r2 = arg2.toString().split(".")[1].length;  
+    }
+    catch (e) {  
+      r2 = 0;  
+    }
+    m = Math.pow(10, Math.max(r1, r2));  
+    return (arg1 * m + arg2 * m) / m;  
+	}
+	//给Number类型增加一个add方法，，使用时直接用 .add 即可完成计算
+	Number.prototype.jia = function (arg) {
+		if(_.isString(arg)){
+			arg = Number(arg);
+		}
+    return accAdd(arg, this);
+	};
+	String.prototype.jia = function (arg) {
+		var _ths = Number(this);
+    return _ths.jia(arg);
+	};
+	//减法函数
+	function Subtr(arg1, arg2) {
+    var r1, r2, m, n;
+    try {
+      r1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+      r1 = 0;
+    }
+    try {
+      r2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+      r2 = 0;
+    }
+    m = Math.pow(10, Math.max(r1, r2));
+     //last modify by deeka
+     //动态控制精度长度
+    n = (r1 >= r2) ? r1 : r2;
+    return ((arg1 * m - arg2 * m) / m).toFixed(n);
+	}
+	//给Number类型增加一个sub方法，，使用时直接用 .sub 即可完成计算
+	Number.prototype.jian = function (arg) {
+		if(_.isString(arg)){
+			arg = Number(arg);
+		}
+	  return Subtr(this, arg);
+	};
+	String.prototype.jian = function (arg) {
+		var _ths = Number(this);
+    return _ths.jian(arg);
+	};
+	//乘法函数
+	function accMul(arg1, arg2) {
+    var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+    try {
+      m += s1.split(".")[1].length;
+    }
+    catch (e) {
+    }
+    try {
+      m += s2.split(".")[1].length;
+    }
+    catch (e) {
+    }
+    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+	}
+	//给Number类型增加一个mul方法，使用时直接用 .mul 即可完成计算
+	Number.prototype.cheng = function (arg) {
+		if(_.isString(arg)){
+			arg = Number(arg);
+		}
+    return accMul(arg, this);
+	};
+	String.prototype.cheng = function (arg) {
+		var _ths = Number(this);
+    return _ths.cheng(arg);
+	};
+	//除法函数
+	function accDiv(arg1, arg2) {
+    var t1 = 0, t2 = 0, r1, r2;  
+    try {
+      t1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+    }
+    try {
+      t2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+    }
+    with (Math) {
+      r1 = Number(arg1.toString().replace(".", ""));
+      r2 = Number(arg2.toString().replace(".", ""));  
+      return (r1 / r2) * pow(10, t2 - t1);
+    }
+	}
+	//给Number类型增加一个div方法，，使用时直接用 .div 即可完成计算
+	Number.prototype.chu = function (arg) {
+		if(_.isString(arg)){
+			arg = Number(arg);
+		}
+    return accDiv(this, arg);
+	};
+	String.prototype.chu = function (arg) {
+		var _ths = Number(this);
+    return _ths.chu(arg);
+	};
+	// round扩展
+	function accRound(number,fractionDigits){
+		var rt = Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits);
+		return rt;
+	}
+	//给Number类型增加一个rnd方法，，使用时直接用 .rnd 即可完成计算
+	Number.prototype.rnd = function (fractionDigits) {
+    return accRound(this, fractionDigits);
+	};
+	String.prototype.rnd = function (fractionDigits) {
+		var _ths = Number(this);
+    return _ths.rnd(fractionDigits);
+	};
+
+
+	// cab tools
 	var cab = {
-	  alm : function(callback, delaym, periodm){
-			//only work in event page, not in content script page
-	  	var createObj = {
-		  	delayInMinutes : delaym || 0.1,
-		  	periodInMinutes : periodm || 0.1
-	  	}
-	  	chrome.alarms.create(createObj);
-	  	chrome.alarms.onAlarm.addListener(callback);
-	  },
 		UNQ : function(fn){
 			// 牛逼的单例 马勒戈壁
 			var uniqueInstance;
@@ -34,10 +156,10 @@ module.exports = function(){
 			}
 			return objContainer;
 		},
-		fxNum : function(number,fractionDigits){
-			var rt = Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits);
-			return rt;   
-		},
+		// fxNum : function(number,fractionDigits){
+		// 	var rt = Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits);
+		// 	return rt;   
+		// },
 		closeWindow : function(){
 			if (window.confirm("您查看的页面正在试图关闭窗口。是否关闭此窗口？")) {
         window.open('', '_self', '');

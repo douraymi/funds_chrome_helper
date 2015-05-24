@@ -12,8 +12,10 @@ module.exports = function(){
 		}).next(function(){
 			return $('#ShowCycleDay').blur();
 		}).next(function(){
-			$('#ShowAmount').val(111);
-			return $('#Amount').val(111);
+			var _m = $("#MinAmountValue").text().replace(/[^0-9\.-]+/g,"");
+			_m = _m.jia(11);
+			$('#ShowAmount').val(_m);
+			return $('#Amount').val(_m);
 		})
 		.go();
 

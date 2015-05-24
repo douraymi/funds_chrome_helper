@@ -65,13 +65,16 @@ module.exports = function($scope){
 					};
 					switch (key){
 						case 'day':
-							_fund['rate'] = C.fxNum(vAry[17], 2);
+							// _fund['rate'] = C.fxNum(vAry[17], 2);
+							_fund['rate'] = vAry[17].rnd(2);
 							break;
 						case 'week':
-							_fund['rate'] = C.fxNum(vAry[5], 2);
+							// _fund['rate'] = C.fxNum(vAry[5], 2);
+							_fund['rate'] = vAry[5].rnd(2);
 							break;
 						case 'month':
-							_fund['rate'] = C.fxNum(vAry[6], 2);
+							// _fund['rate'] = C.fxNum(vAry[6], 2);
+							_fund['rate'] = vAry[6].rnd(2);
 							break;
 					}
 					ttObj[key].push(_fund);
