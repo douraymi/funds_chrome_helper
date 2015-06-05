@@ -19,4 +19,6 @@ module.exports = function(){
 		});
 	});
 
+	$(".addcardother").css("display", "initial");
+
 }()

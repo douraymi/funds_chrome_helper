@@ -18,6 +18,20 @@ module.exports = function(){
 		M.connect('dt_confirm_AI', _fundcode+"_dtgo", function(tn){
 			// 变更,新增行为
 			// 通过检测通道关闭事件触发动作
+			tn.onMsg({
+				BOT : {
+					BOT : function(msg){
+						if(!msg.body){
+							$(".next").click(function(){
+								tn.send({type:"BOT", code:"pw", body:$("input[name='TradePassword']").val()});
+							});
+						}else{
+							$("input[name='TradePassword']").val(msg.body);
+							$(".next").click();
+						}
+					}
+				}
+			});
 			M.connect('dt_confirm_AI_2', _fundcode+"_today_dt", function(tn2){
 				// ranking列表记录
 				// 通过检测通道关闭事件触发动作
@@ -25,6 +39,7 @@ module.exports = function(){
 					xxx : {
 						xxx : function(msg){
 							tn.send({type:'xxx', code:'xxx', body:msg.body});
+
 						}
 					}
 				});

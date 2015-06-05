@@ -160,11 +160,14 @@ module.exports = function(){
 		// 	var rt = Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits);
 		// 	return rt;   
 		// },
+		// closeWindow : function(){
+		// 	if (window.confirm("您查看的页面正在试图关闭窗口。是否关闭此窗口？")) {
+  //       window.open('', '_self', '');
+  //       window.close();
+  //     }
+		// },
 		closeWindow : function(){
-			if (window.confirm("您查看的页面正在试图关闭窗口。是否关闭此窗口？")) {
-        window.open('', '_self', '');
-        window.close();
-      }
+       window.close();
 		},
 		chromeUrl : function(url){
 			return (url.slice(0,4) === "http")?url:chrome.extension.getURL(url);

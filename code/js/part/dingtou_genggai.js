@@ -4,32 +4,17 @@
 
 module.exports = function(){
 	console.log("dingtou_genggai no Use");
-	// var _url = new URI();
-	// _url.hasQuery("a", function(val){
-	// 	if(val=='A'){
-	// 		// 从暂停打开
 
-	// 	}else if(val=='P'){
-	// 		// 从打开边暂停
-			
-	// 	}
-	// });
+	var _url = new URI();
+	_url.hasQuery("from", function(fromVal){
+		if(fromVal=='new'){
 
-
-
-	// var _isRedeemOk = false;
-	// var _result = $("#success_message").text().trim();
-	// // console.log("_result:", _result);
-	// if($("#success_message").length>0 && _result==="基金赎回完成"){
-	// 	_isRedeemOk = true;
-	// }
-	// var _url = new URI();
-	// _url.hasQuery("fundCode", function(val){
-	// 	M.connect("redeemConfirm", val+"done", function(tn){
-	// 		tn.send({type:"redeemDone", code:"onLoad", body:{isRedeemOk:_isRedeemOk}});
-	// 		// console.log("_isRedeemOk:", _isRedeemOk);
-
-	// 	});
-	// });
+		}else{
+			var newQuery = _url.query();
+			newQuery += "&from=new";
+			var newUrl = _url.query(newQuery);
+			window.location.assign(newUrl.toString());
+		}
+	});
 
 }()

@@ -59,9 +59,11 @@
 		    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 		      <div class="panel-body">
 						<div class="btn-group btn-group" role="group" aria-label="...">
+								<button type="button" class="btn btn-default" ng-click="BOTdingTouPause()">BOT暂停</button>
 							 	<button type="button" class="btn btn-default" ng-click="dingTouPause()">随机暂停</button>
+							 	<button type="button" class="btn btn-default" ng-click="BOTdingTouGo()">BOT开启</button>
 							  <button type="button" class="btn btn-default" ng-click="dingTouGo()">随机开启</button>
-							  <button type="button" class="btn btn-default" ng-click="test()">test</button>
+							  <button type="button" class="btn btn-default" ng-click="resetRanking()">重置</button>
 						</div>
 		      </div>
 		    </div>
@@ -79,6 +81,7 @@
 			        <label>
 			          <input type="checkbox" name="shumiShowX" ng-model="shumiShowX"> 显示不可定投项 
 			          <button type="button" tag="shumiTb" class="ranBt">来一桶</button>
+			          <button type="button" tag="shumiTb" class="ranBOT">随便BOT</button>
 			        </label>
 			      </div>
 		      </div>
@@ -101,13 +104,13 @@
 					  		<td><button ng-click='toDt(value.fundcode, "shumi", "day", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.shumi.month">
+<!-- 					  	<tr ng-show="value.dtOk || shumiShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.shumi.month">
 					  		<td>月 {{value.sort}}</td>
 					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
 					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
 					  		<td><button ng-click='toDt(value.fundcode, "shumi", "month", key)'>定投</button></td>
-					  	</tr>
+					  	</tr> -->
 					  </tbody>
 					</table>
 		    </div>
@@ -126,6 +129,7 @@
 			        <label>
 			          <input type="checkbox" name="ttShowX" ng-model="ttShowX"> 显示不可定投项 
 			          <button type="button" tag="ttTb" class="ranBt">来一桶</button>
+			          <button type="button" tag="ttTb" class="ranBOT">随便BOT</button>
 			        </label>
 			      </div>
 		      </div>
@@ -156,13 +160,13 @@
 					  		<td><button ng-click='toDt(value.fundcode, "tt", "week", key)'>定投</button></td>
 					  	</tr>
 
-					  	<tr ng-show="value.dtOk || ttShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.month">
+<!-- 					  	<tr ng-show="value.dtOk || ttShowX" ng-class="{'nodt':!value.dtOk, 'doneToday':value.doneToday}" ng-repeat="(key, value) in today_dt.ranking.tt.month">
 					  		<td>月 {{value.sort}}</td>
 					  		<td><a target='_blank' href='http://fund.eastmoney.com/{{value.fundcode}}.html'>{{value.fundcode}}</a></td>
 					  		<td><a target='_blank' href='http://fund.fund123.cn/html/{{value.fundcode}}/Index.html'>{{value.fundname}}</a></td>
 					  		<td>{{value.rate}}</td>
 					  		<td><button ng-click='toDt(value.fundcode, "tt", "month", key)'>定投</button></td>
-					  	</tr>
+					  	</tr> -->
 					  </tbody>
 					</table>
 		    </div>

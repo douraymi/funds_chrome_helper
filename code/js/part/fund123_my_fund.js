@@ -65,6 +65,8 @@ module.exports = function(){
 
 		// 赎回信息传递
 		function redeemTunnel(parentid, fundCode, perVal, fenE){
+			perVal = Number(perVal);
+			fenE = Number(fenE);
 			$("#TR2_"+parentid).css("display","none");
 			// 赎回出错修正
 			M.connect("my_fund", fundCode+"redeem", function(tnRedeem){
@@ -72,7 +74,7 @@ module.exports = function(){
 					redeemRedeem : {
 						fix : function(msg){
 							// console.log("in fix");
-							if(msg.body.fixFenE){
+							if(msg.body.fixFenE != undefined){
 								// var _newBalance = Number(fenE) - Number(msg.body.fixFenE);
 								var _newBalance = fenE.jian(msg.body.fixFenE);
 								if(_newBalance>0){
@@ -175,9 +177,9 @@ module.exports = function(){
 				var _fenE = $("#TR_"+parentid).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
 				redeemTunnel(parentid, _code, _perVal, _fenE);
 				if(day90redeem != undefined){
-					// console.log(day90redeem);
+					console.log("@", _code, "@");
 					M.connect("my_fund", _code+"day90redeem", function(tn){
-						// console.log("in day90redeem");
+						console.log("in day90redeem");
 						// tn.onMsg({
 						// 	day90redeem : {
 						// 		tnOk : function(msg){
@@ -202,7 +204,7 @@ module.exports = function(){
 		function tradeLink(){
 			var _tUrl = "#m_Table_open div.opt>span.left>a:contains('赎回')";
 			$(_tUrl).bind("DOMNodeInsertedIntoDocument", function(celm){
-				// console.log(celm.target);
+				console.log(celm.target);
 				var day90redeem = 0;
 				$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
 					// var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
@@ -220,7 +222,7 @@ module.exports = function(){
 				});
 				day90redeem = day90redeem>0?day90redeem:-1;
 				$(celm.target).click(function(){
-					// console.log("day90redeem@@", day90redeem);
+					console.log("day90redeem@@", day90redeem);
 					mainProcess($(celm.target).attr("href"), day90redeem);
 				});
 			});

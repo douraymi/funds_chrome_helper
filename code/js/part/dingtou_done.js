@@ -12,11 +12,13 @@ module.exports = function(){
 	// }
 	// var _url = new URI();
 	// _url.hasQuery("fundCode", function(val){
-	// 	M.connect("redeemConfirm", val+"done", function(tn){
-	// 		tn.send({type:"redeemDone", code:"onLoad", body:{isRedeemOk:_isRedeemOk}});
-	// 		// console.log("_isRedeemOk:", _isRedeemOk);
-
-	// 	});
+		M.connect("dingtouDone", "BOT", function(tn){
+			setTimeout(function(){C.closeWindow();}, 2000);
+			$('<a href="#" id="stop" class="btn btn-xs btn-warning">BOTstop</a>').click(function(){
+				tn.send({type:"BOT", code:"stop"});
+				C.closeWindow();
+			}).appendTo($("div.dingbtn").eq(0));
+		});
 	// });
 
 }()

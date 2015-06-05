@@ -139,7 +139,15 @@ module.exports = function($scope){
 		var today = new Date();
 		if(item && item.date===today.toDateString()){
 		}else{
-			C.storage.remove('today_dt');
+			setToday();
+		}
+	}, function(changes){
+	});
+
+	// running funcktin
+	function setToday(){
+		C.storage.remove('today_dt', function(){
+			var today = new Date(); 
 			var newItem = {	today_dt:{	date : today.toDateString(), ranking : {
 				shumi : {},
 				tt : {}
@@ -148,20 +156,22 @@ module.exports = function($scope){
 				console.log(newItem.today_dt);
 				C.storage.remove('today_dt');
 				C.storage.set(newItem);
-			});
-		}
-	}, function(changes){
-	});
+			});					
+		});
+	}
 
 	return function(jj, pp, key){
-		C.storage.get('today_dt', function(items){
-			var _item = items.today_dt;
-			if(_item != undefined){
-				_item.ranking[jj][pp][key].doneToday = true;
-				C.storage.set({today_dt:_item});
-			}
-		});
-
+		if(arguments.length==0){
+			setToday();
+		}else{
+			C.storage.get('today_dt', function(items){
+				var _item = items.today_dt;
+				if(_item != undefined){
+					_item.ranking[jj][pp][key].doneToday = true;
+					C.storage.set({today_dt:_item});
+				}
+			});		
+		}
 	}
 
 }

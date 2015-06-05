@@ -47,29 +47,30 @@
 		case "https://trade.fund123.cn/home/agreementquery/":
 			require('./part/fund123_dingtou');
 			break;
-		// 暂停或开启
+		// 暂停或开启 确定
 		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm":
 			require('./part/dingtou_confirm');
 			break;
-		// 变更、新增
+		// 变更、新增 确定
 		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/normal":
 		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai":
 			require('./part/dingtou_confirm_AI');
 			break;
-		// 定投-AI变更
-		// case "https://trade.fund123.cn/Trade/RegularInvestment":
-		// 	// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
-		// 	require('./part/dingtou_genggai');
-		// 	break;
+		定投-AI变更
+		case "https://trade.fund123.cn/Trade/RegularInvestment":
+			// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
+			require('./part/dingtou_genggai');
+			break;
 		// 定投-AI新增
 		case "https://trade.fund123.cn/Trade/RegularInvestment/ai":
 			// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
 			require('./part/dingtou_new');
 			break;
-		// 定投-AI确定
-		// case "https://trade.fund123.cn/Trade/RegularInvestmentPost/ai":
-		// 	require('./part/dingtou_done');
-		// 	break;
+		// 定投 done
+		case "https://trade.fund123.cn/Trade/RegularInvestmentPost/ai":
+		case "https://trade.fund123.cn/Trade/RegularInvestmentPost/normal":
+			require('./part/dingtou_done');
+			break;
 
 
 		default:
