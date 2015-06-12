@@ -501,7 +501,12 @@ module.exports = function(){
 		$("#return-list").bind("DOMNodeInserted", function(elm){
 			if(elm.target.className == "NewTable30"){
 				// table排序处理
-				$(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='72'>基金总投</th>");
+				$(".NewTable30 thead th:eq(3)").css("width", "60");
+				$(".NewTable30 thead th:eq(8)").css("width", "60");
+				$(".NewTable30 thead th:eq(9)").css("width", "60");
+				$(".NewTable30 thead th:eq(10)").css("width", "50");
+				$(".NewTable30 thead th:eq(12)").css("width", "50");
+				$(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='80'>基金总投</th>");
 				$(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
 				var ozAry = {};	// 总投入金额临时对象
 				$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
