@@ -5,6 +5,18 @@
 module.exports = function(){
 	console.log("dingtou_new");
 	$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
+	$(function(){
+		function preFun(){
+			document.onkeydown = function (e) { 
+				var theEvent = window.event || e; 
+				var code = theEvent.keyCode || theEvent.which; 
+				if (code == 13) { 
+					$(".next.dtbg:not(.close)").click();
+				}
+			}
+		}
+		setTimeout(function(){preFun();}, 500);
+	});
 
 	var _url = new URI();
 	_url.hasQuery("from", function(fromVal){

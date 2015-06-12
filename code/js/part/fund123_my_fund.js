@@ -201,7 +201,9 @@ module.exports = function(){
 			mainProcess($(this).attr("href"));
 		});
 
+		// 初始化
 		function tradeLink(){
+			// 特殊赎回链接修改
 			var _tUrl = "#m_Table_open div.opt>span.left>a:contains('赎回')";
 			$(_tUrl).bind("DOMNodeInsertedIntoDocument", function(celm){
 				console.log(celm.target);
@@ -227,6 +229,8 @@ module.exports = function(){
 				});
 			});
 
+			// 改变第一个td的点击
+			// $("#m_Table_open tr.bb td:eq(0)").
 		}
 		tradeLink();
 		$("#OpenTable").bind("DOMNodeInserted", function(elm){

@@ -4,6 +4,20 @@
 
 module.exports = function(){
 	console.log("RedeemDone");
+	$(function(){
+		function preFun(){
+			document.onkeydown = function (e) { 
+				var theEvent = window.event || e; 
+				var code = theEvent.keyCode || theEvent.which; 
+				if (code == 13) { 
+					window.close();
+					// $(".next.dtbg:not(.close)").click();
+				}
+			}
+		}
+		setTimeout(function(){preFun();}, 500);
+	});
+	
 	var _isRedeemOk = false;
 	var _result = $("#success_message").text().trim();
 	// console.log("_result:", _result);
@@ -22,3 +36,4 @@ module.exports = function(){
 	$(".addcardother").css("display", "initial");
 
 }()
+

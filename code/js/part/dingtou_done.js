@@ -4,21 +4,26 @@
 
 module.exports = function(){
 	console.log("dingtou_done");
-	// var _isOk = false;
-	// var _result = $("#RegularForm h3:eq(0)").text().trim();
-	// // console.log("_result:", _result);
-	// if(_result=="操作完成"){
-	// 	_isOk = true;
-	// }
-	// var _url = new URI();
-	// _url.hasQuery("fundCode", function(val){
-		M.connect("dingtouDone", "BOT", function(tn){
-			setTimeout(function(){C.closeTab();}, 2000);
-			$('<a href="#" id="stop" class="btn btn-xs btn-warning">BOTstop</a>').click(function(){
-				tn.send({type:"BOT", code:"stop"});
-				C.closeTab();
-			}).appendTo($("div.dingbtn").eq(0));
-		});
-	// });
+	$(function(){
+		function preFun(){
+			document.onkeydown = function (e) { 
+				var theEvent = window.event || e; 
+				var code = theEvent.keyCode || theEvent.which; 
+				if (code == 13) {
+					window.close();
+					// $(".next.dtbg:not(.close)").click();
+				}
+			}
+		}
+		setTimeout(function(){preFun();}, 500);
+	});
+
+	M.connect("dingtouDone", "BOT", function(tn){
+		setTimeout(function(){C.closeTab();}, 2000);
+		$('<a href="#" id="stop" class="btn btn-xs btn-warning">BOTstop</a>').click(function(){
+			tn.send({type:"BOT", code:"stop"});
+			C.closeTab();
+		}).appendTo($("div.dingbtn").eq(0));
+	});
 
 }()
