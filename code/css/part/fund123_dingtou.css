@@ -40,3 +40,13 @@ body>.shumi-kefu, body>.shumi-baiba {
 .doneToday {
 	background-color: lightskyblue !important;
 }
+
+.tbsort {
+	color: #B9B973 !important;
+	cursor:pointer;
+}
+
+.ttLink {
+	color: lightskyblue !important;
+	cursor:pointer;
+}

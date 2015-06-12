@@ -4,16 +4,22 @@ module.exports = function(){
 
 	function appController($scope){
 
-		var num1 = "3.9";
-		var num2 = "1.3";
-		var a = num1.jia(num2);
-		var b = num1.jian(num2);
-		var c = num1.cheng(num2);
-		var d = num1.chu(num2);
-		console.log("a:", a, "b:", b, "c:", c, "d:", d );
-		var num3 = "89.784568";
-		var e = num3.rnd(3);
-		console.log("e:", e);
+		// C.closeTab();
+		// window.open(C.chromeUrl('/html/blankClose.html'), '_self');
+		// C.newTab({url:'http://www.163.com', active:false});
+		// window.open('http://www.163.com', 'new', 'alwaysLowered=yes, z-look=no');
+			// window.open ('page.html', 'newwindow', 'height=100, width=400, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no, alwaysLowered=yes');
+
+		// var num1 = "3.9";
+		// var num2 = "1.3";
+		// var a = num1.jia(num2);
+		// var b = num1.jian(num2);
+		// var c = num1.cheng(num2);
+		// var d = num1.chu(num2);
+		// console.log("a:", a, "b:", b, "c:", c, "d:", d );
+		// var num3 = "89.784568";
+		// var e = num3.rnd(3);
+		// console.log("e:", e);
 		// var num1 = 10;
 		// var num2 = 2;
 

@@ -5,6 +5,8 @@
 
 module.exports = function(){
 	console.log("dingtou_confirm_AI");
+	$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
+	
 	var _fundcode = $("div.dingfundname b:eq(0)").text().trim();
 	// var _url = new URI();
 	// var has_xyh = _url.hasQuery('xyh', function(_xyh){

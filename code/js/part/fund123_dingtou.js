@@ -16,6 +16,8 @@ module.exports = function(){
 		$scope.BOT = false;
 		$scope.BOTranObj = false;
 		$scope.BOTpw = false;
+		$scope.BOTkai = {};
+		$scope.BOTguan = {};
 		// 处理排名数据
 		var doRank = require('../etc/fundRank')($scope);
 
@@ -30,6 +32,34 @@ module.exports = function(){
 			}
 		}, function(changes){
 		});
+		// 终止A链接事件
+		function endDt(){
+			var _url = new URI($(this).attr('href'));
+			_url.hasQuery('xyh', function(_xyh){
+				M.connect('dingtou', _xyh+"_dtend", function(tunnel){
+					tunnel.onClose.addListener(function(){
+						var buyAmountNow_tmp = $scope.buyAmountNow;
+						reloadList(function(){
+							// 记录当天新增暂停量
+							C.storage.get('today_zanting', function(items){
+								var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
+								var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
+								C.storage.set(newItem);
+								if($scope.randomContine=="status1"){
+									$(".rectitle li[status=1]").trigger("click");
+									randomSelect("status1");
+								}else if($scope.randomContine=="status0"){
+									$(".rectitle li[status=0]").trigger("click");
+									randomSelect("status0");
+								}
+							});
+						});
+						tunnel.close();
+					});
+				});
+
+			});
+		}
 		// 更改A链接事件
 		function changeDt(){
 			var _fundcode = $(this).parent(":eq(0)").parent(":eq(0)").find("td:eq(0)").text().trim();
@@ -97,15 +127,19 @@ module.exports = function(){
 						tnBOT.onClose.addListener(function(){
 							var buyAmountNow_tmp = $scope.buyAmountNow;
 							reloadList(function(){
-								if($scope.buyAmountNow>$scope.buyMonthlyAmount){
+								if($scope.buyAmountNow>$scope.setting.buyMonthlyAmount){
 									$scope.BOT = false;
+									$scope.BOTranObj = false;
+									console.log("end buyMonthlyAmount!");
 								}
 								if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
-									doRank(doRankData.jj, doRankData.pp, doRankData.key);
+									doRank(doRankData.jj, doRankData.pp, doRankData.key, function(){
+										if($scope.BOTranObj != false){
+											$scope.BOTranObj.click();
+										}
+									});
 								}
-								if($scope.BOTranObj != false){
-									$scope.BOTranObj.click();
-								}else if($scope.randomContine=="status1"){
+								if($scope.randomContine=="status1"){
 									$(".rectitle li[status=1]").trigger("click");
 									randomSelect("status1");
 								}
@@ -130,8 +164,6 @@ module.exports = function(){
 								if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
 									doRank(doRankData.jj, doRankData.pp, doRankData.key);
 								}
-								// console.log("in 222222222");
-								// $(".rectitle li[status='']").trigger("myclick.girafeee");
 								if($scope.randomContine=="status1"){
 									$(".rectitle li[status=1]").trigger("click");
 									randomSelect("status1");
@@ -176,17 +208,19 @@ module.exports = function(){
 							reloadList(function(){
 								// 记录当天新增暂停量
 								C.storage.get('today_zanting', function(items){
-									if(items.today_zanting.zantingAmount>$scope.exchangeDaily){
+									console.log("za:", items.today_zanting.zantingAmount, " ed:", $scope.setting.exchangeDaily);
+									if(items.today_zanting.zantingAmount>$scope.setting.exchangeDaily){
 										$scope.BOT = false;
+										console.log("end exchangeDaily!");
 									}
 									var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
 									var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
 									C.storage.set(newItem);
+									if($scope.randomContine=="status0"){
+										$(".rectitle li[status=0]").trigger("click");
+										randomSelect("status0");
+									}
 								});
-								if($scope.randomContine=="status0"){
-									$(".rectitle li[status=0]").trigger("click");
-									randomSelect("status0");
-								}
 							});
 							tnBOT.close();
 						});
@@ -202,11 +236,11 @@ module.exports = function(){
 									var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
 									var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
 									C.storage.set(newItem);
+									if($scope.randomContine=="status0"){
+										$(".rectitle li[status=0]").trigger("click");
+										randomSelect("status0");
+									}
 								});
-								if($scope.randomContine=="status0"){
-									$(".rectitle li[status=0]").trigger("click");
-									randomSelect("status0");
-								}
 							});
 							tunnel.close();
 						});
@@ -239,10 +273,27 @@ module.exports = function(){
 			var _random = _.random(0, _length-1);
 			var _trObj = $(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
 			fixA(_trObj);
-
 			if($scope.BOT != false){
+				if($scope.BOT == '暂停' && $scope.BOTguan.proc != undefined){
+					if($scope.BOTguan.ori - $scope.BOTguan.proc > $scope.buyAmountNow){
+						$scope.BOT = false;
+						$scope.BOTguan = {};
+						return;
+					}
+				}else if($scope.BOT == '恢复' && $scope.BOTkai.proc != undefined){
+					if($scope.BOTkai.ori + $scope.BOTkai.proc < $scope.buyAmountNow){
+						$scope.BOT = false;
+						$scope.BOTkai = {};
+						return;
+					}
+				}
 				_trObj.find("a:contains('"+$scope.BOT+"')").eq(0).click();
-				window.open(_trObj.find("a:contains('"+$scope.BOT+"')").eq(0).attr("href"));
+				var _url = thisHost+_trObj.find("a:contains('"+$scope.BOT+"')").eq(0).attr("href");
+				C.newTab({url:_url, active:false});
+				// window.open(_trObj.find("a:contains('"+$scope.BOT+"')").eq(0).attr("href"), 'new', 'alwaysLowered=yes, z-look=no');
+			}else{
+				$scope.BOTguan = {};
+				$scope.BOTkai = {};
 			}
 
 		}
@@ -250,6 +301,10 @@ module.exports = function(){
 			trObj.find("a:contains('暂停')").click(zanting);
 			trObj.find("a:contains('恢复')").click(addDt);
 			trObj.find("a:contains('更改')").click(changeDt);
+			trObj.find("a:contains('终止')").click(endDt);
+			trObj.find("td:eq(0)").click(function(){
+				window.open('http://fund.eastmoney.com/'+$(this).text().trim()+'.html');
+			});
 		}
 		// 原网站的刷新脚本
 		function reloadList(callback){
@@ -292,8 +347,12 @@ module.exports = function(){
 		}
 		// BOT随机暂停定投控件
 		// $scope.BOTcount = 0;
-		$scope.BOTdingTouPause = function(){
+		$scope.BOTdingTouPause = function(_amount){
 			$scope.BOT = '暂停';
+			if(_amount != undefined){
+				$scope.BOTguan.ori = $scope.buyAmountNow;
+				$scope.BOTguan.proc = _amount;
+			}
 			$scope.dingTouPause();
 		}
 		// 随机暂停定投控件
@@ -304,8 +363,12 @@ module.exports = function(){
 
 		}
 		// 随机开启定投控件
-		$scope.BOTdingTouGo = function(){
+		$scope.BOTdingTouGo = function(_amount){
 			$scope.BOT = '恢复';
+			if(_amount != undefined){
+				$scope.BOTkai.ori = $scope.buyAmountNow;
+				$scope.BOTkai.proc = _amount;
+			}
 			$scope.dingTouGo();
 		}
 		// 随机开启定投控件
@@ -328,15 +391,25 @@ module.exports = function(){
 					fixA(_trObj);
 				});
 				if($scope.BOT == "恢复"){
-					// console.log($(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0));
 					$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).click();
-					window.open($(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href"));
+					var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href");
+					C.newTab({url:_url, active:false});
+					// window.open($(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href"));
 				}
 			}else{
 				var doRankData;
+				var _url = 'https://trade.fund123.cn/Trade/RegularInvestment/ai?fundCode='+fundcode;
 				if($scope.BOT == "恢复"){
 					M.connect("dingtou", "newfundBOT", function(tunnel){
 						tunnel.send({type:"BOT", code:"BOT"});
+						// tunnel.send({type:"BOT", code:"BOT", body:$scope.BOTpw});
+						// tunnel.onMsg({
+						// 	BOT : {
+						// 		pw : function(msg){
+						// 			$scope.BOTpw = msg.body;
+						// 		}
+						// 	}
+						// });
 					});
 					M.connect("dingtou", fundcode+"_dtgo", function(tunnel){
 						tunnel.send({type:"BOT", code:"BOT", body:$scope.BOTpw});
@@ -365,20 +438,23 @@ module.exports = function(){
 						tnBOT.onClose.addListener(function(){
 							var buyAmountNow_tmp = $scope.buyAmountNow;
 							reloadList(function(){
-								if($scope.buyAmountNow>$scope.buyMonthlyAmount){
+								if($scope.buyAmountNow>$scope.setting.buyMonthlyAmount){
 									$scope.BOT = false;
+									$scope.BOTranObj = false;
+									console.log("end buyMonthlyAmount!");
 								}
 								if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
-									doRank(doRankData.jj, doRankData.pp, doRankData.key);
-								}
-								if($scope.BOTranObj != false){
-									$scope.BOTranObj.click();
+									doRank(doRankData.jj, doRankData.pp, doRankData.key, function(){
+										if($scope.BOTranObj != false){
+											$scope.BOTranObj.click();
+										}
+									});
 								}
 							});
 							tnBOT.close();
 						});
 					});
-
+					C.newTab({url:_url, active:false});
 				}else{
 					M.connect("dingtou", fundcode+"_dtgo", function(tunnel){
 						tunnel.onMsg({
@@ -398,10 +474,10 @@ module.exports = function(){
 							tunnel.close();
 						});
 					});
-					
+					window.open(_url, '_blank');
+
 				}
-				var _url = 'https://trade.fund123.cn/Trade/RegularInvestment/ai?fundCode='+fundcode;
-				window.open(_url, '_blank');
+
 			}
 
 			M.connect("dingtou_2", fundcode+"_today_dt", function(tunnel){
@@ -422,12 +498,64 @@ module.exports = function(){
 		// 	// 	$(".rectitle li[status='']").trigger("click");
 		// 	// });
 		// });
-		// reload列表预处理
-		function doWhenReloadList(){
-
-		}
 		$("#return-list").bind("DOMNodeInserted", function(elm){
 			if(elm.target.className == "NewTable30"){
+				// table排序处理
+				$(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='72'>基金总投</th>");
+				$(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
+				var ozAry = {};	// 总投入金额临时对象
+				$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
+					// 总投入金额一期处理
+					var _fcode = $(this).find("td:eq(0)").text().trim();
+					var order_zong = $(this).find("td:eq(9)").text().trim().replace(/[^0-9\.-]+/g,"");
+					ozAry[_fcode] = ozAry[_fcode] ? ozAry[_fcode].jia(order_zong) : order_zong;
+				});
+				$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
+					var _fcode = $(this).find("td:eq(0)").text().trim();
+					// 总投入金额二期处理
+					$(this).find("td:eq(9)").attr('_order', ozAry[_fcode]);
+					$(this).find("td:eq(10)").html("<span style='color:darkgoldenrod'>"+ozAry[_fcode]+"</span>");
+					// .append("<span style='color:darkgoldenrod'> /"+ozAry[_fcode]+"</span>");
+					// 定投金额
+					var order_dtje = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
+					$(this).find("td:eq(3)").attr('_order', order_dtje);
+					// 定投日期
+					var order_dtrq = $(this).find("td:eq(5)").text().trim().replace(/[^0-9\.-]+/g,"");
+					if(order_dtrq>0){
+						$(this).find("td:eq(5)").attr('_order', parseInt(order_dtrq));
+					}else{
+						var _orderVal = 1000;
+						var _pre = $(this).find("td:eq(4)").text().trim();
+						if(_pre == "每周"){
+							_orderVal = 2000;
+						}
+						switch($(this).find("td:eq(5)").text().trim()){
+							case '星期一':
+								_orderVal += 100;
+								break;
+							case '星期二':
+								_orderVal += 200;
+								break;
+							case '星期三':
+								_orderVal += 300;
+								break;
+							case '星期四':
+								_orderVal += 400;
+								break;
+							case '星期五':
+								_orderVal += 500;
+								break;
+						}
+						$(this).find("td:eq(5)").attr('_order', _orderVal);
+					}
+				});
+				$(".NewTable30 > thead > tr >th:eq(1)").attr("datatype","text");	// 名称
+				$(".NewTable30 > thead > tr >th:eq(3)").attr("datatype","int");	// 定投金额
+				$(".NewTable30 > thead > tr >th:eq(5)").attr("datatype","int");	// 定投金额
+				$(".NewTable30 > thead > tr >th:eq(9)").attr("datatype","int");	// 定投金额
+				var sortRows = [1, 3, 5, 9];
+				C.tableSort(".NewTable30 thead th", sortRows);
+
 				// 统计金额
 				$scope.buyAmountNow = 0;	// 统计现月投资
 				$(".NewTable30 tbody tr[status=status0]").each(function(i){
@@ -436,12 +564,16 @@ module.exports = function(){
 					// $scope.buyAmountNow += calr(_period, _money);
 					$scope.buyAmountNow = $scope.buyAmountNow.jia(calr(_period, _money));
 				});
+				// 增加天天链接
+				$(".NewTable30 tbody tr:visible td:nth-child(1)").addClass('ttLink').click(function(){
+					window.open('http://fund.eastmoney.com/'+$(this).text().trim()+'.html');
+				});
 
-				// 暂停A链接处理
+				// 暂停,恢复,更改 A链接处理
 				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
 				$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
 				$(".NewTable30 tbody tr a:contains('更改')").click(changeDt);
-				// console.log("in DOMNodeInserted");
+				$(".NewTable30 tbody tr a:contains('终止')").click(endDt);
 				$(".rectitle li[status='']").trigger("myclick.girafeee");
 				$scope.$apply();
 			}
@@ -458,7 +590,13 @@ module.exports = function(){
 			$scope.BOTranObj = $(this);
 			$scope.BOT = "恢复";
 			var _str = "#"+$(this).attr("tag")+" tr:not(.nodt):not(.doneToday)";
-			$(_str).eq(_.random(0, $(_str).length-1)).find("button:eq(0)").click();
+			var len = $(_str).length;
+			if(len>0){
+				$(_str).eq(_.random(0, len-1)).find("button:eq(0)").click();
+			}else{
+				$scope.BOT = false;
+				$scope.BOTranObj = false;
+			}
 		});
 		//订单状态过滤
 		// 原生页面的事件删除不掉 这里只处理部分

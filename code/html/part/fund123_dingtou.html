@@ -59,10 +59,16 @@
 		    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 		      <div class="panel-body">
 						<div class="btn-group btn-group" role="group" aria-label="...">
-								<button type="button" class="btn btn-default" ng-click="BOTdingTouPause()">BOT暂停</button>
 							 	<button type="button" class="btn btn-default" ng-click="dingTouPause()">随机暂停</button>
-							 	<button type="button" class="btn btn-default" ng-click="BOTdingTouGo()">BOT开启</button>
+								<button type="button" class="btn btn-default" ng-click="BOTdingTouPause(2000)">B暂停2000</button>
+								<button type="button" class="btn btn-default" ng-click="BOTdingTouPause(4500)">B暂停4500</button>
+						</div>
+						<div class="btn-group btn-group" role="group" aria-label="...">
 							  <button type="button" class="btn btn-default" ng-click="dingTouGo()">随机开启</button>
+							 	<button type="button" class="btn btn-default" ng-click="BOTdingTouGo(3000)">B开启3000</button>
+							 	<button type="button" class="btn btn-default" ng-click="BOTdingTouGo(5000)">B开启5000</button>
+						</div>
+						<div class="btn-group btn-group" role="group" aria-label="...">
 							  <button type="button" class="btn btn-default" ng-click="resetRanking()">重置</button>
 						</div>
 		      </div>

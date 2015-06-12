@@ -1,6 +1,6 @@
 ;(function() {
 	window.GIRAFEEEWINDOW = "content_script";
-	
+
 	window.$ = window.$ ? window.$ : false;
 	window._ = window._ ?	window._ : require('underscore');
 	window.URI = window.URI ? window.URI : require('URIjs');
@@ -21,8 +21,9 @@
 	// console.log("in content");
 	// $('html').attr("ng-app", "");
 	// $('html').attr("ng-csp", "");
-
-	var thisUri = new URI().query("").fragment("").toString();
+	var uri = new URI();
+	window.thisHost = uri.protocol() + '://' + uri.host();
+	window.thisUri = uri.query("").fragment("").toString();
 	console.log('thisUri:',thisUri);
 	switch(thisUri){
 		// test
@@ -56,15 +57,23 @@
 		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai":
 			require('./part/dingtou_confirm_AI');
 			break;
-		定投-AI变更
+		// 定投-AI变更
 		case "https://trade.fund123.cn/Trade/RegularInvestment":
 			// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
 			require('./part/dingtou_genggai');
+			break;
+			// V3定投-AI变更
+		case "https://trade.fund123.cn/v3/trading/Regular/Edit":
+			require('./part/dingtou_genggai_v3');
 			break;
 		// 定投-AI新增
 		case "https://trade.fund123.cn/Trade/RegularInvestment/ai":
 			// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
 			require('./part/dingtou_new');
+			break;
+			// V3定投-AI新增
+		case "https://trade.fund123.cn/v3/trading/Regular/Smart":
+			require('./part/dingtou_new_v3');
 			break;
 		// 定投 done
 		case "https://trade.fund123.cn/Trade/RegularInvestmentPost/ai":

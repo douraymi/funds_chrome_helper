@@ -160,7 +160,7 @@ module.exports = function($scope){
 		});
 	}
 
-	return function(jj, pp, key){
+	return function(jj, pp, key, cb){
 		if(arguments.length==0){
 			setToday();
 		}else{
@@ -168,7 +168,7 @@ module.exports = function($scope){
 				var _item = items.today_dt;
 				if(_item != undefined){
 					_item.ranking[jj][pp][key].doneToday = true;
-					C.storage.set({today_dt:_item});
+					C.storage.set({today_dt:_item}, cb);
 				}
 			});		
 		}

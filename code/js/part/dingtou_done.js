@@ -3,7 +3,7 @@
 // 判断是否成功,如果成功通过message回传
 
 module.exports = function(){
-	console.log("dingtou_done no Use");
+	console.log("dingtou_done");
 	// var _isOk = false;
 	// var _result = $("#RegularForm h3:eq(0)").text().trim();
 	// // console.log("_result:", _result);
@@ -13,10 +13,10 @@ module.exports = function(){
 	// var _url = new URI();
 	// _url.hasQuery("fundCode", function(val){
 		M.connect("dingtouDone", "BOT", function(tn){
-			setTimeout(function(){C.closeWindow();}, 2000);
+			setTimeout(function(){C.closeTab();}, 2000);
 			$('<a href="#" id="stop" class="btn btn-xs btn-warning">BOTstop</a>').click(function(){
 				tn.send({type:"BOT", code:"stop"});
-				C.closeWindow();
+				C.closeTab();
 			}).appendTo($("div.dingbtn").eq(0));
 		});
 	// });

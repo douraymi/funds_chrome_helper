@@ -53,7 +53,7 @@ module.exports = function(){
 							tn.onMsg({
 								redeemRedeem : {
 									fix : function(msg){
-										if(msg.body.isDone) C.closeWindow();
+										if(msg.body.isDone) C.closeTab();
 									}
 								}
 							});

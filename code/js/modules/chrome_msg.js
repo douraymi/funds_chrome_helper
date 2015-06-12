@@ -103,10 +103,6 @@
         }
       });
       _port.onMessage.addListener(function(msg){
-        // console.log(msg);
-        // msg = {
-        //   body:"data"
-        // }
         if(msg.fail){
           callback();
         }else{ 
@@ -114,6 +110,31 @@
         }
         // 自动关闭port
         _port.disconnect();
+      });
+    }
+    this.newTab = function(createData, callback){
+      if(callback == undefined){
+        callback = function(){}
+      }
+      _port.postMessage({
+        type : "connect",
+        code : "newTab",
+        body : createData
+      });
+      _port.onMessage.addListener(function(msg){
+        if(msg.fail){
+          callback();
+        }else{
+          callback(msg.body);
+        }
+        // 自动关闭port
+        _port.disconnect();
+      });
+    }
+    this.closeTab = function(){
+      _port.postMessage({
+        type : "connect",
+        code : "closeTab"
       });
     }
     return this;
@@ -229,6 +250,37 @@
             .fail(function() {
               _port.postMessage({fail:true});
             });
+
+          });
+          break;
+        case "closeTab":
+          port.onMessage.addListener(function(msg, _port){
+            // console.log(_port);
+            var _tabId = _port.sender.tab.id;
+            chrome.tabs.remove(_tabId);
+          });
+          break;
+          case "newTab":
+          port.onMessage.addListener(function(msg, _port){
+            var _createData = msg.body;
+            var _tabIndex = _port.sender.tab.index;
+            _createData.index = _createData.index?_createData.index:_tabIndex;
+            // console.log(_port);
+            // chrome.windows.create({url:_url, focused:false}, function(_window){
+            chrome.tabs.create(_createData, function(_tab){
+              if(_tab == undefined){
+                _port.postMessage({fail:true});
+              }else{
+                _port.postMessage({body:'ok'});
+              }
+            });
+            // $.ajax({url: _url })
+            // .done(function(data) {
+            //   _port.postMessage({body:data});
+            // })
+            // .fail(function() {
+            //   _port.postMessage({fail:true});
+            // });
 
           });
           break;

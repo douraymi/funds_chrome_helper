@@ -4,6 +4,7 @@
 
 module.exports = function(){
 	console.log("dingtou_new");
+	$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
 
 	var _url = new URI();
 	_url.hasQuery("from", function(fromVal){
@@ -24,15 +25,6 @@ module.exports = function(){
 					tn.onMsg({
 						BOT : {
 							BOT : function(msg){
-								// $("#bankList").bind("DOMNodeInserted", function(elm){
-								// 	$("input[isvaild='true']").eq(0).click();
-								// 	console.log("in change");
-								// 	$(".next").click();
-								// });
-								// $("input[name='TradeAccount']").change(function(){
-								// 	console.log("in change");
-								// 	$(".next").click();
-								// });
 								setTimeout(function(){$(".next").click();}, 2000);
 							}
 						}
