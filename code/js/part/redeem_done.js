@@ -35,5 +35,9 @@ module.exports = function(){
 
 	$(".addcardother").css("display", "initial");
 
+	$(".next.close.dtbg").after($("<a class='next dtbg'>关闭！！！！！</a>").click(function(){
+		window.close();
+	})).remove();
+
 }()
 

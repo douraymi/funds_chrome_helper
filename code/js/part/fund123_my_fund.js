@@ -11,7 +11,6 @@ module.exports = function(){
 			Bin 	: 30000,
 			rate	: 0.5
 		}
-
 		// localStorage方式统计当天赎回总额
 		C.storage.ngBind($scope, "todayRedeem", function(item){
 			// console.log("item:", item);
@@ -67,7 +66,7 @@ module.exports = function(){
 		function redeemTunnel(parentid, fundCode, perVal, fenE){
 			perVal = Number(perVal);
 			fenE = Number(fenE);
-			$("#TR2_"+parentid).css("display","none");
+			// $("#TR2_"+parentid).css("display","none");
 			// 赎回出错修正
 			M.connect("my_fund", fundCode+"redeem", function(tnRedeem){
 				var redeemMsgObj = {
@@ -196,52 +195,117 @@ module.exports = function(){
 			
 		}
 
+		// 初始化
+		function tdOne(tdobj){
+			var delA = tdobj.find("a").remove();
+			$("<a class='tdOne'>"+ delA.text() +"</a>").bind("click", function(event){
+				var id = tdobj.find("div:eq(0)").attr("id");
+				$("#m_Table_open div.zhedie:not([id="+id+"])").click();
+				tdobj.find("div:eq(0)").click();
+				$("html,body").animate({scrollTop:tdobj.offset().top-50});
+				// console.log("id: ", id);
+				event.stopPropagation();    //  阻止事件冒泡
+			}).appendTo(tdobj);
+		}
+		function prefix(){
+			// 改变第一个td的点击
+			$("#m_Table_open tbody tr.bb td:nth-child(1)").each(function(i){
+				tdOne($(this));
+			});
+		};
+		function tradeLink(tagId){
+			$("#"+tagId).bind("DOMNodeInserted", function(event){
+				if(event.target.id == "fundInner"){
+					// console.log($("#"+tagId +" #fundInner div.tb tr.ct")); return;
+					// 特殊赎回链接修改
+					var day90redeem = 0;
+					$("#"+tagId).find("#fundInner div.tb tr.ct").each(function(i, tr){
+						var _shyk = Number($(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,""));
+						if(_shyk > 0 || _shyk < 0 ){
+							var _fday = Number($(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,""));
+							if(_fday > 92){
+								day90redeem = day90redeem.jia($(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
+							}else if(_fday>0 && _fday<=92){
+								 return false;
+							}
+						}
+					});
+					day90redeem = day90redeem>0?day90redeem:-1;
+					// fundcode
+					var fundCodeStr = $("#"+tagId).parent().find("div.top span.left").text();
+					var fundCode = fundCodeStr.substr(fundCodeStr.indexOf("(")+1, 6);
+					// console.log("p:", fundCode);
+					// 新增元素
+					// var newElm = 
+					$("#"+tagId).find("a:contains('赎回')")
+					.click(function(){
+						// console.log("day90redeem@@", day90redeem);
+						// console.log("$(this).attr(href):", $(this).attr("href"));
+						mainProcess($(this).attr("href"), day90redeem);
+					})
+					.after($(" <a href='https://trade.fund123.cn/home/agreementquery/?from=new&clean=true&fundcode="+fundCode+"' target='_bank'>清理</a>").click(function(){
+						// <a href='javascript:void(0);'>清理</a>
+						
+						console.log("hahaha");
+					}))
+					.after(" <a href='http://fund.eastmoney.com/"+fundCode+".html' target='_bank'>天天</a> <a href='http://fund.fund123.cn/html/"+fundCode+"/Index.html' target='_bank'>数米</a> ");
+				}
+			});
+
+			// var _tUrl = "#m_Table_open div.opt>span.left>a:contains('赎回')";
+			// $(_tUrl).bind("DOMNodeInsertedIntoDocument", function(celm){
+			// 	console.log("XXXX:", celm.target);
+			// 	var day90redeem = 0;
+			// 	$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
+			// 		var _shyk = Number($(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,""));
+			// 		if(_shyk > 0 || _shyk < 0 ){
+			// 			var _fday = Number($(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,""));
+			// 			if(_fday > 92){
+			// 				day90redeem = day90redeem.jia($(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
+			// 			}else if(_fday>0 && _fday<=92){
+			// 				 return false;
+			// 			}
+			// 		}
+			// 	});
+			// 	day90redeem = day90redeem>0?day90redeem:-1;
+			// 	$(celm.target).click(function(){
+			// 		console.log("day90redeem@@", day90redeem);
+			// 		mainProcess($(celm.target).attr("href"), day90redeem);
+			// 	});
+
+			// 	// 修改页面
+			// 	console.log("par: ", $(celm.target).parent());
+			// });
+		}
+
 		// DOM 处理
+		prefix();
 		$("#a_trade_redeem").click(function(){
 			mainProcess($(this).attr("href"));
 		});
 
-		// 初始化
-		function tradeLink(){
-			// 特殊赎回链接修改
-			var _tUrl = "#m_Table_open div.opt>span.left>a:contains('赎回')";
-			$(_tUrl).bind("DOMNodeInsertedIntoDocument", function(celm){
-				console.log(celm.target);
-				var day90redeem = 0;
-				$(celm.target).parents("#fundInner:eq(0)").find("div.tb tr.ct").each(function(i, tr){
-					// var _shyk = $(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
-					var _shyk = Number($(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,""));
-					if(_shyk > 0 || _shyk < 0 ){
-						// var _fday = $(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,"")*1;
-						var _fday = Number($(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,""));
-						if(_fday > 92){
-							// day90redeem += $(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"")*1;
-							day90redeem = day90redeem.jia($(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
-						}else if(_fday>0 && _fday<=92){
-							 return false;
-						}
-					}
-				});
-				day90redeem = day90redeem>0?day90redeem:-1;
-				$(celm.target).click(function(){
-					console.log("day90redeem@@", day90redeem);
-					mainProcess($(celm.target).attr("href"), day90redeem);
-				});
-			});
-
-			// 改变第一个td的点击
-			// $("#m_Table_open tr.bb td:eq(0)").
-		}
-		tradeLink();
 		$("#OpenTable").bind("DOMNodeInserted", function(elm){
+			// console.log(elm);
 			if(elm.target.id == "m_Table_open" ){
 				C.storage.get('todayRedeem', function(items){
 					if(items.todayRedeem && items.todayRedeem.redeemTr) redeemClass(items.todayRedeem.redeemTr);
 				});
+				prefix();
+			}else if(elm.target.className == "content"){
+				// console.log("insert content");
+				// console.log($("#myfund").find("tr:eq(0)"));
+				// console.log(elm.target);
+				// console.log(elm);
+				// console.log("test:", elm.target.innerHTML);
+				// setTimeout(function(){
+				// 	tradeLink(elm.target.id);
+				// }, 1000);
+				tradeLink(elm.target.id);
+				// $("#"+elm.target.id+ " div#fundInner").ready(function(){
+				// 	tradeLink(elm.target.id);
+				// });
 			}
-			tradeLink();
 		});
-
 
 	}
 

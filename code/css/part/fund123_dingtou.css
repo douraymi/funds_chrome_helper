@@ -1,8 +1,8 @@
-* {
+/** {
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
 }
-
+*/
 body {
 	padding-right:25px !important;
 }

@@ -9,9 +9,18 @@
   window.C = window.C ? window.C : require('./modules/chrome_cab');
 
   console.log("bg begin");
-
+  // 预处理部分
+  //  -- 天天基金主题排名
+  var zt = require('./etc/zhuti');
+  // zt();
+  // setTimeout(function(){
+  //     C.storage.get('zhuti', function(item){
+  //       console.log('item:', item);
+  //     });
+  //   }, 3000);
+  
   M.onConnect(function(cntor){
-
+    // console.log("cntor:", cntor);
   });
   // M.onConnect(function(cntor){
   //   cntor.onMsg({

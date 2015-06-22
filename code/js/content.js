@@ -10,7 +10,6 @@
 
 	// girafeeeApp必须插入DOM，C.ng中直接注入angularjs模块
 	if(angular === false) throw "no angular !!!!!";
-	$('html').append('<div id="girafeeeApp"><div ng-view></div></div>');
 	// jquery等导入window全局对象中方便别的文件使用
 	// menifest文件中导入jquery、angularjs和bootstrap
 	// =======================
@@ -22,73 +21,96 @@
 	// $('html').attr("ng-app", "");
 	// $('html').attr("ng-csp", "");
 	var uri = new URI();
+	window.thisDomain = uri.domain();
 	window.thisHost = uri.protocol() + '://' + uri.host();
 	window.thisUri = uri.query("").fragment("").toString();
-	console.log('thisUri:',thisUri);
-	switch(thisUri){
-		// test
-		case "https://www.baidu.com/":
-			require('./test');
-			break;
-		// 我的基金
-		case "http://my.fund123.cn/RealFundDefault.aspx":
-			require('./part/fund123_my_fund');
-			break;
-		// 基金赎回
-		case "https://trade.fund123.cn/v3/trading/redeem/index":
-			require('./part/redeem_redeem_v3');
-			break;
-		case "https://trade.fund123.cn/Trading/Do/Redeem":
-			require('./part/redeem_redeem');
-			break;
-		case "https://trade.fund123.cn/Trading/Do/RedeemConfirm":
-			require('./part/redeem_confirm');
-			break;
-		case "https://trade.fund123.cn/Trading/Do/RedeemDone":
-			require('./part/redeem_done');
-			break;
-		//定投页面
-		case "https://trade.fund123.cn/home/agreementquery/":
-			require('./part/fund123_dingtou');
-			break;
-		// 暂停或开启 确定
-		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm":
-			require('./part/dingtou_confirm');
-			break;
-		// 变更、新增 确定
-		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/normal":
-		case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai":
-			require('./part/dingtou_confirm_AI');
-			break;
-		// 定投-AI变更
-		case "https://trade.fund123.cn/Trade/RegularInvestment":
-			// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
-			require('./part/dingtou_genggai');
-			break;
-			// V3定投-AI变更
-		case "https://trade.fund123.cn/v3/trading/Regular/Edit":
-			require('./part/dingtou_genggai_v3');
-			break;
-		// 定投-AI新增
-		case "https://trade.fund123.cn/Trade/RegularInvestment/ai":
-			// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
-			require('./part/dingtou_new');
-			break;
-			// V3定投-AI新增
-		case "https://trade.fund123.cn/v3/trading/Regular/Smart":
-			require('./part/dingtou_new_v3');
-			break;
-		// 定投 done
-		case "https://trade.fund123.cn/Trade/RegularInvestmentPost/ai":
-		case "https://trade.fund123.cn/Trade/RegularInvestmentPost/normal":
-			require('./part/dingtou_done');
-			break;
+	console.log('thisDomain:',thisDomain, 'thisHost:',thisHost, 'thisUri:',thisUri);
+	
+	// $('html').append('<div id="girafeeeApp"><div ng-view></div></div>');
+	// 放到 cab中的ng里了
 
+	if(thisDomain == "fund123.cn"){
+		// 数米页面处理
+		switch(thisUri){
+			// 我的基金
+			case "http://my.fund123.cn/RealFundDefault.aspx":
+				require('./part/fund123_my_fund');
+				break;
+			// 基金赎回
+			case "https://trade.fund123.cn/v3/trading/redeem/index":
+				require('./part/redeem_redeem_v3');
+				break;
+			case "https://trade.fund123.cn/Trading/Do/Redeem":
+				require('./part/redeem_redeem');
+				break;
+			case "https://trade.fund123.cn/Trading/Do/RedeemConfirm":
+				require('./part/redeem_confirm');
+				break;
+			case "https://trade.fund123.cn/Trading/Do/RedeemDone":
+				require('./part/redeem_done');
+				break;
+			//定投页面
+			case "https://trade.fund123.cn/home/agreementquery/":
+				require('./part/fund123_dingtou');
+				break;
+			// 暂停或开启 确定
+			case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm":
+				require('./part/dingtou_confirm');
+				break;
+			// 变更、新增 确定
+			case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/normal":
+			case "https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai":
+				require('./part/dingtou_confirm_AI');
+				break;
+			// 定投-AI变更
+			case "https://trade.fund123.cn/Trade/RegularInvestment":
+				// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
+				require('./part/dingtou_genggai');
+				break;
+				// V3定投-AI变更
+			case "https://trade.fund123.cn/v3/trading/Regular/Edit":
+				require('./part/dingtou_genggai_v3');
+				break;
+			// 定投-AI新增
+			case "https://trade.fund123.cn/Trade/RegularInvestment/ai":
+				// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
+				require('./part/dingtou_new');
+				break;
+				// V3定投-AI新增
+			case "https://trade.fund123.cn/v3/trading/Regular/Smart":
+				require('./part/dingtou_new_v3');
+				break;
+			// 定投 done
+			case "https://trade.fund123.cn/Trade/RegularInvestmentPost/ai":
+			case "https://trade.fund123.cn/Trade/RegularInvestmentPost/normal":
+				require('./part/dingtou_done');
+				break;
+			// warning 页面
+			case "https://trade.fund123.cn/GoTrade/定投恢复":
+				require('./part/waringing');
+				break;
 
-		default:
+			default:
 
+		}
 	}
 
+	if(thisDomain == "1234567.com.cn" || thisDomain == "eastmoney.com"){
+		// 天天基金页面处理
+		switch(thisUri){
+			case "https://trade.1234567.com.cn/Investment/default":
+				require('./part/tiantian_dingtou');
+				break;
+
+			default:
+		}
+	}
+
+
+	// test
+	if(thisUri == "https://www.baidu.com/"){
+		require('./test');
+	}
 
 
 	// var msgHome = MSG_CON.init(thisUri);

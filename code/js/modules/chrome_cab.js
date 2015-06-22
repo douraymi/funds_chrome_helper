@@ -91,7 +91,7 @@ module.exports = function(){
 	};
 	//除法函数
 	function accDiv(arg1, arg2) {
-    var t1 = 0, t2 = 0, r1, r2;  
+    var t1 = 0, t2 = 0, r1, r2;
     try {
       t1 = arg1.toString().split(".")[1].length;
     }
@@ -262,36 +262,71 @@ module.exports = function(){
 	  },
 	  html : function(){
 	  	if(arguments.length != 2 && arguments.length != 3) throw "C:html() wrong arguments";
-	  	// url, isNeedScript, callback
-	  	// console.log("arguments:", arguments);
 	  	var url = cab.chromeUrl(arguments[0]);
-	  	var isNeedScript, callback;
+	  	var settingBody={};
+	  	var callback;
 	  	if(arguments.length == 2 && _.isFunction(arguments[1])){
-	  		isNeedScript = false;
+	  		settingBody.url = url;
 	  		callback = arguments[1];
 	  	}else if(arguments.length == 3 && _.isFunction(arguments[2])){
-	  		isNeedScript = arguments[1];
+	  		settingBody = arguments[1];
+	  		settingBody.url = url;
 	  		callback = arguments[2];
 	  	}else{
 	  		throw "C:html() wrong arguments[2]";
 	  	};
-	  	var _df = $.Deferred();
-	  	if(isNeedScript){
-	  		console.log("html isNeedScript");
-				$.ajax({ url: url, async:true, success: function(data, textStatus){
-						// 一般情况callback里不要直接操作DOM刷html
-						callback(data, _df);
-				}, error : function(){ callback(undefined, _df);} });	  		
+		  var _df = $.Deferred();
+	  	if(GIRAFEEEWINDOW == 'background'){
+				$.ajax(settingBody)
+        .done(function(data) {
+        	callback(data, _df);
+        })
+        .fail(function() {
+        	callback(undefined, _df);
+        });
 	  	}else{
 				M.connect("xhr", function(cntor){
-					cntor.xhr(url, function(data){
+					cntor.xhr(settingBody, function(data){
 						// 如果请求失败data是undefined
 						callback(data, _df);
 					});
 				});
+		  	return _df;
+	  		
 	  	}
-	  	return _df;
 	  },
+	  // html : function(){
+	  // 	if(arguments.length != 2 && arguments.length != 3) throw "C:html() wrong arguments";
+	  // 	// url, isNeedScript, callback
+	  // 	// console.log("arguments:", arguments);
+	  // 	var url = cab.chromeUrl(arguments[0]);
+	  // 	var isNeedScript, callback;
+	  // 	if(arguments.length == 2 && _.isFunction(arguments[1])){
+	  // 		isNeedScript = false;
+	  // 		callback = arguments[1];
+	  // 	}else if(arguments.length == 3 && _.isFunction(arguments[2])){
+	  // 		isNeedScript = arguments[1];
+	  // 		callback = arguments[2];
+	  // 	}else{
+	  // 		throw "C:html() wrong arguments[2]";
+	  // 	};
+	  // 	var _df = $.Deferred();
+	  // 	if(isNeedScript){
+	  // 		console.log("html isNeedScript");
+			// 	$.ajax({ url: url, async:true, success: function(data, textStatus){
+			// 			// 一般情况callback里不要直接操作DOM刷html
+			// 			callback(data, _df);
+			// 	}, error : function(){ callback(undefined, _df);} });	  		
+	  // 	}else{
+			// 	M.connect("xhr", function(cntor){
+			// 		cntor.xhr(url, function(data){
+			// 			// 如果请求失败data是undefined
+			// 			callback(data, _df);
+			// 		});
+			// 	});
+	  // 	}
+	  // 	return _df;
+	  // },
 	  df : function(){
 	  	var self = this;
 			var tempAry = [];
@@ -337,6 +372,7 @@ module.exports = function(){
 			return this;
 		},
 	  ng : function(tplUrl, contrlFunc){
+	  	$('html').append('<div id="girafeeeApp"><div ng-view></div></div>');
 			angular.module('myApp', [])
 			.config(['$routeProvider',function($routeProvider) {
 				$routeProvider

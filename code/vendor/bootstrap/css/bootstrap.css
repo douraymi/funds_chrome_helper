@@ -1069,7 +1069,8 @@ th {
 .glyphicon-menu-up:before {
   content: "\e260";
 }
-* {
+/*冲突*/
+/** {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
@@ -1079,7 +1080,7 @@ th {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
-}
+}*/
 html {
   font-size: 10px;
 
@@ -2267,7 +2268,8 @@ th {
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
   padding: 8px;
-  line-height: 1.42857143;
+  /*冲突*/
+  /*line-height: 1.42857143;*/
   vertical-align: top;
   border-top: 1px solid #ddd;
 }
@@ -6353,7 +6355,9 @@ button.close {
   display: none !important;
 }
 .show {
-  display: block !important;
+  /*你妹的有个show样式冲突*/
+  /*display: block !important;*/
+  display: block;
 }
 .invisible {
   visibility: hidden;

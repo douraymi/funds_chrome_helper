@@ -100,25 +100,73 @@ module.exports = function($scope){
 		)
 		.next(
 			function(){
-				function checkdtOk(fundObj, loopDf){
+				function checkdtOk(fundObj, loopDf, loopCount){
 					return C.html('http://fund.fund123.cn/html/'+fundObj.fundcode+'/index.html', function(data, _df){
 						var checkDf = loopDf? loopDf: _df;
-						if(data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
+						var checkCount = loopCount? loopCount+1 : 1;
+						if(data!=undefined && data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
 							fundObj.dtOk = false;
 							checkDf.resolve();
-						}else if(data.indexOf("<b>定投：</b><span>开放</span>")>-1){
+						}else if(data!=undefined && data.indexOf("<b>定投：</b><span>开放</span>")>-1){
 							fundObj.dtOk = true;
 							checkDf.resolve();
+						}else if(checkCount<50){
+							setTimeout(function(){
+								console.log("checkdtOk redo : ", fundObj.fundcode, " ", checkCount);
+								checkdtOk(fundObj, checkDf, checkCount);
+							}, 200);
 						}else{
-							checkdtOk(fundObj, checkDf);
+							fundObj.dtOk = false;
+							checkDf.resolve();
+							console.log("checkdtOk error checkCount: ", fundObj.fundcode, " data:", data);
+						}
+					});
+				}
+				function dailyOk(fundObj, loopDf, loopCount){
+					return C.html('http://hqqd.fund123.cn/jsdata/nv_daily/latest/' + fundObj.fundcode + '.js', {dataType: 'text'}, function(data, _df){
+						var checkDf = loopDf? loopDf: _df;
+						var checkCount = loopCount? loopCount+1 : 1;
+						if(data!=undefined){
+							var str = data.slice(data.indexOf("=")+2, -1);
+							var ary = str.split(";");
+							str = ary[ary.length-2];
+							ary = str.split(" ");
+							var rate = fundObj.rate.replace(/[^0-9\.-]+/g,"").jian(ary[ary.length-1].cheng(100));
+							// console.log("fundObj.rate: ", fundObj.rate, " ary[ary.length-1]: ", ary[ary.length-1]);
+							// console.log(rate, " fundObj.fundcode:", fundObj.fundcode, " ary:", ary);
+							if(rate<-0.1 || rate>0.1){
+								fundObj.dtOk = false;
+								checkDf.resolve();
+							}else{
+								checkDf.resolve();
+							}		
+						}else if(checkCount<50){
+							setTimeout(function(){
+								console.log("dailyOk redo : ", fundObj.fundcode, " ", checkCount);
+								dailyOk(fundObj, checkDf, checkCount);
+							}, 200);
+						}else{
+							fundObj.dtOk = false;
+							checkDf.resolve();
+							console.log("dailyOk error checkCount: ", fundObj.fundcode, " data:", data);							
 						}
 					});
 				}
 				var ehDf = C.df();
-				_.each(rankingData, function(vi){
-					_.each(vi, function(vj){
-						_.each(vj, function(vk){
-							ehDf.next(checkdtOk, vk);
+				_.each(rankingData, function(vi, ki){
+					_.each(vi, function(vj, kj){
+						_.each(vj, function(vk, kk){
+							if(ki == "shumi" && kj == "day"){
+								ehDf.next(checkdtOk, vk).next(dailyOk, vk);
+								// console.log("ki:", ki, " kj:", kj);
+								// ehDf.next(function(){
+								// 	return checkdtOk(vk);
+								// }, function(){
+								// 	return dailyOk(vk);
+								// });
+							}else{
+								ehDf.next(checkdtOk, vk);
+							}
 						});
 					});
 				});
@@ -154,9 +202,9 @@ module.exports = function($scope){
 			} }	};
 			todayDtNgBind(newItem.today_dt.ranking, function(){
 				console.log(newItem.today_dt);
-				C.storage.remove('today_dt');
+				C.storage.remove('today_dt');	//	这里忘了有没有必要
 				C.storage.set(newItem);
-			});					
+			});
 		});
 	}
 

@@ -13,9 +13,13 @@ module.exports = function(){
 			shumiShowX 				: false,
 			ttShowX 					: false
 		}
+		// $scope.BOTpw = false;
+		// scope密码
+		C.storage.ngBind($scope, 'BOTpw', function(item){
+
+		});
 		$scope.BOT = false;
 		$scope.BOTranObj = false;
-		$scope.BOTpw = false;
 		$scope.BOTkai = {};
 		$scope.BOTguan = {};
 		// 处理排名数据
@@ -32,28 +36,56 @@ module.exports = function(){
 			}
 		}, function(changes){
 		});
+
 		// 终止A链接事件
 		function endDt(){
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
 				M.connect('dingtou', _xyh+"_dtend", function(tunnel){
+					var _isReload = true;
+					tunnel.onMsg({
+						BOT : {
+							noReload : function(msg){
+								_isReload = msg.body;
+							}
+						}
+					});
 					tunnel.onClose.addListener(function(){
-						var buyAmountNow_tmp = $scope.buyAmountNow;
-						reloadList(function(){
-							// 记录当天新增暂停量
-							C.storage.get('today_zanting', function(items){
-								var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
-								var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
-								C.storage.set(newItem);
-								if($scope.randomContine=="status1"){
-									$(".rectitle li[status=1]").trigger("click");
-									randomSelect("status1");
-								}else if($scope.randomContine=="status0"){
-									$(".rectitle li[status=0]").trigger("click");
-									randomSelect("status0");
-								}
+						if(_isReload){
+							M.connect("dingtou", "BOT", function(tnBOT){
+								// tnBOT.onMsg({
+								// 	BOT : {
+								// 		stop : function(msg){
+								// 			$scope.BOT = false;
+								// 		}
+								// 	}
+								// });
+								tnBOT.onClose.addListener(function(){
+									var buyAmountNow_tmp = $scope.buyAmountNow;
+									reloadList(function(){
+										// 记录当天新增暂停量
+										C.storage.get('today_zanting', function(items){
+											var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
+											var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
+											C.storage.set(newItem, function(){
+												if($scope.isCloseWindow){
+													window.close();
+												}
+											});
+										});
+									});
+
+									tnBOT.close();
+								});
 							});
-						});
+
+						}else{
+							M.connect("dingtou", "BOT", function(tnBOT){
+								tnBOT.onClose.addListener(function(){
+									tnBOT.close();
+								});
+							});
+						}
 						tunnel.close();
 					});
 				});
@@ -94,28 +126,34 @@ module.exports = function(){
 		}
 		// 恢复A链接事件
 		function addDt(){
+			console.log("in addDt");
 			var _url = new URI($(this).attr('href'));
 			_url.hasQuery('xyh', function(_xyh){
-				// console.log("_xyh:", _xyh);
+				console.log("_xyh@@:", _xyh);
 				var doRankData;
 				if($scope.BOT == "恢复"){
+					console.log("in 恢复 1");
 					M.connect("dingtou", _xyh+"_dtgo", function(tunnel){
+						console.log("in 恢复 2");
 						tunnel.send({type:"BOT", code:"BOT", body:$scope.BOTpw});
 						tunnel.onMsg({
 							xxx : {
 								xxx : function(msg){
-									// console.log("xxx", msg);
+									console.log("msg3:", msg);
 									doRankData = msg.body;
 								}
 							},
 							BOT : {
 								pw : function(msg){
-									$scope.BOTpw = msg.body;
+									console.log("msg4:", msg);
+									C.storage.set({BOTpw: msg.body});
+									// $scope.BOTpw = msg.body;
 								}
 							}
 						});
 					});
 					M.connect("dingtou", "BOT", function(tnBOT){
+						console.log("xx1:");
 						tnBOT.onMsg({
 							BOT : {
 								stop : function(msg){
@@ -138,6 +176,10 @@ module.exports = function(){
 											$scope.BOTranObj.click();
 										}
 									});
+								}else{
+									if($scope.BOTranObj != false){
+										$scope.BOTranObj.click();
+									}
 								}
 								if($scope.randomContine=="status1"){
 									$(".rectitle li[status=1]").trigger("click");
@@ -150,6 +192,7 @@ module.exports = function(){
 
 				}else{
 					M.connect("dingtou", _xyh+"_dtgo", function(tunnel){
+						console.log("xx2:");
 						// var doRankData;
 						tunnel.onMsg({
 							xxx : {
@@ -189,7 +232,8 @@ module.exports = function(){
 						tunnel.onMsg({
 							BOT : {
 								pw : function(msg){
-									$scope.BOTpw = msg.body;
+									C.storage.set({BOTpw: msg.body});
+									// $scope.BOTpw = msg.body;
 								}
 							}
 						});
@@ -271,7 +315,8 @@ module.exports = function(){
 			$(".NewTable30 tbody tr").removeClass("hight_light");
 			var _length = $(".NewTable30 tbody tr[status="+status+"]").length;
 			var _random = _.random(0, _length-1);
-			var _trObj = $(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
+			var _trObj = $(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").insertBefore($(".NewTable30 tbody tr").eq(0));
+			// var _trObj = $(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
 			fixA(_trObj);
 			if($scope.BOT != false){
 				if($scope.BOT == '暂停' && $scope.BOTguan.proc != undefined){
@@ -297,12 +342,13 @@ module.exports = function(){
 			}
 
 		}
+		// 没有remove的东西直接insertBefore就不用fix ???
 		function fixA(trObj){
-			trObj.find("a:contains('暂停')").click(zanting);
-			trObj.find("a:contains('恢复')").click(addDt);
-			trObj.find("a:contains('更改')").click(changeDt);
-			trObj.find("a:contains('终止')").click(endDt);
-			trObj.find("td:eq(0)").click(function(){
+			trObj.find("a:contains('暂停')").unbind().click(zanting);
+			trObj.find("a:contains('恢复')").unbind().click(addDt);
+			trObj.find("a:contains('更改')").unbind().click(changeDt);
+			trObj.find("a:contains('终止')").unbind().click(endDt);
+			trObj.find("td:eq(0)").unbind().click(function(){
 				window.open('http://fund.eastmoney.com/'+$(this).text().trim()+'.html');
 			});
 		}
@@ -335,6 +381,52 @@ module.exports = function(){
 			}).next(function(){
 				callback();
 			}).go();
+		}
+
+		// clean function
+		function clean(trObjAry){
+			// $scope.BOT == "终止";
+			var _df = C.df();
+			var _length = trObjAry.length;
+			trObjAry.each(function(i, tr){
+				// console.log("_length:", _length);
+				var _isEnd = i==_length-1?true:false;
+				_df.next(function(){
+					// console.log("_isEnd:", _isEnd);
+					// console.log("tr:", tr);
+					var trigger = $.Deferred();
+					var _url = thisHost + $(tr).eq(0).find("a:contains('终止')").eq(0).click().attr("href");
+					// console.log("_url:", _url);
+					var uri = new URI(_url);
+					uri.hasQuery("xyh", function(xyh){
+						M.connect('dingtou', xyh+"cleanEnd", function(tn){
+							tn.send({type:'BOT', code:'isEnd', body:_isEnd});
+							tn.send({type:"BOT", code:"BOT", body:$scope.BOTpw});
+							tn.onMsg({
+								BOT : {
+									pw : function(msg){
+										C.storage.set({BOTpw: msg.body});
+										// $scope.BOTpw = msg.body;
+									}
+									// ,pwDone : function(msg){
+									// 	tn.send({type:'BOT', code:'isEnd', body:_isEnd});
+									// }
+								} 
+							});
+							tn.onClose.addListener(function(){
+								trigger.resolve();
+								tn.close();
+							});
+						});
+
+					});
+					C.newTab({url:_url, active:false});
+					return trigger;
+				});
+				
+			});
+			// 懒得修改了 直接windowclose 不用上面终止函数去处理了(但是今天暂停数就没算了，以后看必要再搞)
+			_df.next(function(){$scope.isCloseWindow=true;}).go();
 		}
 
 		// 处理scope	
@@ -387,10 +479,11 @@ module.exports = function(){
 				$(".rectitle li:contains('暂停')").trigger("click");
 				$(".NewTable30 tbody tr").removeClass("hight_light");
 				$(thsCodeTr).each(function(i){
-					var _trObj = $(this).addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
+					var _trObj = $(this).addClass("hight_light").insertBefore($(".NewTable30 tbody tr").eq(0));
 					fixA(_trObj);
 				});
 				if($scope.BOT == "恢复"){
+					console.log("fff1:");
 					$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).click();
 					var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href");
 					C.newTab({url:_url, active:false});
@@ -406,7 +499,8 @@ module.exports = function(){
 						// tunnel.onMsg({
 						// 	BOT : {
 						// 		pw : function(msg){
-						// 			$scope.BOTpw = msg.body;
+						// 			C.storage.set({BOTpw: msg.body});
+						//			// $scope.BOTpw = msg.body;
 						// 		}
 						// 	}
 						// });
@@ -421,7 +515,8 @@ module.exports = function(){
 							},
 							BOT : {
 								pw : function(msg){
-									$scope.BOTpw = msg.body;
+									C.storage.set({BOTpw: msg.body});
+									// $scope.BOTpw = msg.body;
 								}
 							}
 						});
@@ -449,6 +544,10 @@ module.exports = function(){
 											$scope.BOTranObj.click();
 										}
 									});
+								}else{
+									if($scope.BOTranObj != false){
+										$scope.BOTranObj.click();
+									}
 								}
 							});
 							tnBOT.close();
@@ -475,12 +574,11 @@ module.exports = function(){
 						});
 					});
 					window.open(_url, '_blank');
-
 				}
-
 			}
 
 			M.connect("dingtou_2", fundcode+"_today_dt", function(tunnel){
+				console.log("in dingtou_2_today_dt");
 				tunnel.send({type:'xxx', code:'xxx', body:{jj:jj, pp:pp, key:key}});
 				tunnel.onClose.addListener(function(){
 					tunnel.close();
@@ -492,7 +590,6 @@ module.exports = function(){
 		// 处理DOM
 		// 用插件的reload替换原网页的
 		// $("#return-list").bind("DOMNodeInserted", function(elm){
-			
 		// 	$(".rectitle li[status='']").trigger("myclick.girafeee");
 		// 	// reloadList(function(){
 		// 	// 	$(".rectitle li[status='']").trigger("click");
@@ -500,87 +597,114 @@ module.exports = function(){
 		// });
 		$("#return-list").bind("DOMNodeInserted", function(elm){
 			if(elm.target.className == "NewTable30"){
-				// table排序处理
-				$(".NewTable30 thead th:eq(3)").css("width", "60");
-				$(".NewTable30 thead th:eq(8)").css("width", "60");
-				$(".NewTable30 thead th:eq(9)").css("width", "60");
-				$(".NewTable30 thead th:eq(10)").css("width", "50");
-				$(".NewTable30 thead th:eq(12)").css("width", "50");
-				$(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='80'>基金总投</th>");
-				$(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
-				var ozAry = {};	// 总投入金额临时对象
-				$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
-					// 总投入金额一期处理
-					var _fcode = $(this).find("td:eq(0)").text().trim();
-					var order_zong = $(this).find("td:eq(9)").text().trim().replace(/[^0-9\.-]+/g,"");
-					ozAry[_fcode] = ozAry[_fcode] ? ozAry[_fcode].jia(order_zong) : order_zong;
-				});
-				$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
-					var _fcode = $(this).find("td:eq(0)").text().trim();
-					// 总投入金额二期处理
-					$(this).find("td:eq(9)").attr('_order', ozAry[_fcode]);
-					$(this).find("td:eq(10)").html("<span style='color:darkgoldenrod'>"+ozAry[_fcode]+"</span>");
-					// .append("<span style='color:darkgoldenrod'> /"+ozAry[_fcode]+"</span>");
-					// 定投金额
-					var order_dtje = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
-					$(this).find("td:eq(3)").attr('_order', order_dtje);
-					// 定投日期
-					var order_dtrq = $(this).find("td:eq(5)").text().trim().replace(/[^0-9\.-]+/g,"");
-					if(order_dtrq>0){
-						$(this).find("td:eq(5)").attr('_order', parseInt(order_dtrq));
+				// return;
+				function newSort(){
+					var isTotal = parseInt($('b:nth-child(2)', '#recordareatongji').text());
+					// console.log('isTotal:', isTotal);
+					if(isTotal>0){
+						// table排序处理
+						$(".NewTable30 thead th:eq(3)").css("width", "60");
+						$(".NewTable30 thead th:eq(8)").css("width", "60");
+						$(".NewTable30 thead th:eq(9)").css("width", "60");
+						$(".NewTable30 thead th:eq(10)").css("width", "50");
+						$(".NewTable30 thead th:eq(12)").css("width", "50");
+						$(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='80'>基金总投</th>");
+						$(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
+						var ozAry = {};	// 总投入金额临时对象
+						$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
+							// 总投入金额一期处理
+							var _fcode = $(this).find("td:eq(0)").text().trim();
+							var order_zong = $(this).find("td:eq(9)").text().trim().replace(/[^0-9\.-]+/g,"");
+							ozAry[_fcode] = ozAry[_fcode] ? ozAry[_fcode].jia(order_zong) : order_zong;
+						});
+						$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
+							var _fcode = $(this).find("td:eq(0)").text().trim();
+							// 总投入金额二期处理
+							$(this).find("td:eq(9)").attr('_order', ozAry[_fcode]);
+							$(this).find("td:eq(10)").html("<span style='color:darkgoldenrod'>"+ozAry[_fcode]+"</span>");
+							// .append("<span style='color:darkgoldenrod'> /"+ozAry[_fcode]+"</span>");
+							// 定投金额
+							var order_dtje = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
+							$(this).find("td:eq(3)").attr('_order', order_dtje);
+							// 定投日期
+							var order_dtrq = $(this).find("td:eq(5)").text().trim().replace(/[^0-9\.-]+/g,"");
+							if(order_dtrq>0){
+								$(this).find("td:eq(5)").attr('_order', parseInt(order_dtrq));
+							}else{
+								var _orderVal = 1000;
+								var _pre = $(this).find("td:eq(4)").text().trim();
+								if(_pre == "每周"){
+									_orderVal = 2000;
+								}
+								switch($(this).find("td:eq(5)").text().trim()){
+									case '星期一':
+										_orderVal += 100;
+										break;
+									case '星期二':
+										_orderVal += 200;
+										break;
+									case '星期三':
+										_orderVal += 300;
+										break;
+									case '星期四':
+										_orderVal += 400;
+										break;
+									case '星期五':
+										_orderVal += 500;
+										break;
+								}
+								$(this).find("td:eq(5)").attr('_order', _orderVal);
+							}
+						});
+						$(".NewTable30 > thead > tr >th:eq(1)").attr("datatype","text");	// 名称
+						$(".NewTable30 > thead > tr >th:eq(3)").attr("datatype","int");	// 定投金额
+						$(".NewTable30 > thead > tr >th:eq(5)").attr("datatype","int");	// 定投金额
+						$(".NewTable30 > thead > tr >th:eq(9)").attr("datatype","int");	// 定投金额
+						var sortRows = [1, 3, 5, 9];
+						C.tableSort(".NewTable30 thead th", sortRows);
+
+						// 统计金额
+						$scope.buyAmountNow = 0;	// 统计现月投资
+						$(".NewTable30 tbody tr[status=status0]").each(function(i){
+							var _period = $(this).find("td:eq(4)").text().trim();
+							var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
+							// $scope.buyAmountNow += calr(_period, _money);
+							$scope.buyAmountNow = $scope.buyAmountNow.jia(calr(_period, _money));
+						});
+						// 增加天天链接
+						$(".NewTable30 tbody tr:visible td:nth-child(1)").addClass('ttLink').click(function(){
+							window.open('http://fund.eastmoney.com/'+$(this).text().trim()+'.html');
+						});
+
+						// 暂停,恢复,更改 A链接处理
+						$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
+						$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
+						$(".NewTable30 tbody tr a:contains('更改')").click(changeDt);
+						$(".NewTable30 tbody tr a:contains('终止')").click(endDt);
+						$(".rectitle li[status='']").trigger("myclick.girafeee");
+
+						//clean
+				    var _url = new URI();
+				    if(_url.hasQuery("clean", true) ){
+				    	_url.hasQuery("fundcode", function(fundcode){
+				    		if(fundcode != undefined){
+				    			var _trObj = $(".NewTable30 tbody tr[status!=status2]:contains('"+fundcode+"')").addClass("hight_light").insertBefore($(".NewTable30 tbody tr").eq(0));
+				    			if(_trObj.length>0){
+				    				clean(_trObj);
+				    			}
+				    			// console.log(_trObj);
+				    		}
+				    	})
+				    }
+						$scope.$apply();
+
 					}else{
-						var _orderVal = 1000;
-						var _pre = $(this).find("td:eq(4)").text().trim();
-						if(_pre == "每周"){
-							_orderVal = 2000;
-						}
-						switch($(this).find("td:eq(5)").text().trim()){
-							case '星期一':
-								_orderVal += 100;
-								break;
-							case '星期二':
-								_orderVal += 200;
-								break;
-							case '星期三':
-								_orderVal += 300;
-								break;
-							case '星期四':
-								_orderVal += 400;
-								break;
-							case '星期五':
-								_orderVal += 500;
-								break;
-						}
-						$(this).find("td:eq(5)").attr('_order', _orderVal);
+						setTimeout(function(){
+							newSort();
+						}, 500);
 					}
-				});
-				$(".NewTable30 > thead > tr >th:eq(1)").attr("datatype","text");	// 名称
-				$(".NewTable30 > thead > tr >th:eq(3)").attr("datatype","int");	// 定投金额
-				$(".NewTable30 > thead > tr >th:eq(5)").attr("datatype","int");	// 定投金额
-				$(".NewTable30 > thead > tr >th:eq(9)").attr("datatype","int");	// 定投金额
-				var sortRows = [1, 3, 5, 9];
-				C.tableSort(".NewTable30 thead th", sortRows);
-
-				// 统计金额
-				$scope.buyAmountNow = 0;	// 统计现月投资
-				$(".NewTable30 tbody tr[status=status0]").each(function(i){
-					var _period = $(this).find("td:eq(4)").text().trim();
-					var _money = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");
-					// $scope.buyAmountNow += calr(_period, _money);
-					$scope.buyAmountNow = $scope.buyAmountNow.jia(calr(_period, _money));
-				});
-				// 增加天天链接
-				$(".NewTable30 tbody tr:visible td:nth-child(1)").addClass('ttLink').click(function(){
-					window.open('http://fund.eastmoney.com/'+$(this).text().trim()+'.html');
-				});
-
-				// 暂停,恢复,更改 A链接处理
-				$(".NewTable30 tbody tr[status=status0] a:contains('暂停')").click(zanting);
-				$(".NewTable30 tbody tr[status=status1] a:contains('恢复')").click(addDt);
-				$(".NewTable30 tbody tr a:contains('更改')").click(changeDt);
-				$(".NewTable30 tbody tr a:contains('终止')").click(endDt);
-				$(".rectitle li[status='']").trigger("myclick.girafeee");
-				$scope.$apply();
+				}
+				newSort();
 			}
 		})
 		// 改变collapse高度以scroll
@@ -605,27 +729,16 @@ module.exports = function(){
 		});
 		//订单状态过滤
 		// 原生页面的事件删除不掉 这里只处理部分
-    // $('.ration_status[status=""]').unbind("myclick.girafeee");
     $('.ration_status[status=""]').bind("myclick.girafeee", function () {
-    	// console.log("in myclick.girafeee");
-      // var status = $(this).attr('status');
       var tbody = $('#return-list').find('tbody');
-      // if (status == "") {
-        $('tr',tbody).show();
+      $('tr',tbody).show();
         // // douraymi 在全部标签中隐去终止的
-        $('tr[status="status2"]', tbody).hide();
-      // }
-      // else {
-      //   $('tr', tbody).hide();
-      //   var showList = $('tr[status="status' + status + '"]', tbody);
-      //   showList.show();
-      // }
+      $('tr[status="status2"]', tbody).hide();
       $('tr.nodata', tbody).hide();
       if ($('tr:visible', tbody).length == 0) {
         $('tr.nodata', tbody).show();
       }
     });
-
 
 	}
 

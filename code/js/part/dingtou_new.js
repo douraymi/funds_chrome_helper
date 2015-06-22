@@ -4,19 +4,21 @@
 
 module.exports = function(){
 	console.log("dingtou_new");
-	$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
-	$(function(){
-		function preFun(){
-			document.onkeydown = function (e) { 
-				var theEvent = window.event || e; 
-				var code = theEvent.keyCode || theEvent.which; 
-				if (code == 13) { 
-					$(".next.dtbg:not(.close)").click();
+	if($(".dingbtn").length > 0){
+		$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
+		$(function(){
+			function preFun(){
+				document.onkeydown = function (e) { 
+					var theEvent = window.event || e; 
+					var code = theEvent.keyCode || theEvent.which; 
+					if (code == 13) { 
+						$(".next.dtbg:not(.close)").click();
+					}
 				}
 			}
-		}
-		setTimeout(function(){preFun();}, 500);
-	});
+			setTimeout(function(){preFun();}, 500);
+		});
+	}
 
 	var _url = new URI();
 	_url.hasQuery("from", function(fromVal){
@@ -37,13 +39,30 @@ module.exports = function(){
 					tn.onMsg({
 						BOT : {
 							BOT : function(msg){
-								setTimeout(function(){$(".next").click();}, 2000);
+								botTimeout();
 							}
 						}
 					});
 				});
 			})
 			.go();
+
+			function botTimeout(){
+				setTimeout(function(){
+					var _input = $("input[name='TradeAccount'][isfreeze=false][isvaild=true]");
+					var _warning = $(".warnbtn");
+					console.log(_input.length);
+					if(_input.length>0){
+						$(".next").click();
+					}else if(_warning.length>0){
+						M.connect("dingtouWarning", "BOT", function(tn){
+							setTimeout(function(){C.closeTab();}, 500);
+						});
+					}else{
+						botTimeout();
+					}
+				}, 500);
+			}
 
 		}else{
 			var newQuery = _url.query();

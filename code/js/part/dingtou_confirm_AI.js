@@ -5,19 +5,21 @@
 
 module.exports = function(){
 	console.log("dingtou_confirm_AI");
-	$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
-	$(function(){
-		function preFun(){
-			document.onkeydown = function (e) { 
-				var theEvent = window.event || e; 
-				var code = theEvent.keyCode || theEvent.which; 
-				if (code == 13) { 
-					$(".next.dtbg:not(.close)").click();
+	if($(".dingbtn").length > 0){
+		$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
+		$(function(){
+			function preFun(){
+				document.onkeydown = function (e) { 
+					var theEvent = window.event || e; 
+					var code = theEvent.keyCode || theEvent.which; 
+					if (code == 13) { 
+						$(".next.dtbg:not(.close)").click();
+					}
 				}
 			}
-		}
-		setTimeout(function(){preFun();}, 500);
-	});
+			setTimeout(function(){preFun();}, 500);
+		});
+	}
 
 	var _fundcode = $("div.dingfundname b:eq(0)").text().trim();
 	M.connect('dt_confirm_AI', _fundcode+"_dtgo", function(tn){

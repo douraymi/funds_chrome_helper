@@ -93,14 +93,16 @@
       _port.onMessage.addListener(preConnect);
       return tn;
     }
-    this.xhr = function(url, callback){
+    // this.xhr = function(url, callback){
+    this.xhr = function(settingBody, callback){
       // console.log("in xhr");
       _port.postMessage({
         type : "connect",
         code : "xhr",
-        body : {
-          url : url
-        }
+        body : settingBody
+        // body : {
+        //   url : url
+        // }
       });
       _port.onMessage.addListener(function(msg){
         if(msg.fail){
@@ -239,11 +241,13 @@
       switch (port.name){
         case "xhr":
           port.onMessage.addListener(function(msg, _port){
-            var _url = msg.body.url;
             // $.ajax({ url: _url, async:true, success: function(data, textStatus){
             //   _port.postMessage({body:data});
             // } });
-            $.ajax({url: _url })
+
+            // var _url = msg.body.url;
+            // $.ajax({url: _url })
+            $.ajax(msg.body)
             .done(function(data) {
               _port.postMessage({body:data});
             })
