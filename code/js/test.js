@@ -1,8 +1,34 @@
 module.exports = function(){
 	console.log("in test");
-	C.ng('html/test.html', appController);
+	// C.ng('html/test.html', appController);
+	// $("#lg").after("<div>{{abc}}</div>");
+	C.ngGbl(appController);
 
 	function appController($scope){
+		console.log('in scope');
+		$scope.abc = 'eettddfdfdfdfdfdfdfdfdf';
+		setTimeout(function(){
+			// $("#lg").after("<div>{{abc}}</div>");
+			$scope.$apply(function(){
+				$("#lg").after("<div>{{abc}}</div>");
+			});
+		}, 1000);
+		// $scope.safeApply = function(fn) {
+		//   var phase = this.$root.$$phase;
+		//   if(phase == '$apply' || phase == '$digest') {
+		//     if(fn && (typeof(fn) === 'function')) {
+		//       fn();
+		//     }
+		//   } else {
+		//     this.$apply(fn);
+		//   }
+		// };
+		// $scope.$apply(function(){
+		// 	$("#lg").after("<div>{{abc}}</div>");
+		// });
+		// $scope.safeApply(function(){
+		// 	$("#lg").after("<div>{{abc}}</div>");
+		// });
 
 		// C.closeTab();
 		// window.open(C.chromeUrl('/html/blankClose.html'), '_self');

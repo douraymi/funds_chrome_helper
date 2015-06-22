@@ -381,7 +381,18 @@ module.exports = function(){
 			}]);
 
 			var ele = $('html').find('#girafeeeApp');
-			angular.bootstrap(ele, ['myApp']);	  	
+			angular.bootstrap(ele, ['myApp']);
+	  },
+	  ngGbl : function(contrlFunc, preRun){
+	  	// 考虑以后改成C.df() preRun先处理预运行的东西
+	  	// 修改原dom
+	  	$('html').attr('ng-controller', 'ctrl');
+	  	// 创建moudle
+	    angular.module('moudle', []).controller("ctrl",contrlFunc);
+	    // 页面加载完成后,再加载模块
+	    angular.element(document).ready(function() {
+	      angular.bootstrap($('html'), ["moudle"]);
+	    });
 	  },
 	 //  storage : function(){
 		// 	this.set = function(items, callback){
@@ -438,6 +449,11 @@ module.exports = function(){
 			this.get = function(keys, callback){
 				chrome.storage.local.get(keys, callback);
 			};
+			this.onKeyChange = function(key, listenerFun){
+				chrome.storage.onChanged.addListener(function(changes){
+					if(changes[key]) listenerFun(changes[key]);
+				});		
+			};
 			this.onChange = function(listenerObj){
 				var _obj = cab.OBJnw(listenerObj);
 				_.each(_obj, function(func, key){
@@ -449,6 +465,21 @@ module.exports = function(){
 				_.each(_obj, function(func, key){
 					chrome.storage.onChanged.removeListener(func);		
 				});
+			};
+			this.ngXBind = function(scope, storageKey, bindFun){
+				this.get(storageKey, function(items){
+					if(items[storageKey]){
+										
+					}
+				});
+				this.onChange(function(changes){
+					if(changes[storageKey]){
+						scope.$apply(function(){
+							scope[storageKey] = changes[storageKey].newValue;
+						});
+					}
+				});
+				if(optionOnChange) this.onChange(optionOnChange);
 			};
 			this.ngBind = function(scope, storageKey, callback, optionOnChange){
 				this.get(storageKey, function(items){
