@@ -5,6 +5,7 @@
 
 module.exports = function(){
 	console.log("dingtou_genggai_v3");
+	require('./waringing');
 
 	var _url = new URI();
 	_url.hasQuery("id", function(id){

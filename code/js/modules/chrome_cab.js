@@ -156,6 +156,63 @@ module.exports = function(){
 			}
 			return objContainer;
 		},
+		tableSortOnce : function(tablestr, idx, datatype, aescOption){
+			function sortStr(index, dataType){
+				return function(a, b){
+					var aText=$(a).find('td:nth-child(' + index + ')').attr('_order') || $(a).find('td:nth-child(' + index + ')').text();
+					var bText=$(b).find('td:nth-child(' + index + ')').attr('_order') || $(b).find('td:nth-child(' + index + ')').text();
+			
+					if(dataType != 'text'){
+						aText=parseNonText(aText, dataType);
+						bText=parseNonText(bText, dataType);
+						if(aescOption){
+							return aText > bText ? 1 : bText > aText ? -1 : 0;	// 正排
+						}else{
+							return bText > aText ? 1 : aText > bText ? -1 : 0;	// 反排
+						}
+						
+					} else {
+						return aText.localeCompare(bText)
+					}
+				}
+			}
+			
+			function parseNonText(data, dataType){
+				switch(dataType){
+					case 'int':
+						return parseInt(data) || 0;
+					case 'float':
+						return parseFloat(data) || 0;
+					case "date":
+	          return Date.parse(data)/1000 || 0;
+					case "string":
+					case "text": {
+              var tdVal = data.toString() || "";
+              //如果值不为空，获得值是汉字的全拼
+              if (tdVal) {
+                  tdVal = ZhCN_Pinyin.GetQP(tdVal);	// 获取全拼 ZhCN_Pinyin.min.js
+                  tdVal = tdVal.toLowerCase();
+              }
+              return tdVal;
+          }
+          default : {
+          	return data;
+          }
+				}
+			}				
+
+			var tableObj = $(tablestr);
+			var arr = [];
+			var row = tableObj.find('tbody tr');
+			$.each(row, function(i){arr[i] = row[i]});
+			arr.sort(sortStr(idx, datatype));
+			var fragment = document.createDocumentFragment();
+			$.each(arr, function(i){
+				fragment.appendChild(arr[i]);
+			});
+			tableObj.find('tbody').append(fragment);
+
+		},
 		tableSort : function (selstr, rows) {
 			for(var i=0; i<rows.length;i++){
 				$(selstr).eq(rows[i]).addClass('tbsort');
@@ -291,9 +348,8 @@ module.exports = function(){
 						callback(data, _df);
 					});
 				});
-		  	return _df;
-	  		
 	  	}
+		  return _df;
 	  },
 	  // html : function(){
 	  // 	if(arguments.length != 2 && arguments.length != 3) throw "C:html() wrong arguments";
@@ -369,6 +425,13 @@ module.exports = function(){
 				};
 				if(_.isFunction(loop)) loop();
 			}
+			this.dfd = function(){
+				var dfdObj = $.Deferred();
+				dfdObj.res = function(){
+					this.resolve();
+				}
+				return dfdObj;
+			}
 			return this;
 		},
 	  ng : function(tplUrl, contrlFunc){
@@ -384,15 +447,25 @@ module.exports = function(){
 			angular.bootstrap(ele, ['myApp']);
 	  },
 	  ngGbl : function(contrlFunc, preRun){
-	  	// 考虑以后改成C.df() preRun先处理预运行的东西
-	  	// 修改原dom
-	  	$('html').attr('ng-controller', 'ctrl');
-	  	// 创建moudle
-	    angular.module('moudle', []).controller("ctrl",contrlFunc);
-	    // 页面加载完成后,再加载模块
-	    angular.element(document).ready(function() {
-	      angular.bootstrap($('html'), ["moudle"]);
-	    });
+	  	// preRun(df) 先处理预运行的东西
+	  	var ngGblDf = cab.df();
+	  	ngGblDf
+	  	.next(function(){
+	  		var dfd = ngGblDf.dfd();
+		  	// 修改原dom
+		  	$('html').attr('ng-controller', 'ctrl');
+		  	preRun(dfd);
+	  		return dfd;
+	  	})
+	  	.next(function(){
+		  	// 创建moudle
+		    angular.module('moudle', []).controller("ctrl",contrlFunc);
+		    // 页面加载完成后,再加载模块
+		    angular.element(document).ready(function() {
+		      angular.bootstrap($('html'), ["moudle"]);
+		    });
+	  	})
+	  	.go();
 	  },
 	 //  storage : function(){
 		// 	this.set = function(items, callback){
@@ -466,16 +539,18 @@ module.exports = function(){
 					chrome.storage.onChanged.removeListener(func);		
 				});
 			};
-			this.ngXBind = function(scope, storageKey, bindFun){
+			this.ngXBind = function(scope, storageKey, bindFun, optionOnChange){
 				this.get(storageKey, function(items){
 					if(items[storageKey]){
-										
+						scope.$apply(function(){
+							scope[storageKey] = bindFun(items[storageKey]);
+						});
 					}
 				});
 				this.onChange(function(changes){
 					if(changes[storageKey]){
 						scope.$apply(function(){
-							scope[storageKey] = changes[storageKey].newValue;
+							scope[storageKey] = bindFun(changes[storageKey].newValue);
 						});
 					}
 				});

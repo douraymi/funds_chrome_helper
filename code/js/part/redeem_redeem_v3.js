@@ -3,6 +3,8 @@
 
 module.exports = function(){
 	console.log("Redeem_v3");
+	require('./waringing');
+	
 	var inputData = "{"+$("input[name='dakuan']").val()+"}";
 	var j = eval('('+inputData+')');
 	// console.log(jsonData);

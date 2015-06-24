@@ -6352,7 +6352,9 @@ button.close {
   float: left !important;
 }
 .hide {
-  display: none !important;
+	/*你妹的有个show样式冲突*/
+  /*display: none !important;*/
+  display: none;
 }
 .show {
   /*你妹的有个show样式冲突*/

@@ -4,6 +4,8 @@
 
 module.exports = function(){
 	console.log("dingtou_new");
+	require('./waringing');
+	
 	if($(".dingbtn").length > 0){
 		$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
 		$(function(){

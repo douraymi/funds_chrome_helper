@@ -4,6 +4,8 @@
 
 module.exports = function(){
 	console.log("dingtou_done");
+	require('./waringing');
+	
 	$(function(){
 		function preFun(){
 			document.onkeydown = function (e) { 

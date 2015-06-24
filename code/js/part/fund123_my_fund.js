@@ -44,22 +44,30 @@ module.exports = function(){
 		$scope.randomRedeem = function(amount){
 			var mTb = "#m_Table_open tbody tr.bb:not(.today_is_redeemed)";
 			$(mTb).removeClass("hight_light");
-			var tmpAry = [];
+			// var tmpAry = [];
 			var count = 0;
 			while(count<amount){
 				var size = $(mTb).size();
-				var mvTr = $(mTb).eq( _.random(0, size-1) ).remove();	// 随机选一行
-				// count += mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,"") * 1;
-				count = count.jia(mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
-				tmpAry.push(mvTr);
-			}
-			_.each(tmpAry, function(trObj){
-				trObj.addClass("hight_light");
-				trObj.insertBefore($(mTb).eq(0));
+				var rand = _.random(0, size-1);
+				var id = $(mTb).eq(rand).attr("id").slice(2);
+				count = count.jia($(mTb).eq(rand).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
+				$(mTb).eq(rand).addClass("hight_light").insertBefore($(mTb).eq(0));
 				// 处理另外一行
-				var anotherTr = "#TR2"+trObj.attr("id").slice(2);
-				$(anotherTr).remove().insertAfter($(mTb).eq(0));
-			});
+				$("#TR2"+id).insertAfter($(mTb).eq(0));
+
+
+
+				// var mvTr = $(mTb).eq( _.random(0, size-1) ).remove();	// 随机选一行
+				// count = count.jia(mvTr.find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
+				// tmpAry.push(mvTr);
+			}
+			// _.each(tmpAry, function(trObj){
+			// 	trObj.addClass("hight_light");
+			// 	trObj.insertBefore($(mTb).eq(0));
+			// 	// 处理另外一行
+			// 	var anotherTr = "#TR2"+trObj.attr("id").slice(2);
+			// 	$(anotherTr).remove().insertAfter($(mTb).eq(0));
+			// });
 		}
 
 		// 赎回信息传递

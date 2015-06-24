@@ -5,7 +5,8 @@
 
 module.exports = function(){
 	console.log("dingtou_new_v3");
-
+	require('./waringing');
+	
 	var _url = new URI();
 	_url.hasQuery("fundcode", function(fundcode){
 		if(fundcode != undefined){

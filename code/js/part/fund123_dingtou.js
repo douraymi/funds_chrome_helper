@@ -8,8 +8,8 @@ module.exports = function(){
 
 	function appController($scope){
 		$scope.setting = {
-			buyMonthlyAmount 	: 43000,
-			exchangeDaily 		: 8000,
+			buyMonthlyAmount 	: 83000,
+			exchangeDaily 		: 30000,
 			shumiShowX 				: false,
 			ttShowX 					: false
 		}
@@ -226,7 +226,6 @@ module.exports = function(){
 			_url.hasQuery('xyh', function(_xyh){
 				console.log('_xyh:', _xyh);
 				if($scope.BOT == "暂停"){
-
 					M.connect("dingtou", _xyh+"_dtzt", function(tunnel){
 						tunnel.send({type:"BOT", code:"BOT", body:$scope.BOTpw});
 						tunnel.onMsg({
@@ -599,8 +598,8 @@ module.exports = function(){
 			if(elm.target.className == "NewTable30"){
 				// return;
 				function newSort(){
-					var isTotal = parseInt($('b:nth-child(2)', '#recordareatongji').text());
-					// console.log('isTotal:', isTotal);
+					var isTotal = parseInt($('b:nth-child(2)', '#recordareatongji').text().replace(/[^0-9\.-]+/g,""));
+					console.log('isTotal:', isTotal);
 					if(isTotal>0){
 						// table排序处理
 						$(".NewTable30 thead th:eq(3)").css("width", "60");
@@ -608,8 +607,11 @@ module.exports = function(){
 						$(".NewTable30 thead th:eq(9)").css("width", "60");
 						$(".NewTable30 thead th:eq(10)").css("width", "50");
 						$(".NewTable30 thead th:eq(12)").css("width", "50");
-						$(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='80'>基金总投</th>");
-						$(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
+						// $(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='80'>基金总投</th>");
+						$(".NewTable30 thead th:eq(9)").text("单投金额");
+						$(".NewTable30 thead th:eq(12)").after("<th width='80'>基金总投</th>");
+						// $(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
+						$(".NewTable30 tbody tr td:nth-child(13)").after("<td></td>");
 						var ozAry = {};	// 总投入金额临时对象
 						$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
 							// 总投入金额一期处理
@@ -621,7 +623,7 @@ module.exports = function(){
 							var _fcode = $(this).find("td:eq(0)").text().trim();
 							// 总投入金额二期处理
 							$(this).find("td:eq(9)").attr('_order', ozAry[_fcode]);
-							$(this).find("td:eq(10)").html("<span style='color:darkgoldenrod'>"+ozAry[_fcode]+"</span>");
+							$(this).find("td:eq(13)").html("<span style='color:darkgoldenrod'>"+ozAry[_fcode]+"</span>");
 							// .append("<span style='color:darkgoldenrod'> /"+ozAry[_fcode]+"</span>");
 							// 定投金额
 							var order_dtje = $(this).find("td:eq(3)").text().trim().replace(/[^0-9\.-]+/g,"");

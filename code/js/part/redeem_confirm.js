@@ -2,6 +2,8 @@
 
 module.exports = function(){
 	console.log("RedeemConfirm");
+	require('./waringing');
+	
 	if($(".dingbtn").length > 0){
 		$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
 		$(function(){

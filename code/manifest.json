@@ -23,6 +23,7 @@
     {
       "run_at": "document_end",
       "matches": [
+        "http://fund.eastmoney.com/daogou/*",
         "https://trade.1234567.com.cn/Investment/*",
         "http://my.fund123.cn/RealFundDefault.aspx",
         "https://trade.fund123.cn/home/agreementquery/*",

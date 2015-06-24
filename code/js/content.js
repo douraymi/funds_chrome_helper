@@ -101,6 +101,9 @@
 			case "https://trade.1234567.com.cn/Investment/default":
 				require('./part/tiantian_dingtou');
 				break;
+			case "http://fund.eastmoney.com/daogou/":
+				require('./part/tiantian_daogou');
+				break;
 
 			default:
 		}

@@ -3,6 +3,8 @@
 
 module.exports = function(){
 	console.log("Redeem");
+	require('./waringing');
+	
 	if($(".dingbtn").length > 0){
 		$("html,body").animate({scrollTop:$(".dingbtn").offset().top-450});
 		$(function(){
@@ -58,6 +60,11 @@ module.exports = function(){
 						}
 					});
 				});
+
+				$('<a href="#" id="doAll" class="btn btn-xs btn-warning">all</a>').click(function(){
+					$('#ShowAmount').val(_keyong);
+					$('#Amount').val(_keyong);
+				}).appendTo($("#RedeemForm tr:eq(5) td:eq(1)"));
 
 				$('<a href="#" id="redeemFix" class="btn btn-xs btn-warning">fix</a>').click(function(){
 					// _url.hasQuery("fundCode", function(val){

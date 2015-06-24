@@ -47,6 +47,7 @@ module.exports = function(){
 		}
 
 		function setToday(cb){
+			console.log("start set zhuti ...");
 			getzhutiList(function(zhutiList){
 				// console.log(zhutiList);
 				getzhutiRank(zhutiList, function(ztobj){
@@ -57,7 +58,10 @@ module.exports = function(){
 						f : ztobj
 					}
 					C.storage.remove('zhuti', function(){
-						C.storage.set({'zhuti': _zhuti}, cb);
+						C.storage.set({'zhuti': _zhuti}, function(){
+							console.log("done zhuti !");
+							if(cb) cb();
+						});
 					});
 				});
 			});
@@ -79,23 +83,8 @@ module.exports = function(){
 
 	}else{
 		return {
-			bind : function(scopeObj){
-				// C.storage.ngBind($scope, "zhuti", function(item){
-				// }, function(changes){
-				// });
-				C.storage.get('zhuti', function(items){
-					var item = items.zhuti;
-					// proc
-
-				});
-				C.storage.onChange(function(changes){
-					if(changes[storageKey]){
-
-					}
-				});
-				return this;
-			},
 			reset : function(){
+				// 懒的写了 以后再写
 				return this;
 			}
 		}

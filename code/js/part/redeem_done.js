@@ -4,6 +4,8 @@
 
 module.exports = function(){
 	console.log("RedeemDone");
+	require('./waringing');
+	
 	$(function(){
 		function preFun(){
 			document.onkeydown = function (e) { 

@@ -2,17 +2,14 @@ module.exports = function(){
 	console.log("in test");
 	// C.ng('html/test.html', appController);
 	// $("#lg").after("<div>{{abc}}</div>");
-	C.ngGbl(appController);
+	C.ngGbl(appController, function(dfd){
+		$("#lg").after("<div>{{abc}}</div>");
+		dfd.res();
+	});
 
 	function appController($scope){
 		console.log('in scope');
 		$scope.abc = 'eettddfdfdfdfdfdfdfdfdf';
-		setTimeout(function(){
-			// $("#lg").after("<div>{{abc}}</div>");
-			$scope.$apply(function(){
-				$("#lg").after("<div>{{abc}}</div>");
-			});
-		}, 1000);
 		// $scope.safeApply = function(fn) {
 		//   var phase = this.$root.$$phase;
 		//   if(phase == '$apply' || phase == '$digest') {
