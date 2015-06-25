@@ -4,7 +4,7 @@ module.exports = function(){
 	console.log("tiantian_dingtou");
 	C.css('css/part/tiantian_dingtou.css');
 	// C.ng('html/part/tiantian_dingtou.html', appController);
-	
+
 	C.ngGbl(appController, function(dfd){
 		// var jhstr = $('.mctb.mt10 tbody:eq(2) tr:eq(2) td:eq(8) a:last').attr('id').replace('_', '$');
 		// var jhstr = $('.mctb.mt10 tbody:eq(2) tr:eq(2) td:eq(8) a:last').attr('id').replace(/_/g, '$');
@@ -23,7 +23,7 @@ module.exports = function(){
 			// $('td:nth-child(2)', tr).html('<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" aria-expanded="false" aria-controls="#collapse'+i+'">'+txt+'</a>');
 			// , data-toggle:"collapse", aria-expanded:"false", data-parent:"#accordion", aria-controls:"#collapse"+i
 			$('td:nth-child(2)', tr).addClass('collapsed GLpointer').attr({href:"#collapse"+i, "data-toggle":"collapse"});
-			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><span style="padding:15px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></span></br><span id="bz'+i+'"></span></td></tr>');
+			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><span style="padding:15px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></span></br></br><span id="bz'+i+'"></span></td></tr>');
 			// 增加备注
 			var postData = {
 				url:'https://trade.1234567.com.cn/Investment/default?spm=S',
@@ -42,15 +42,14 @@ module.exports = function(){
 				}
 			}
 			var id2 = $('td:eq(8) a:eq(2)', tr).attr("id");
+			// console.log("id2:", id2);
 			var jhstr = $('td:eq(8) a:last', tr).attr('id').replace(/_/g, '$');
 			postData.data.__EVENTTARGET = jhstr;
 			postData.success = function(data){
 				var bzstr = $(data).find("#ctl00_body_remark").text().trim();
 				// console.log('bzstr:', bzstr, 'i:', i);
-				$("#bz"+i).html(bzstr);
-				// $("#bz"+i).append($("<a class='btn'>修改</a>").click(){
-				// 	$(id2).click();
-				// });
+				$("#bz"+i).append($("#"+id2).clone(true));
+				$("#bz"+i).append(" 备注："+bzstr);
 			}
 			df.next(function(){
 				return $.ajax(postData);
