@@ -2,16 +2,42 @@
 
 module.exports = function(){
 	console.log("tiantian_xiugai");
-	require('./waringing');
-	
-	C.storage.get('ttpw', function(items){
-		if(items['ttpw']){
-			$("#ctl00_body_txtPaypwd").val(items['ttpw']);
-		}
-	});
+	$(function(){
+		setTimeout(function(){
+			if($("#ctl00_body_amount").length>0){
+				if($("#zdxe").length>0){
+					// 新增定投的地方
+					$("#ctl00_body_rbPeriodTime_1").click();
+					$("#ctl00_body_rpPeriodTime_ctl01_ddList").val(_.random(1, 5));
+					$("#ctl00_body_amount").val($("#zdxe").text().trim().jia(11));
+				}else{
+					// 更改
 
-	$("#ctl00_body_btnSp2").click(function(){
-		C.storage.set({ttpw: $("#ctl00_body_txtPaypwd").val()});
+				}
+			};
+
+			if($("#ctl00_body_txtPaypwd").length>0){
+				C.storage.get('ttpw', function(items){
+					if(items['ttpw']){
+						$("#ctl00_body_txtPaypwd").val(items['ttpw']);
+					}else{
+						$("#ctl00_body_btnSp2, #ctl00_body_btnSp3").click(function(){
+							C.storage.set({ttpw: $("#ctl00_body_txtPaypwd").val()});
+						});
+					}
+				});
+			};
+
+			if($("#ctl00_body_btnSp1").length>0){
+				$("html,body").animate({scrollTop:$("#ctl00_body_btnSp1").offset().top-450});
+			}else if($("#ctl00_body_btnSp2").length>0){
+				$("html,body").animate({scrollTop:$("#ctl00_body_btnSp2").offset().top-450});
+			}else if($(".tarr").length>0){
+				$("html,body").animate({scrollTop:$(".tarr").offset().top-450});
+			}
+
+		}, 500);
+		
 	});
 
 }()

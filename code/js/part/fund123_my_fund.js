@@ -8,8 +8,8 @@ module.exports = function(){
 
 	function appController($scope){
 		$scope.setting = {
-			Bin 	: 30000,
-			rate	: 0.5
+			Bin 	: 0,
+			rate	: 0.1
 		}
 		// localStorage方式统计当天赎回总额
 		C.storage.ngBind($scope, "todayRedeem", function(item){
@@ -80,7 +80,7 @@ module.exports = function(){
 				var redeemMsgObj = {
 					redeemRedeem : {
 						fix : function(msg){
-							// console.log("in fix");
+							console.log("in fix");
 							if(msg.body.fixFenE != undefined){
 								// var _newBalance = Number(fenE) - Number(msg.body.fixFenE);
 								var _newBalance = fenE.jian(msg.body.fixFenE);

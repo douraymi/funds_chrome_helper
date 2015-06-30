@@ -105,7 +105,20 @@
 				require('./part/tiantian_daogou');
 				break;
 			case "https://trade.1234567.com.cn/Investment/change":
+			case "https://trade.1234567.com.cn/FundtradePage/redemption":
+			case "https://trade.1234567.com.cn/Investment/close":
+			case "https://trade.1234567.com.cn/zsb/withdrawcash":
+			case "https://trade.1234567.com.cn/Investment/add.aspx":
+			case "https://trade.1234567.com.cn/Investment/close":
+			case "https://trade.1234567.com.cn/Investment/again":
+			case "https://trade.1234567.com.cn/Investment/suspend":
 				require('./part/tiantian_xiugai');
+				break;
+			// case "https://trade.1234567.com.cn/Investment/close":
+			// 	require('./part/tiantian_close');
+			// 	break;
+			case "https://trade.1234567.com.cn/login":
+				require('./part/tiantian_login');
 				break;
 
 			default:

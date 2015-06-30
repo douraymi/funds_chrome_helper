@@ -75,6 +75,7 @@ module.exports = function(){
 							tn.onMsg({
 								redeemRedeem : {
 									fix : function(msg){
+										console.log("msgisDone:", msg);
 										if(msg.body.isDone) C.closeTab();
 									}
 								}

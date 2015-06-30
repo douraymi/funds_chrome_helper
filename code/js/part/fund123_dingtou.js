@@ -256,6 +256,7 @@ module.exports = function(){
 										$scope.BOT = false;
 										console.log("end exchangeDaily!");
 									}
+									console.log("3 $scope.buyAmountNow:", $scope.buyAmountNow, " items.today_zanting.zantingAmount:", items.today_zanting.zantingAmount);
 									var _ztAmount = items.today_zanting.zantingAmount.jia(buyAmountNow_tmp.jian($scope.buyAmountNow));
 									var newItem = {	today_zanting:{	date : items.today_zanting.date, zantingAmount : _ztAmount}	};
 									C.storage.set(newItem);
@@ -318,6 +319,7 @@ module.exports = function(){
 			// var _trObj = $(".NewTable30 tbody tr[status="+status+"]:eq("+_random+")").addClass("hight_light").remove().insertBefore($(".NewTable30 tbody tr").eq(0));
 			fixA(_trObj);
 			if($scope.BOT != false){
+				console.log("2 $scope.BOTguan.ori:", $scope.BOTguan.ori, " $scope.BOTguan.proc:", $scope.BOTguan.proc, " $scope.buyAmountNow:", $scope.buyAmountNow);
 				if($scope.BOT == '暂停' && $scope.BOTguan.proc != undefined){
 					if($scope.BOTguan.ori - $scope.BOTguan.proc > $scope.buyAmountNow){
 						$scope.BOT = false;
@@ -374,7 +376,20 @@ module.exports = function(){
 		      $('b:nth-child(4)', '#recordareatongji').text(normal);
 		      $('b:nth-child(6)', '#recordareatongji').text(pause);
 		      $('b:nth-child(8)', '#recordareatongji').text(hang);
-		      _df.resolve();
+	      	setTimeout(function(){
+						_df.resolve();
+					}, 600);
+		    //   function doneIt(){
+		    //   	var isTotal = parseInt($('b:nth-child(2)', '#recordareatongji').text().replace(/[^0-9\.-]+/g,""));
+						// if(isTotal>0){
+			   //    	_df.resolve();
+						// }else{
+						// 	setTimeout(function(){
+						// 		doneIt();
+						// 	}, 500);
+						// }
+		    //   }
+		    //   doneIt();
 		    });
 		    return _df;
 			}).next(function(){
@@ -444,6 +459,9 @@ module.exports = function(){
 				$scope.BOTguan.ori = $scope.buyAmountNow;
 				$scope.BOTguan.proc = _amount;
 			}
+			console.log("$scope.BOT:", $scope.BOT);
+			console.log("$scope.BOTguan.ori:", $scope.BOTguan.ori);
+			console.log("$scope.BOTguan.proc:", $scope.BOTguan.proc);
 			$scope.dingTouPause();
 		}
 		// 随机暂停定投控件
