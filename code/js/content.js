@@ -76,6 +76,11 @@
 				// --> https://trade.fund123.cn/Trade/RegularInvestmentConfirm/ai
 				require('./part/dingtou_new');
 				break;
+			// 定投-普通新增 --> AI新增
+			// case "https://trade.fund123.cn/GoTrade/新增定投":
+			case "https://trade.fund123.cn/Trade/RegularSelect":
+				require('./part/dingtou_new_normal');
+				break;
 				// V3定投-AI新增
 			case "https://trade.fund123.cn/v3/trading/Regular/Smart":
 				require('./part/dingtou_new_v3');
@@ -106,6 +111,7 @@
 				break;
 			case "https://trade.1234567.com.cn/Investment/change":
 			case "https://trade.1234567.com.cn/FundtradePage/redemption":
+			case "https://trade.1234567.com.cn/FundTradePage/redemption":
 			case "https://trade.1234567.com.cn/Investment/close":
 			case "https://trade.1234567.com.cn/zsb/withdrawcash":
 			case "https://trade.1234567.com.cn/Investment/add.aspx":

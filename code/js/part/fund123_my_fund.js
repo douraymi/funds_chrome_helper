@@ -231,9 +231,10 @@ module.exports = function(){
 						var _shyk = Number($(tr).find("td:eq(7)").text().trim().replace(/[^0-9\.-]+/g,""));
 						if(_shyk > 0 || _shyk < 0 ){
 							var _fday = Number($(tr).find("td:eq(1) span:eq(0)").attr("title").trim().replace(/[^0-9\.-]+/g,""));
-							if(_fday > 92){
+							// 赎回天数
+							if(_fday > 5){
 								day90redeem = day90redeem.jia($(tr).find("td:eq(4)").text().trim().replace(/[^0-9\.-]+/g,""));
-							}else if(_fday>0 && _fday<=92){
+							}else if(_fday>0 && _fday<=5){
 								 return false;
 							}
 						}

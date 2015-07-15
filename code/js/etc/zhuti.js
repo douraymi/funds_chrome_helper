@@ -31,6 +31,7 @@ module.exports = function(){
 				_ztobj[i] = v;
 				// &rnd=0.849578816909343&tp=2494b469c0c28ed1
 				var _url = baseUrl+'&rnd='+_.random(0, 1)+'&tp='+v.id;
+				// console.log('_url: ', _url);
 				_df.next(C.html, _url, function(data, xhrDf){
 					// console.log('i:', i, 'v:', v);
 					var jData = JSON.parse(data.substr(14));

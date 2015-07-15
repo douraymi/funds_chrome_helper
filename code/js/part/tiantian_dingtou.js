@@ -23,7 +23,7 @@ module.exports = function(){
 			// $('td:nth-child(2)', tr).html('<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" aria-expanded="false" aria-controls="#collapse'+i+'">'+txt+'</a>');
 			// , data-toggle:"collapse", aria-expanded:"false", data-parent:"#accordion", aria-controls:"#collapse"+i
 			$('td:nth-child(2)', tr).addClass('collapsed GLpointer').attr({href:"#collapse"+i, "data-toggle":"collapse"});
-			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><span style="padding:15px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></span></br></br><span id="bz'+i+'"></span></td></tr>');
+			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><p style="width:90%"><span style="padding:12px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></span><br/><p style="" id="bz'+i+'"></p></p></td></tr>');
 			// 增加备注
 			var postData = {
 				url:'https://trade.1234567.com.cn/Investment/default?spm=S',

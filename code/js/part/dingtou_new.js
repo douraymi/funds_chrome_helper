@@ -25,6 +25,7 @@ module.exports = function(){
 	var _url = new URI();
 	_url.hasQuery("from", function(fromVal){
 		if(fromVal=='new'){
+			var isOver = false;
 			C.df().next(function(){
 				return $('#ShowCycleDay').focus();
 			}).next(function(){
@@ -33,6 +34,7 @@ module.exports = function(){
 				return $('#ShowCycleDay').blur();
 			}).next(function(){
 				var _m = $("#MinAmountValue").text().replace(/[^0-9\.-]+/g,"");
+				if(parseInt(_m)>300) isOver=true;
 				_m = _m.jia(11);
 				$('#ShowAmount').val(_m);
 				return $('#Amount').val(_m);
@@ -41,7 +43,22 @@ module.exports = function(){
 					tn.onMsg({
 						BOT : {
 							BOT : function(msg){
-								botTimeout();
+								if(isOver==true){
+									M.connect("dingtouDone", "BOT", function(tn){
+										console.log("Amount is over 1000!");
+										tn.send({type:'BOT', code:'over'});
+										tn.onMsg({
+											BOT : {
+												overOK : function(msg){
+													setTimeout(function(){C.closeTab();}, 500);
+
+												}
+											}
+										});
+									});
+								}else{
+									botTimeout();
+								}
 							}
 						}
 					});

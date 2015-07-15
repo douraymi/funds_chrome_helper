@@ -100,28 +100,52 @@ module.exports = function($scope){
 		)
 		.next(
 			function(){
-				function checkdtOk(fundObj, loopDf, loopCount){
-					return C.html('http://fund.fund123.cn/html/'+fundObj.fundcode+'/index.html', function(data, _df){
-						var checkDf = loopDf? loopDf: _df;
-						var checkCount = loopCount? loopCount+1 : 1;
-						if(data!=undefined && data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
-							fundObj.dtOk = false;
-							checkDf.resolve();
-						}else if(data!=undefined && data.indexOf("<b>定投：</b><span>开放</span>")>-1){
-							fundObj.dtOk = true;
-							checkDf.resolve();
-						}else if(checkCount<50){
-							setTimeout(function(){
-								console.log("checkdtOk redo : ", fundObj.fundcode, " ", checkCount);
-								checkdtOk(fundObj, checkDf, checkCount);
-							}, 200);
-						}else{
-							fundObj.dtOk = false;
-							checkDf.resolve();
-							console.log("checkdtOk error checkCount: ", fundObj.fundcode, " data:", data);
-						}
-					});
-				}
+				// var fundState;
+				// function checkdtOk(fundObj, loopDf, loopCount){
+					// return C.html('http://fund.fund123.cn/html/'+fundObj.fundcode+'/index.html', function(data, _df){
+					// return C.html('http://fund.fund123.cn/open/Index.aspx?code='+fundObj.fundcode, function(data, _df){
+					// 	var checkDf = loopDf? loopDf: _df;
+					// 	var checkCount = loopCount? loopCount+1 : 1;
+					// 	// if(data!=undefined && data.indexOf("<b>定投：</b><span>暂停</span>")>-1){
+					// 	if(data!=undefined && data.indexOf('<b>定投：</b><span class="CanDingTou">暂停</span>')>-1){
+					// 		fundObj.dtOk = false;
+					// 		checkDf.resolve();
+					// 	// }else if(data!=undefined && data.indexOf("<b>定投：</b><span>开放</span>")>-1){
+					// 	}else if(data!=undefined && data.indexOf('<b>定投：</b><span class="CanDingTou">开放</span>')>-1){
+					// 		fundObj.dtOk = true;
+					// 		checkDf.resolve();
+					// 	}else if(checkCount<5){
+					// 		setTimeout(function(){
+					// 			console.log("checkdtOk redo : ", fundObj.fundcode, " ", checkCount);
+					// 			checkdtOk(fundObj, checkDf, checkCount);
+					// 		}, 1200);
+					// 	}else{
+					// 		fundObj.dtOk = false;
+					// 		checkDf.resolve();
+					// 		console.log("checkdtOk error checkCount: ", fundObj.fundcode, " data:", data);
+					// 	}
+					// });
+				// };
+				var ehDf = C.df();
+				function checkdtOk(fundObj){
+					var _df = C.df().dfd();
+          // console.log('in (1) fundObj.fundcode: ', fundObj.fundcode);
+					for (var i = 0; i < fundState.length; i++) {
+            var item = fundState[i];
+            if (item["fundCode"] == fundObj.fundcode) {
+            	// console.log('in (1) item["fundCode"]: ', item["fundCode"]);
+            	if(item["valuagrState"]==true){
+            		fundObj.dtOk = true;
+            	}else{
+            		fundObj.dtOk = false;
+            	}
+            	_df.res();
+            }else{
+            	_df.res();
+            }
+          }
+          return _df;
+				};
 				function dailyOk(fundObj, loopDf, loopCount){
 					return C.html('http://hqqd.fund123.cn/jsdata/nv_daily/latest/' + fundObj.fundcode + '.js', {dataType: 'text'}, function(data, _df){
 						var checkDf = loopDf? loopDf: _df;
@@ -140,7 +164,7 @@ module.exports = function($scope){
 							}else{
 								checkDf.resolve();
 							}		
-						}else if(checkCount<50){
+						}else if(checkCount<5){
 							setTimeout(function(){
 								console.log("dailyOk redo : ", fundObj.fundcode, " ", checkCount);
 								dailyOk(fundObj, checkDf, checkCount);
@@ -151,8 +175,41 @@ module.exports = function($scope){
 							console.log("dailyOk error checkCount: ", fundObj.fundcode, " data:", data);							
 						}
 					});
-				}
-				var ehDf = C.df();
+				};
+				ehDf.next(function(){
+					var date = new Date();
+					var year = date.getFullYear();
+					var month = date.getMonth()+1;
+					if(month<10){
+						month = '0'+month;
+					}
+					var day = date.getDate();
+					var hour = date.getHours()+1;
+					if(hour>12){
+						hour=hour-12;
+						if(hour<10){
+							hour = '0'+hour;
+						}
+					}else{
+						if(hour<10){
+							hour = '0'+hour;
+						}
+					}
+					url = 'https://trade.fund123.cn/Contents/Scripts/FundsStateScript.js?ver='+year+''+month+''+day+''+hour+'';
+					console.log('state url: ', url);
+					return C.html(url, {dataType: 'text'}, function(data, _df){
+						if(data==undefined){
+							throw "FundsStateScript failed.";
+						}else{
+							// console.log('data: ', data);
+							var str = data.slice(data.indexOf("=")+2, -1);
+							// console.log('str: ', str);
+							window.fundState = eval('(' + str + ')');
+							// console.log('fundState: ', fundState);
+							_df.resolve();
+						}
+					});
+				});
 				_.each(rankingData, function(vi, ki){
 					_.each(vi, function(vj, kj){
 						_.each(vj, function(vk, kk){

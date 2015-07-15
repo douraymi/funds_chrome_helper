@@ -8,7 +8,11 @@ module.exports = function(){
 				if($("#zdxe").length>0){
 					// 新增定投的地方
 					$("#ctl00_body_rbPeriodTime_1").click();
-					$("#ctl00_body_rpPeriodTime_ctl01_ddList").val(_.random(1, 5));
+					// $("#ctl00_body_rpPeriodTime_ctl01_ddList").click();
+					var rnd = _.random(1, 5);
+					$("#ctl00_body_rpPeriodTime_ctl01_ddList").val(rnd);
+					// $("#ctl00_body_rpPeriodTime_ctl01_ddList").find("option[value='"+rnd+"']").attr("selected",true);
+					// console.log('av: ', $("#ctl00_body_rpPeriodTime_ctl01_ddList").val());
 					$("#ctl00_body_amount").val($("#zdxe").text().trim().jia(11));
 				}else{
 					// 更改

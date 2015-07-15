@@ -544,6 +544,12 @@ module.exports = function(){
 								stop : function(msg){
 									$scope.BOT = false;
 									$scope.BOTranObj = false;
+								},
+								over : function(msg){
+									doRank(doRankData.jj, doRankData.pp, doRankData.key, function(){
+										tnBOT.send({type:'BOT', code:'overOK'});
+										console.log("Amount is over 1000! ", doRankData.jj, " ", doRankData.pp, " ", doRankData.key);
+									});
 								}
 							}
 						});
