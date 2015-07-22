@@ -8,7 +8,7 @@ module.exports = function(){
 
 	function appController($scope){
 		$scope.setting = {
-			buyMonthlyAmount 	: 83000,
+			buyMonthlyAmount 	: 100000,
 			exchangeDaily 		: 30000,
 			shumiShowX 				: false,
 			ttShowX 					: false
