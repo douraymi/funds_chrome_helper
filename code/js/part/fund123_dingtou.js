@@ -500,9 +500,12 @@ module.exports = function(){
 					fixA(_trObj);
 				});
 				if($scope.BOT == "恢复"){
-					console.log("fff1:");
+					// 直接原价恢复
 					$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).click();
 					var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href");
+					// 恢复变成更改增加金额
+					// $(thsCodeTr).eq(0).find("a:contains('更改')").eq(0).click();
+					// var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('更改')").eq(0).attr("href");
 					C.newTab({url:_url, active:false});
 					// window.open($(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href"));
 				}

@@ -38,8 +38,12 @@ module.exports = function(){
 				_m = _m.jia(11);
 				var _am = $('#Amount').val().replace(/[^0-9\.-]+/g,"");
 				_am = _am.jia(11)>_m?_am.jia(11):_m;
-				$('#ShowAmount').val(_am);
-				return $('#Amount').val(_am);
+				if(_am<1000){
+					$('#ShowAmount').val(_am);
+					return $('#Amount').val(_am);
+				}else{
+					throw "out off 1000 per shout";
+				}
 			})
 			.go();
 		}else{
