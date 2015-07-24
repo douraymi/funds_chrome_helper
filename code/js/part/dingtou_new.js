@@ -69,15 +69,17 @@ module.exports = function(){
 			function botTimeout(){
 				setTimeout(function(){
 					var _input = $("input[name='TradeAccount'][isfreeze=false][isvaild=true]");
-					var _warning = $(".warnbtn");
+					// var _warning = $(".warnbtn");
 					console.log(_input.length);
 					if(_input.length>0){
 						$(".next").click();
-					}else if(_warning.length>0){
-						M.connect("dingtouWarning", "BOT", function(tn){
-							setTimeout(function(){C.closeTab();}, 500);
-						});
-					}else{
+					}
+					// else if(_warning.length>0){
+					// 	M.connect("dingtouWarning", "BOT", function(tn){
+					// 		setTimeout(function(){C.closeTab();}, 500);
+					// 	});
+					// }
+					else{
 						botTimeout();
 					}
 				}, 500);

@@ -25,6 +25,7 @@ module.exports = function(){
 	var _url = new URI();
 	_url.hasQuery("from", function(fromVal){
 		if(fromVal=='new'){
+			var isOver = false;
 			C.df()
 			// .next(function(){
 			// 	return $('#ShowCycleDay').focus();
@@ -38,11 +39,54 @@ module.exports = function(){
 				_m = _m.jia(11);
 				var _am = $('#Amount').val().replace(/[^0-9\.-]+/g,"");
 				_am = _am.jia(11)>_m?_am.jia(11):_m;
-				if(_am<1000){
-					$('#ShowAmount').val(_am);
-					return $('#Amount').val(_am);
-				}else{
-					throw "out off 1000 per shout";
+				if(_am>1000){
+					isOver=true;
+				}
+				$('#ShowAmount').val(_am);
+				return $('#Amount').val(_am);
+			})
+			.next(function(){
+				M.connect("dingtouNew", "newfundBOT", function(tn){
+					tn.onMsg({
+						BOT : {
+							BOT : function(msg){
+								if(isOver==true){
+									alert("定投金额大于1000了");
+									M.connect("dingtouDone", "BOT", function(tn){
+										console.log("Amount is over 1000!");
+										tn.send({type:'BOT', code:'over'});
+										tn.onMsg({
+											BOT : {
+												overOK : function(msg){
+													setTimeout(function(){C.closeTab();}, 500);
+
+												}
+											}
+										});
+									});
+								}else{
+									botTimeout();
+								}
+							}
+						}
+					});
+				});
+
+				function botTimeout(){
+					setTimeout(function(){
+						var _input = $("input[name='TradeAccount'][isfreeze=false][isvaild=true]");
+						var _warning = $(".warnbtn");
+						console.log(_input.length);
+						if(_input.length>0){
+							$(".next").click();
+						}else if(_warning.length>0){
+							M.connect("dingtouWarning", "BOT", function(tn){
+								setTimeout(function(){C.closeTab();}, 500);
+							});
+						}else{
+							botTimeout();
+						}
+					}, 500);
 				}
 			})
 			.go();

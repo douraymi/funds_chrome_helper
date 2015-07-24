@@ -93,36 +93,133 @@ module.exports = function(){
 			});
 		}
 		// 更改A链接事件
+		// function changeDt(){
+		// 	var _fundcode = $(this).parent(":eq(0)").parent(":eq(0)").find("td:eq(0)").text().trim();
+		// 	M.connect("dingtou", _fundcode+"_dtgo", function(tunnel){
+		// 		var doRankData;
+		// 		tunnel.onMsg({
+		// 			xxx : {
+		// 				xxx : function(msg){
+		// 					doRankData = msg.body;
+		// 				}
+		// 			}
+		// 		});
+		// 		tunnel.onClose.addListener(function(){
+		// 			var buyAmountNow_tmp = $scope.buyAmountNow;
+		// 			reloadList(function(){
+		// 				if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
+		// 					doRank(doRankData.jj, doRankData.pp, doRankData.key);
+		// 				}
+		// 				if($scope.randomContine=="status1"){
+		// 					$(".rectitle li[status=1]").trigger("click");
+		// 					randomSelect("status1");
+		// 				}else if($scope.randomContine=="status0"){
+		// 					$(".rectitle li[status=0]").trigger("click");
+		// 					randomSelect("status0");
+		// 				}
+		// 			});
+		// 			tunnel.close();
+		// 		});
+		// 	});
+		// }
 		function changeDt(){
 			var _fundcode = $(this).parent(":eq(0)").parent(":eq(0)").find("td:eq(0)").text().trim();
-			M.connect("dingtou", _fundcode+"_dtgo", function(tunnel){
-				var doRankData;
-				tunnel.onMsg({
-					xxx : {
-						xxx : function(msg){
-							doRankData = msg.body;
-						}
-					}
+			console.log('_fundcode: ', _fundcode);
+			var doRankData;
+			var _url = new URI($(this).attr('href'));
+			// _url.hasQuery('xyh', function(_xyh){
+			if($scope.BOT == "恢复"){
+				M.connect("dingtou", "newfundBOT", function(tunnel){
+					tunnel.send({type:"BOT", code:"BOT"});
 				});
-				tunnel.onClose.addListener(function(){
-					var buyAmountNow_tmp = $scope.buyAmountNow;
-					reloadList(function(){
-						if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
-							doRank(doRankData.jj, doRankData.pp, doRankData.key);
-						}
-						// console.log("in 111111111");
-						// $(".rectitle li[status='']").trigger("myclick.girafeee");
-						if($scope.randomContine=="status1"){
-							$(".rectitle li[status=1]").trigger("click");
-							randomSelect("status1");
-						}else if($scope.randomContine=="status0"){
-							$(".rectitle li[status=0]").trigger("click");
-							randomSelect("status0");
+				// M.connect("dingtou", _xyh+"_dtgo", function(tunnel){
+				M.connect("dingtou", _fundcode+"_dtgo", function(tunnel){
+					tunnel.send({type:"BOT", code:"BOT", body:$scope.BOTpw});
+					tunnel.onMsg({
+						xxx : {
+							xxx : function(msg){
+								console.log("msg3:", msg);
+								doRankData = msg.body;
+							}
+						},
+						BOT : {
+							pw : function(msg){
+								console.log("msg4:", msg);
+								C.storage.set({BOTpw: msg.body});
+								// $scope.BOTpw = msg.body;
+							}
 						}
 					});
-					tunnel.close();
 				});
-			});
+				M.connect("dingtou", "BOT", function(tnBOT){
+					tnBOT.onMsg({
+						BOT : {
+							stop : function(msg){
+								$scope.BOT = false;
+								$scope.BOTranObj = false;
+							},
+							over : function(msg){
+								doRank(doRankData.jj, doRankData.pp, doRankData.key, function(){
+									tnBOT.send({type:'BOT', code:'overOK'});
+									console.log("Amount is over 1000! ", doRankData.jj, " ", doRankData.pp, " ", doRankData.key);
+								});
+							}
+						}
+					});
+					tnBOT.onClose.addListener(function(){
+						var buyAmountNow_tmp = $scope.buyAmountNow;
+						reloadList(function(){
+							if($scope.buyAmountNow>$scope.setting.buyMonthlyAmount){
+								$scope.BOT = false;
+								$scope.BOTranObj = false;
+								console.log("end buyMonthlyAmount!");
+							}
+							if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
+								doRank(doRankData.jj, doRankData.pp, doRankData.key, function(){
+									if($scope.BOTranObj != false){
+										$scope.BOTranObj.click();
+									}
+								});
+							}else{
+								if($scope.BOTranObj != false){
+									$scope.BOTranObj.click();
+								}
+							}
+						});
+						tnBOT.close();
+					});
+				});
+
+			}else{
+				M.connect("dingtou", _fundcode+"_dtgo", function(tunnel){
+					tunnel.onMsg({
+						xxx : {
+							xxx : function(msg){
+								doRankData = msg.body;
+							}
+						}
+					});
+					tunnel.onClose.addListener(function(){
+						var buyAmountNow_tmp = $scope.buyAmountNow;
+						reloadList(function(){
+							if(doRankData != undefined && $scope.buyAmountNow>buyAmountNow_tmp ){
+								doRank(doRankData.jj, doRankData.pp, doRankData.key);
+							}
+							if($scope.randomContine=="status1"){
+								$(".rectitle li[status=1]").trigger("click");
+								randomSelect("status1");
+							}else if($scope.randomContine=="status0"){
+								$(".rectitle li[status=0]").trigger("click");
+								randomSelect("status0");
+							}
+						});
+						tunnel.close();
+					});
+				});
+				
+			}
+				
+			// });
 		}
 		// 恢复A链接事件
 		function addDt(){
@@ -500,12 +597,12 @@ module.exports = function(){
 					fixA(_trObj);
 				});
 				if($scope.BOT == "恢复"){
-					// 直接原价恢复
-					$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).click();
-					var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href");
+					// // 直接原价恢复
+					// $(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).click();
+					// var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href");
 					// 恢复变成更改增加金额
-					// $(thsCodeTr).eq(0).find("a:contains('更改')").eq(0).click();
-					// var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('更改')").eq(0).attr("href");
+					$(thsCodeTr).eq(0).find("a:contains('更改')").eq(0).click();
+					var _url = thisHost+$(thsCodeTr).eq(0).find("a:contains('更改')").eq(0).attr("href");
 					C.newTab({url:_url, active:false});
 					// window.open($(thsCodeTr).eq(0).find("a:contains('恢复')").eq(0).attr("href"));
 				}

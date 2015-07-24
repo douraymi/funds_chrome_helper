@@ -24,6 +24,7 @@ module.exports = function(){
 	}
 
 	var _fundcode = $("div.dingfundname b:eq(0)").text().trim();
+	console.log('_fundcode: ', _fundcode);
 	M.connect('dt_confirm_AI', _fundcode+"_dtgo", function(tn){
 		// 变更,新增行为
 		// 通过检测通道关闭事件触发动作
@@ -31,10 +32,12 @@ module.exports = function(){
 			BOT : {
 				BOT : function(msg){
 					if(!msg.body){
+						console.log("in one");
 						$(".next").click(function(){
 							tn.send({type:"BOT", code:"pw", body:$("input[name='TradePassword']").val()});
 						});
 					}else{
+						console.log("in two");
 						$("input[name='TradePassword']").val(msg.body);
 						$(".next").click();
 					}
