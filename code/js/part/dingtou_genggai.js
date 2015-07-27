@@ -38,7 +38,7 @@ module.exports = function(){
 				var _m = $("#MinAmountValue").text().replace(/[^0-9\.-]+/g,"");
 				_m = _m.jia(11);
 				var _am = $('#Amount').val().replace(/[^0-9\.-]+/g,"");
-				_am = _am.jia(11)>_m?_am.jia(11):_m;
+				_am = _am.jia(11)>_m?(_am.jia(11)>1000?1000:_am.jia(11)):_m;
 				if(_am>1000){
 					isOver=true;
 				}
