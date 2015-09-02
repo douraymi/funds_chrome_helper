@@ -34,7 +34,7 @@ module.exports = function(){
 				return $('#ShowCycleDay').blur();
 			}).next(function(){
 				var _m = $("#MinAmountValue").text().replace(/[^0-9\.-]+/g,"");
-				if(parseInt(_m)>300) isOver=true;
+				if(parseInt(_m)>1000) isOver=true;
 				_m = _m.jia(11);
 				$('#ShowAmount').val(_m);
 				return $('#Amount').val(_m);
