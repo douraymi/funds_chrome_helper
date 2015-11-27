@@ -494,6 +494,14 @@ module.exports = function(){
 			}).go();
 		}
 
+		// clean helper
+		function cleanHelper(fundcode){
+			// console.log("BUG:"+fundcode);
+			var _trObj = $(".NewTable30 tbody tr[status!=status2]:contains('"+fundcode+"')").addClass("hight_light").insertBefore($(".NewTable30 tbody tr").eq(0));
+			if(_trObj.length>0){
+				clean(_trObj);
+			}
+		}
 		// clean function
 		function clean(trObjAry){
 			// $scope.BOT == "终止";
@@ -537,7 +545,12 @@ module.exports = function(){
 				
 			});
 			// 懒得修改了 直接windowclose 不用上面终止函数去处理了(但是今天暂停数就没算了，以后看必要再搞)
-			_df.next(function(){$scope.isCloseWindow=true;}).go();
+			// _df.next(function(){$scope.isCloseWindow=true;}).go();
+			var _url = new URI();
+			if(_url.hasQuery("clean", true) ){
+				_df.next(function(){$scope.isCloseWindow=true;})
+			}
+			_df.go();
 		}
 
 		// 处理scope	
@@ -734,8 +747,10 @@ module.exports = function(){
 						// $(".NewTable30 thead th:eq(9)").text("单投金额").after("<th width='80'>基金总投</th>");
 						$(".NewTable30 thead th:eq(9)").text("单投金额");
 						$(".NewTable30 thead th:eq(12)").after("<th width='80'>基金总投</th>");
+						$(".NewTable30 thead th:eq(13)").after("<th width='30'>封杀</th>");
 						// $(".NewTable30 tbody tr td:nth-child(10)").after("<td></td>");
 						$(".NewTable30 tbody tr td:nth-child(13)").after("<td></td>");
+						$(".NewTable30 tbody tr td:nth-child(14)").after("<td>ALL</td>");
 						var ozAry = {};	// 总投入金额临时对象
 						$.each($(".NewTable30 tbody tr:visible"), function(i,v) {
 							// 总投入金额一期处理
@@ -800,6 +815,10 @@ module.exports = function(){
 						// 增加天天链接
 						$(".NewTable30 tbody tr:visible td:nth-child(1)").addClass('ttLink').click(function(){
 							window.open('http://fund.eastmoney.com/'+$(this).text().trim()+'.html');
+						});
+						// 增加封杀ALL
+						$(".NewTable30 tbody tr:visible td:nth-child(15)").addClass('ttLink').click(function(){
+							cleanHelper($(this).parent().find("td:eq(0)").text().trim());
 						});
 
 						// 暂停,恢复,更改 A链接处理

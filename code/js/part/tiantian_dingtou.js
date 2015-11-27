@@ -6,6 +6,9 @@ module.exports = function(){
 	// C.ng('html/part/tiantian_dingtou.html', appController);
 
 	C.ngGbl(appController, function(dfd){
+		// $('.Investmenttitle:eq(2)').append(' 总定投/月：'+$scope.allSums);
+		$('.Investmenttitle:eq(2)').append(' <span style="color: red;">总定投/月：{{allSums}}</span>');
+
 		// var jhstr = $('.mctb.mt10 tbody:eq(2) tr:eq(2) td:eq(8) a:last').attr('id').replace('_', '$');
 		// var jhstr = $('.mctb.mt10 tbody:eq(2) tr:eq(2) td:eq(8) a:last').attr('id').replace(/_/g, '$');
 		// console.log('jhstr:', jhstr);
@@ -63,11 +66,40 @@ module.exports = function(){
 	function appController($scope){
 		$scope.setting = {
 		}
+		// 周期金额计算
+		function calr(period, money){
+			var _money = 0;
+			switch (period){
+				case "每月":
+					_money = money.cheng(1);
+					break;
+				case "每两周":
+					_money = money.cheng(2);
+					break;
+				case "每周":
+					_money = money.cheng(4);
+					break;
+				default:
+			}
+			return _money;
+		}
+		$scope.allSums = 0;
+
 		// 主题处理
 		C.storage.ngXBind($scope, 'zhuti', function(item){
 			// console.log("item:", item);
 			var temscope = {};
 			$('.mctb.mt10 tbody:eq(2) tr:gt(0)').each(function(i, tr){
+				//统计总投资
+				var piro = $('td:nth-child(5)', tr).text().trim();
+				var sum = $('td:nth-child(4)', tr).text().trim();
+				var ispouse = $('td:nth-child(8)', tr).text().trim();
+				sum = sum.jia(0);
+				if(sum>0 && ispouse=="正常" ){
+					$scope.allSums += calr(piro, sum);
+					// console.log($scope.allSums);
+				}
+
 				var fundcode = $(this).find('td:eq(0)').text().trim();
 				temscope[fundcode] = [];
 				_.each(item.f, function(val, index){
@@ -83,9 +115,6 @@ module.exports = function(){
 			});
 			return temscope;
 		});
-
-
-
 
 
 
