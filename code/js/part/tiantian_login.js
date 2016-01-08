@@ -6,6 +6,7 @@ module.exports = function(){
 			setTimeout(function(){
 				$("#tbpwd").val(items['ttpw']);
 				$(".tbform input[type='hidden']:eq(1)").val(items['ttpw']);
+				C.storage.set({BOTpw: items['ttpw']});
 			}, 500);
 		}
 	});

@@ -22,6 +22,11 @@ module.exports = function($scope){
 		_.each(shumiUrl, function(val, key){
 			shumiObj[key] = [];
 			shumiDf.next(C.html, val, function(data, _df){
+				if(!data){
+					console.log("shumi "+key + "error");
+					_df.resolve();
+					return false;
+				}
 				data = data.replace(/http:\/\/\S+(\.(png|jpg|jpeg|gif))/g, fakeImg);
 				$(data).find('#resutlTbody tr').each(function(idx, elm){
 					var _elm = $(elm).find("td");
