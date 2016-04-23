@@ -12,7 +12,7 @@
   // 预处理部分
   //  -- 天天基金主题排名
   var zt = require('./etc/zhuti');
-  // zt();
+  // zt(); // 如果今天已有数据可以手动重置
   // setTimeout(function(){
   //     C.storage.get('zhuti', function(item){
   //       console.log('item:', item);

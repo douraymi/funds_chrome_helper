@@ -16,7 +16,14 @@ module.exports = function(){
 					}
 					zhutiList.push(_obj);
 				});
-				// console.log('zhutiList:', zhutiList);
+				$(data).find("#zzjjafloat a:not(.def)").each(function(){
+					var _obj = {
+						id : $(this).attr('id').slice(3),
+						name : $(this).text().trim()
+					}
+					zhutiList.push(_obj);
+				});
+				console.log('zhutiList:', zhutiList);
 				cb(zhutiList);
 			});
 		}
@@ -70,6 +77,7 @@ module.exports = function(){
 
 		C.storage.get('zhuti', function(items){
 			var item = items.zhuti;
+			console.log(item);
 			var today = new Date();
 			if(item && item.date===today.toDateString()){
 			}else{

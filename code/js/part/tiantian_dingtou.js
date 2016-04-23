@@ -14,27 +14,27 @@ module.exports = function(){
 
 
 	C.ngGbl(appController, function(dfd){
-		// $('.Investmenttitle:eq(2)').append(' 总定投/月：'+$scope.allSums);
 		$('.Investmenttitle:eq(2)').append(' <span style="color: red;">总定投/月：{{allSums}}</span>/<span style="color: blue;">{{allSumsAll}}</span> 			<span class="oprate"> 			<a style="background-color: LightSteelBlue;" id=open10>o10</a> 			<a style="background-color: LightSteelBlue;" id=open30>o30</a> 			<a style="background-color: LightSteelBlue;" id=open50>o50</a> 			<a style="background-color: LightSteelBlue;" id=open100>o100</a> 			</span> 			<span class="oprate"> 			<a style="background-color: Khaki;" id=close1>c1</a> 			<a style="background-color: Khaki;" id=close10>c10</a> 			<a style="background-color: Khaki;" id=close30>c30</a> 			<a style="background-color: Khaki;" id=close50>c50</a> 			<a style="background-color: Khaki;" id=close100>c100</a> 			</span>');
-
-		// var jhstr = $('.mctb.mt10 tbody:eq(2) tr:eq(2) td:eq(8) a:last').attr('id').replace('_', '$');
-		// var jhstr = $('.mctb.mt10 tbody:eq(2) tr:eq(2) td:eq(8) a:last').attr('id').replace(/_/g, '$');
-		// console.log('jhstr:', jhstr);
-		// $.ajax();
 
 		// 重新排序 先排序再做后续处理
 		$('.mctb.mt10 tbody:eq(2) tr:eq(0)').find("td:eq(0)").attr('_order', 1);
 		C.tableSortOnce('table.mctb.mt10:eq(2)', 1, 'int', true);
 		// 修改链接 增加内容
 		var df = C.df();
+		var lenCount = $('.mctb.mt10 tbody:eq(2) tr:gt(0)').length;
+		console.log(lenCount);
 		$('.mctb.mt10 tbody:eq(2) tr:gt(0)').each(function(i, tr){
 			var fundcode = $('td:nth-child(1)', tr).text().trim();
+			// 16.04.23
+			$(tr).attr("id", "sex"+fundcode);
+
 			$('td:nth-child(1)', tr).html('<a href="http://fund.eastmoney.com/'+fundcode+'.html" target="_blank">'+fundcode+'</a>');
-			// var txt = $('td:nth-child(2)', tr).text();
-			// $('td:nth-child(2)', tr).html('<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'" aria-expanded="false" aria-controls="#collapse'+i+'">'+txt+'</a>');
-			// , data-toggle:"collapse", aria-expanded:"false", data-parent:"#accordion", aria-controls:"#collapse"+i
 			$('td:nth-child(2)', tr).addClass('collapsed GLpointer').attr({href:"#collapse"+i, "data-toggle":"collapse"});
 			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><p style="width:90%"><span style="padding:12px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></span><br/><p style="" id="bz'+i+'"></p></p></td></tr>');
+
+			// 16.04.23
+			$("#bz"+i).append(' 操作：<a style="color: #06b;" ng-click="openAll(\''+fundcode+'\')">打开所有</a> 	<a style="color: #06b;" ng-click="closeAll(\''+fundcode+'\')">关闭所有</a>  ');
+
 			// 增加备注
 			var postData = {
 				url:'https://trade.1234567.com.cn/Investment/default?spm=S',
@@ -45,9 +45,6 @@ module.exports = function(){
 					__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
 					__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
 				},
-				// success : function(data){
-				// 	console.log('success data:', data);
-				// },
 				error : function(){
 					console.log('ajax error');
 				}
@@ -61,6 +58,13 @@ module.exports = function(){
 				// console.log('bzstr:', bzstr, 'i:', i);
 				$("#bz"+i).append($("#"+id2).clone(true));
 				$("#bz"+i).append(" 备注："+bzstr);
+
+				// 16.04.23
+				// if(--lenCount <=0){
+				// 	// 如果想快点看其他 就不等这步控制
+				// 	console.log("ngXBind done");
+				// 	dfd.res();
+				// }
 			}
 			df.next(function(){
 				return $.ajax(postData);
@@ -69,38 +73,91 @@ module.exports = function(){
 
 		});
 		df.go();
+		// 上面如果开了这里就要禁止 dfd.res();
 		dfd.res();
+
 	});
 	function appController($scope){
-		// function autoDoing(){
-		// 	C.storage.get('autoDT', function(items){
-		// 		if(items.autoDT){
-		// 			if(items.autoDT.cal>0){
-		// 				if(items.autoDT.is=='open'){
-		// 					// $('.mctb.mt10 tbody:eq(2) tr[isoc=="close"]')
+		//16.04.23
+		$scope.openAll = function(fundcode){
+			doByCode(fundcode, 'close');
+		}
+		$scope.closeAll = function(fundcode){
+			doByCode(fundcode, 'open');
+		}
+		function doByCode(fundcode, swc){
+			var iso = swc=='open'?'open':'close';
+			var qstr = ".mctb.mt10 tbody:eq(2) tr[isoc='"+iso+"'][id='sex"+fundcode+"']:not(.deen)";
+			// console.log();
+			var df = C.df();
+			$(qstr).each(function(index, tr) {
+				var postData = {
+					url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+					type: 'POST',
+					data: {
+						_Last_ViewState : $("#_Last_ViewState").val(),
+						__VIEWSTATE : $("#__VIEWSTATE").val(),
+						__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
+						__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
+					},
+					error : function(){
+						console.log('ajax error');
+					}
+				}
+				// 开启和暂停都是一样的
+				var jhstr = $('td:eq(8) a:first', tr).attr('id').replace(/_/g, '$');
+				postData.data.__EVENTTARGET = jhstr;
+				
+				df.next(function(){
+					var df2 = df.dfd();
+					postData.success = function(data){
+						var formq = $(data).find('#aspnetForm').attr('action');
 
-		// 					// console.log(items.autoDT);
-		// 					C.storage.set({autoDT:{is:'open', cal:items.autoDT.cal--}});
-		// 				}else if(items.autoDT.is=='close'){
-		// 					$(".mctb.mt10 tbody:eq(2) tr[isoc='open']").eq( _.random(0, $scope.openSums) ).find("a:contains('暂停')");
-		// 					// console.log(items.autoDT);
-		// 					C.storage.set({autoDT:{is:'close', cal:items.autoDT.cal--}});
-		// 				}
+						var postData2 = {
+							url:'https://trade.1234567.com.cn/Investment/'+formq,
+							type: 'POST',
+							data: {
+								_Last_ViewState : $("#_Last_ViewState").val(),
+								__VIEWSTATE : $("#__VIEWSTATE", data).val(),
+								__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR", data).val(),
+								__EVENTARGUMENT : $("#__EVENTARGUMENT", data).val()
+							},
+							error : function(){
+								console.log('ajax error');
+								df2.res();
+							}
+						}
+						postData2.data.__EVENTTARGET = 'ctl00$body$btnSp2';
+						postData2.data.ctl00$body$txtPaypwd = $scope.ttpw;
+						// console.log(postData2.data.ctl00$body$txtPaypwd);
+						postData2.success = function(data){
+							df2.res();
+							console.log("do once");
+						}
+						$.ajax(postData2);
+					}
+					$.ajax(postData);
+					return df2;
+					// return $.ajax(postData);
+				});
 
-		// 			}else{
-		// 				C.storage.set({autoDT:false});
-		// 			}
+				// tr.css("background-color","red");
 
-		// 		}
-		// 	});
-		// }
-		// // 运行一次
-		// autoDoing();
+			});
+			// };
+			df.next(function(){
+				setTimeout(function(){
+				 location.reload();
+				},1000);
+			});
+			df.go();
+
+		}
+
 
 		C.storage.ngBind($scope, 'ttpw', function(item){
 
 		});
-
 		// 控件处理
 		$("#open10").click(function(){openFundDT(10);});
 		$("#open30").click(function(){openFundDT(30);});
@@ -212,199 +269,10 @@ module.exports = function(){
 		}
 		function openFundDT(percent){
 			autoDT(percent, 'open');
-			// var doNum = parseInt( ($scope.closeSums*percent)/100 );
-
-			// console.log('doNum:', doNum);
-			// console.log('$scope.openSums:', $scope.closeSums);
-			// if(!$scope.ttpw){
-			// 	alert("no pw");
-			// 	return false;
-			// }
-			// var trs = [];
-			// for (var i = 1; i <= doNum; i++) {
-			// 	var atr = $(".mctb.mt10 tbody:eq(2) tr[isoc='close']:not(.deen)").eq( _.random(0, $scope.closeSums-i) ).addClass('deen');
-			// 	if(atr.length>0){
-			// 		trs.push(atr);
-					
-			// 	}else{
-			// 		break;
-			// 	}
-
-			// };
-
-			// var df = C.df();
-			// $(trs).each(function(i, tr){
-
-			// 	var postData = {
-			// 		url:'https://trade.1234567.com.cn/Investment/default?spm=S',
-			// 		type: 'POST',
-			// 		data: {
-			// 			_Last_ViewState : $("#_Last_ViewState").val(),
-			// 			__VIEWSTATE : $("#__VIEWSTATE").val(),
-			// 			__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
-			// 			__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
-			// 		},
-			// 		error : function(){
-			// 			console.log('ajax error');
-			// 		}
-			// 	}
-			// 	var jhstr = $('td:eq(8) a:first', tr).attr('id').replace(/_/g, '$');
-			// 	postData.data.__EVENTTARGET = jhstr;
-				
-			// 	df.next(function(){
-			// 		var df2 = df.dfd();
-			// 		postData.success = function(data){
-			// 			var formq = $(data).find('#aspnetForm').attr('action');
-
-			// 				var postData2 = {
-			// 					url:'https://trade.1234567.com.cn/Investment/'+formq,
-			// 					type: 'POST',
-			// 					data: {
-			// 						_Last_ViewState : $("#_Last_ViewState").val(),
-			// 						__VIEWSTATE : $("#__VIEWSTATE", data).val(),
-			// 						__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR", data).val(),
-			// 						__EVENTARGUMENT : $("#__EVENTARGUMENT", data).val()
-			// 					},
-			// 					error : function(){
-			// 						console.log('ajax error');
-			// 						df2.res();
-			// 					}
-			// 				}
-			// 				postData2.data.__EVENTTARGET = 'ctl00$body$btnSp2';
-			// 				postData2.data.ctl00$body$txtPaypwd = $scope.ttpw;
-			// 				// console.log(postData2.data.ctl00$body$txtPaypwd);
-			// 				postData2.success = function(data){
-			// 					df2.res();
-			// 					console.log("do once");
-			// 				}
-			// 				$.ajax(postData2);
-			// 		}
-			// 		$.ajax(postData);
-			// 		return df2;
-			// 		// return $.ajax(postData);
-			// 	});
-
-			// 	// tr.css("background-color","red");
-
-			// });
-			// // };
-			// df.next(function(){
-			// 	setTimeout(function(){
-			// 	 location.reload();
-			// 	},5000);
-			// });
-			// df.go();
-
-
-
 
 		}
 		function closeFundDT(percent){
 			autoDT(percent, 'close');
-			// var doNum = parseInt( ($scope.openSums*percent)/100 );
-			// console.log('doNum:', doNum);
-			// console.log('$scope.openSums:', $scope.openSums);
-			// // C.storage.set({autoDT:{is:'close', cal:doNum}}, function(){
-			// // 	autoDoing();
-				
-			// // });
-			// if(!$scope.ttpw){
-			// 	alert("no pw");
-			// 	return false;
-			// }
-			// var trs = [];
-			// for (var i = 1; i <= doNum; i++) {
-			// 	var atr = $(".mctb.mt10 tbody:eq(2) tr[isoc='open']:not(.deen)").eq( _.random(0, $scope.openSums-i) ).addClass('deen');
-			// 	if(atr.length>0){
-			// 		trs.push(atr);
-					
-			// 	}else{
-			// 		break;
-			// 	}
-
-			// };
-			// // console.log('trs:', trs);
-			// var df = C.df();
-			// // for (var i = 1; i <= doNum; i++) {
-			// // $(".mctb.mt10 tbody:eq(2) tr[isoc='open']").each(function(i, tr){
-			// $(trs).each(function(i, tr){
-
-
-			// 	// var tr = $(".mctb.mt10 tbody:eq(2) tr[isoc='open']:not(.deen)").eq( _.random(0, $scope.openSums-i) );
-
-			// 	var postData = {
-			// 		url:'https://trade.1234567.com.cn/Investment/default?spm=S',
-			// 		type: 'POST',
-			// 		data: {
-			// 			_Last_ViewState : $("#_Last_ViewState").val(),
-			// 			__VIEWSTATE : $("#__VIEWSTATE").val(),
-			// 			__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
-			// 			__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
-			// 		},
-			// 		error : function(){
-			// 			console.log('ajax error');
-			// 		}
-			// 	}
-			// 	var jhstr = $('td:eq(8) a:first', tr).attr('id').replace(/_/g, '$');
-			// 	// console.log(jhstr);
-			// 	// var jhstr = $('td:eq(8) a:first', tr).attr('id');
-			// 	// if(jhstr){
-			// 	// 	jhstr = jhstr.replace(/_/g, '$');
-			// 	// }else{
-			// 	// 	return false;
-			// 	// }
-			// 	postData.data.__EVENTTARGET = jhstr;
-				
-			// 	// postData.success = function(data){
-			// 	// 	var formq = $(data).find('#aspnetForm').attr('action');
-			// 	// 	// console.log(formq);
-			// 	// 	console.log('formq:', formq, 'i:', i);
-			// 	// 	// df2.res();
-			// 	// }
-			// 	df.next(function(){
-			// 		var df2 = df.dfd();
-			// 		postData.success = function(data){
-			// 			var formq = $(data).find('#aspnetForm').attr('action');
-			// 			// console.log('formq:', formq, 'i:', i);
-
-			// 				var postData2 = {
-			// 					url:'https://trade.1234567.com.cn/Investment/'+formq,
-			// 					type: 'POST',
-			// 					data: {
-			// 						_Last_ViewState : $("#_Last_ViewState").val(),
-			// 						__VIEWSTATE : $("#__VIEWSTATE", data).val(),
-			// 						__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR", data).val(),
-			// 						__EVENTARGUMENT : $("#__EVENTARGUMENT", data).val()
-			// 					},
-			// 					error : function(){
-			// 						console.log('ajax error');
-			// 						df2.res();
-			// 					}
-			// 				}
-			// 				postData2.data.__EVENTTARGET = 'ctl00$body$btnSp2';
-			// 				postData2.data.ctl00$body$txtPaypwd = $scope.ttpw;
-			// 				// console.log(postData2.data.ctl00$body$txtPaypwd);
-			// 				postData2.success = function(data){
-			// 					df2.res();
-			// 					console.log("do once");
-			// 				}
-			// 				$.ajax(postData2);
-			// 		}
-			// 		$.ajax(postData);
-			// 		return df2;
-			// 		// return $.ajax(postData);
-			// 	});
-
-			// 	// tr.css("background-color","red");
-
-			// });
-			// // };
-			// df.next(function(){
-			// 	setTimeout(function(){
-			// 	 location.reload();
-			// 	},5000);
-			// });
-			// df.go();
 			
 		}
 
