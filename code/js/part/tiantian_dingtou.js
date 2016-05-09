@@ -30,7 +30,7 @@ module.exports = function(){
 
 			$('td:nth-child(1)', tr).html('<a href="http://fund.eastmoney.com/'+fundcode+'.html" target="_blank">'+fundcode+'</a>');
 			$('td:nth-child(2)', tr).addClass('collapsed GLpointer').attr({href:"#collapse"+i, "data-toggle":"collapse"});
-			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><p style="width:90%"><span style="padding:12px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></span><br/><p style="" id="bz'+i+'"></p></p></td></tr>');
+			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><div style="float: left;"><div style="float: left;padding:12px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></div></div><br/><div style="width: 100%;" id="bz'+i+'"></div></td></tr>');
 
 			// 16.04.23
 			$("#bz"+i).append(' 操作：<a style="color: #06b;" ng-click="openAll(\''+fundcode+'\')">打开所有</a> 	<a style="color: #06b;" ng-click="closeAll(\''+fundcode+'\')">关闭所有</a>  ');
