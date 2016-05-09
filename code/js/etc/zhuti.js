@@ -32,12 +32,14 @@ module.exports = function(){
 		function getzhutiRank(_zlist, cb){
 			// var _ztobj = _zlist;
 			var _ztobj = [];
-			var baseUrl = 'http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&ft=gp&sd=&ed=&sc=3y&st=desc&pi=1&pn=1000&zf=diy&sh=list';
+			// &ft=gp 有问题
+			var baseUrl = 'http://fund.eastmoney.com/api/FundGuide.aspx?dt=0&sd=&ed=&sc=3y&st=desc&pi=1&pn=1000&zf=diy&sh=list';
 			var _df = C.df();
 			_.each(_zlist, function(v, i){
 				_ztobj[i] = v;
 				// &rnd=0.849578816909343&tp=2494b469c0c28ed1
-				var _url = baseUrl+'&rnd='+_.random(0, 1)+'&tp='+v.id;
+				// var _url = baseUrl+'&rnd='+_.random(0, 1)+'&tp='+v.id;
+				var _url = baseUrl+'&rnd='+Math.random()+'&tp='+v.id;			// Math.random() 才行 underscore的random是0或者1
 				// console.log('_url: ', _url);
 				_df.next(C.html, _url, function(data, xhrDf){
 					// console.log('i:', i, 'v:', v);
