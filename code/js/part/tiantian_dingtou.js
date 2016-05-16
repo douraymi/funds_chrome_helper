@@ -10,8 +10,6 @@ module.exports = function(){
 
 	// 	}
 	// });
-	
-
 
 	C.ngGbl(appController, function(dfd){
 		$('.Investmenttitle:eq(2)').append(' <span style="color: red;">总定投/月：{{allSums}}</span>/<span style="color: blue;">{{allSumsAll}}</span> 			<span class="oprate"> 			<a style="background-color: LightSteelBlue;" id=open10>o10</a> 			<a style="background-color: LightSteelBlue;" id=open30>o30</a> 			<a style="background-color: LightSteelBlue;" id=open50>o50</a> 			<a style="background-color: LightSteelBlue;" id=open100>o100</a> 			</span> 			<span class="oprate"> 			<a style="background-color: Khaki;" id=close1>c1</a> 			<a style="background-color: Khaki;" id=close10>c10</a> 			<a style="background-color: Khaki;" id=close30>c30</a> 			<a style="background-color: Khaki;" id=close50>c50</a> 			<a style="background-color: Khaki;" id=close100>c100</a> 			</span>');
@@ -295,15 +293,16 @@ module.exports = function(){
 			}
 			return _money;
 		}
-		$scope.allSums = 0;
-		$scope.allSumsAll = 0;
-
-		$scope.openSums = 0;
-		$scope.closeSums = 0;
+		
 
 		// 主题处理
 		C.storage.ngXBind($scope, 'zhuti', function(item){
 			// console.log("item:", item);
+			$scope.allSums = 0;
+			$scope.allSumsAll = 0;
+
+			$scope.openSums = 0;
+			$scope.closeSums = 0;
 			var temscope = {};
 			$('.mctb.mt10 tbody:eq(2) tr:gt(0)').each(function(i, tr){
 				//统计总投资
