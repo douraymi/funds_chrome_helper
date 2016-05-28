@@ -31,42 +31,43 @@ module.exports = function(){
 			$(tr).after('<tr id="collapse'+i+'" class="panel-collapse scrollPan collapse" role="tabpanel" aria-labelledby="heading'+i+'"><td colspan="9"><div style="float: left;"><div style="float: left;padding:12px;" ng-repeat="(k, v) in zhuti.'+fundcode+'"><a href="{{v.href}}" target="_blank" class="label label-primary">{{v.name}}</a></div></div><br/><div style="width: 100%;" id="bz'+i+'"></div></td></tr>');
 
 			// 16.04.23
-			$("#bz"+i).append(' 操作：<a style="color: #06b;" ng-click="openAll(\''+fundcode+'\')">打开所有</a> 	<a style="color: #06b;" ng-click="closeAll(\''+fundcode+'\')">关闭所有</a>  ');
+			$("#bz"+i).append(' 操作：<a style="color: #06b;" ng-click="openAll(\''+fundcode+'\')">打开所有</a> 	<a style="color: #06b;" ng-click="closeAll(\''+fundcode+'\')">关闭所有</a>  <a style="color: #06b;" ng-click="shutDownAll(\''+fundcode+'\')">清除所有</a>');
 
 			// 增加备注
-			var postData = {
-				url:'https://trade.1234567.com.cn/Investment/default?spm=S',
-				type: 'POST',
-				data: {
-					_Last_ViewState : $("#_Last_ViewState").val(),
-					__VIEWSTATE : $("#__VIEWSTATE").val(),
-					__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
-					__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
-				},
-				error : function(){
-					console.log('ajax error');
-				}
-			}
-			var id2 = $('td:eq(8) a:eq(2)', tr).attr("id");
-			// console.log("id2:", id2);
-			var jhstr = $('td:eq(8) a:last', tr).attr('id').replace(/_/g, '$');
-			postData.data.__EVENTTARGET = jhstr;
-			postData.success = function(data){
-				var bzstr = $(data).find("#ctl00_body_remark").text().trim();
-				// console.log('bzstr:', bzstr, 'i:', i);
-				$("#bz"+i).append($("#"+id2).clone(true));
-				$("#bz"+i).append(" 备注："+bzstr);
+			// 先关掉 太多访问了
+			// var postData = {
+			// 	url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+			// 	type: 'POST',
+			// 	data: {
+			// 		_Last_ViewState : $("#_Last_ViewState").val(),
+			// 		__VIEWSTATE : $("#__VIEWSTATE").val(),
+			// 		__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
+			// 		__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
+			// 	},
+			// 	error : function(){
+			// 		console.log('ajax error');
+			// 	}
+			// }
+			// var id2 = $('td:eq(8) a:eq(2)', tr).attr("id");
+			// // console.log("id2:", id2);
+			// var jhstr = $('td:eq(8) a:last', tr).attr('id').replace(/_/g, '$');
+			// postData.data.__EVENTTARGET = jhstr;
+			// postData.success = function(data){
+			// 	var bzstr = $(data).find("#ctl00_body_remark").text().trim();
+			// 	// console.log('bzstr:', bzstr, 'i:', i);
+			// 	$("#bz"+i).append($("#"+id2).clone(true));
+			// 	$("#bz"+i).append(" 备注："+bzstr);
 
-				// 16.04.23
-				// if(--lenCount <=0){
-				// 	// 如果想快点看其他 就不等这步控制
-				// 	console.log("ngXBind done");
-				// 	dfd.res();
-				// }
-			}
-			df.next(function(){
-				return $.ajax(postData);
-			});
+			// 	// 16.04.23
+			// 	// if(--lenCount <=0){
+			// 	// 	// 如果想快点看其他 就不等这步控制
+			// 	// 	console.log("ngXBind done");
+			// 	// 	dfd.res();
+			// 	// }
+			// }
+			// df.next(function(){
+			// 	return $.ajax(postData);
+			// });
 
 
 		});
@@ -77,6 +78,74 @@ module.exports = function(){
 	});
 	function appController($scope){
 		//16.04.23
+		$scope.shutDownAll = function(fundcode){
+			// var iso = swc=='open'?'open':'close';
+			var qstr = ".mctb.mt10 tbody:eq(2) tr[id='sex"+fundcode+"']:not(.deen)";
+			// console.log();
+			var df = C.df();
+			$(qstr).each(function(index, tr) {
+				var postData = {
+					url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+					type: 'POST',
+					data: {
+						_Last_ViewState : $("#_Last_ViewState").val(),
+						__VIEWSTATE : $("#__VIEWSTATE").val(),
+						__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR").val(),
+						__EVENTARGUMENT : $("#__EVENTARGUMENT").val()
+					},
+					error : function(){
+						console.log('ajax error');
+					}
+				}
+				// 第四个a
+				var jhstr = $('td:eq(8) a:eq(3)', tr).attr('id').replace(/_/g, '$');
+				postData.data.__EVENTTARGET = jhstr;
+				
+				df.next(function(){
+					var df2 = df.dfd();
+					postData.success = function(data){
+						var formq = $(data).find('#aspnetForm').attr('action');
+
+						var postData2 = {
+							url:'https://trade.1234567.com.cn/Investment/'+formq,
+							type: 'POST',
+							data: {
+								_Last_ViewState : $("#_Last_ViewState").val(),
+								__VIEWSTATE : $("#__VIEWSTATE", data).val(),
+								__VIEWSTATEGENERATOR : $("#__VIEWSTATEGENERATOR", data).val(),
+								__EVENTARGUMENT : $("#__EVENTARGUMENT", data).val()
+							},
+							error : function(){
+								console.log('ajax error');
+								df2.res();
+							}
+						}
+						postData2.data.__EVENTTARGET = 'ctl00$body$btnSp2';
+						postData2.data.ctl00$body$txtPaypwd = $scope.ttpw;
+						// console.log(postData2.data.ctl00$body$txtPaypwd);
+						postData2.success = function(data){
+							df2.res();
+							console.log("do once");
+						}
+						$.ajax(postData2);
+					}
+					$.ajax(postData);
+					return df2;
+					// return $.ajax(postData);
+				});
+
+				// tr.css("background-color","red");
+
+			});
+			// };
+			df.next(function(){
+				setTimeout(function(){
+				 location.reload();
+				},1000);
+			});
+			df.go();
+
+		}
 		$scope.openAll = function(fundcode){
 			doByCode(fundcode, 'close');
 		}
