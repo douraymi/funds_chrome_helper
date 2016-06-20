@@ -11,9 +11,15 @@ module.exports = function(){
 					// $("#ctl00_body_rpPeriodTime_ctl01_ddList").click();
 					var rnd = _.random(1, 5);
 					$("#ctl00_body_rpPeriodTime_ctl01_ddList").val(rnd);
+					var rndtext = $("#ctl00_body_rpPeriodTime_ctl01_ddList").find("option[value='"+rnd+"']").text();
+					$("#ctl00_body_hfWorkWeek").val(rndtext);
+					//这个才是真正起到数据作用的
+					$("#ctl00_body_hfPeriodday").val(rnd);
 					// $("#ctl00_body_rpPeriodTime_ctl01_ddList").find("option[value='"+rnd+"']").attr("selected",true);
 					// console.log('av: ', $("#ctl00_body_rpPeriodTime_ctl01_ddList").val());
-					$("#ctl00_body_amount").val($("#zdxe").text().trim().jia(11));
+					var rndAm = _.random(11, 233);
+					// $("#ctl00_body_amount").val($("#zdxe").text().trim().jia(11));
+					$("#ctl00_body_amount").val($("#zdxe").text().trim().jia(rndAm));
 				}else{
 					// 更改
 

@@ -33,6 +33,7 @@
 		// 天天基金页面处理
 		switch(thisUri){
 			case "https://trade.1234567.com.cn/Investment/default":
+			case "https://trade6.1234567.com.cn/Investment/default":
 				require('./part/tiantian_dingtou');
 				break;
 			case "http://fund.eastmoney.com/daogou/":
@@ -47,12 +48,22 @@
 			case "https://trade.1234567.com.cn/Investment/close":
 			case "https://trade.1234567.com.cn/Investment/again":
 			case "https://trade.1234567.com.cn/Investment/suspend":
+			case "https://trade6.1234567.com.cn/Investment/change":
+			case "https://trade6.1234567.com.cn/FundtradePage/redemption":
+			case "https://trade6.1234567.com.cn/FundTradePage/redemption":
+			case "https://trade6.1234567.com.cn/Investment/close":
+			case "https://trade6.1234567.com.cn/zsb/withdrawcash":
+			case "https://trade6.1234567.com.cn/Investment/add.aspx":
+			case "https://trade6.1234567.com.cn/Investment/close":
+			case "https://trade6.1234567.com.cn/Investment/again":
+			case "https://trade6.1234567.com.cn/Investment/suspend":
 				require('./part/tiantian_xiugai');
 				break;
 			// case "https://trade.1234567.com.cn/Investment/close":
 			// 	require('./part/tiantian_close');
 			// 	break;
 			case "https://trade.1234567.com.cn/login":
+			case "https://trade6.1234567.com.cn/login":
 				require('./part/tiantian_login');
 				break;
 
