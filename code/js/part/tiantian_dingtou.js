@@ -10,6 +10,8 @@ module.exports = function(){
 
 	// 	}
 	// });
+	// console.log('window.thisHost:', window.thisHost);
+	var thshost = window.thisHost;
 
 	C.ngGbl(appController, function(dfd){
 		$('.Investmenttitle:eq(2)').append(' <span style="color: red;">总定投/月：{{allSums}}</span>/<span style="color: blue;">{{allSumsAll}}</span> 			<span class="oprate"> 			<a style="background-color: LightSteelBlue;" id=open10>o10</a> 			<a style="background-color: LightSteelBlue;" id=open30>o30</a> 			<a style="background-color: LightSteelBlue;" id=open50>o50</a> 			<a style="background-color: LightSteelBlue;" id=open100>o100</a> 			</span> 			<span class="oprate"> 			<a style="background-color: Khaki;" id=close1>c1</a> 			<a style="background-color: Khaki;" id=close10>c10</a> 			<a style="background-color: Khaki;" id=close30>c30</a> 			<a style="background-color: Khaki;" id=close50>c50</a> 			<a style="background-color: Khaki;" id=close100>c100</a> 			</span>');
@@ -36,7 +38,7 @@ module.exports = function(){
 			// 增加备注
 			// 先关掉 太多访问了
 			// var postData = {
-			// 	url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+			// 	url: thshost+'/Investment/default?spm=S',
 			// 	type: 'POST',
 			// 	data: {
 			// 		_Last_ViewState : $("#_Last_ViewState").val(),
@@ -85,7 +87,7 @@ module.exports = function(){
 			var df = C.df();
 			$(qstr).each(function(index, tr) {
 				var postData = {
-					url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+					url: thshost+'/Investment/default?spm=S',
 					type: 'POST',
 					data: {
 						_Last_ViewState : $("#_Last_ViewState").val(),
@@ -107,7 +109,7 @@ module.exports = function(){
 						var formq = $(data).find('#aspnetForm').attr('action');
 
 						var postData2 = {
-							url:'https://trade.1234567.com.cn/Investment/'+formq,
+							url: thshost+'/Investment/'+formq,
 							type: 'POST',
 							data: {
 								_Last_ViewState : $("#_Last_ViewState").val(),
@@ -159,7 +161,7 @@ module.exports = function(){
 			var df = C.df();
 			$(qstr).each(function(index, tr) {
 				var postData = {
-					url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+					url: thshost+'/Investment/default?spm=S',
 					type: 'POST',
 					data: {
 						_Last_ViewState : $("#_Last_ViewState").val(),
@@ -181,7 +183,7 @@ module.exports = function(){
 						var formq = $(data).find('#aspnetForm').attr('action');
 
 						var postData2 = {
-							url:'https://trade.1234567.com.cn/Investment/'+formq,
+							url: thshost+'/Investment/'+formq,
 							type: 'POST',
 							data: {
 								_Last_ViewState : $("#_Last_ViewState").val(),
@@ -274,7 +276,7 @@ module.exports = function(){
 			$(trs).each(function(i, tr){
 
 				var postData = {
-					url:'https://trade.1234567.com.cn/Investment/default?spm=S',
+					url: thshost+'/Investment/default?spm=S',
 					type: 'POST',
 					data: {
 						_Last_ViewState : $("#_Last_ViewState").val(),
@@ -295,7 +297,7 @@ module.exports = function(){
 						var formq = $(data).find('#aspnetForm').attr('action');
 
 						var postData2 = {
-							url:'https://trade.1234567.com.cn/Investment/'+formq,
+							url: thshost+'/Investment/'+formq,
 							type: 'POST',
 							data: {
 								_Last_ViewState : $("#_Last_ViewState").val(),
