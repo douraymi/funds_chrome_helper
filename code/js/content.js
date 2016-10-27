@@ -64,6 +64,7 @@
 			// 	break;
 			case "https://trade.1234567.com.cn/login":
 			case "https://trade6.1234567.com.cn/login":
+			case "https://login.1234567.com.cn/":
 				require('./part/tiantian_login');
 				break;
 
