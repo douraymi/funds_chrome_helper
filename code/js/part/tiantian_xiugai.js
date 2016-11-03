@@ -17,7 +17,7 @@ module.exports = function(){
 					$("#ctl00_body_hfPeriodday").val(rnd);
 					// $("#ctl00_body_rpPeriodTime_ctl01_ddList").find("option[value='"+rnd+"']").attr("selected",true);
 					// console.log('av: ', $("#ctl00_body_rpPeriodTime_ctl01_ddList").val());
-					var rndAm = _.random(11, 233);
+					var rndAm = _.random(111, 666);
 					// $("#ctl00_body_amount").val($("#zdxe").text().trim().jia(11));
 					$("#ctl00_body_amount").val($("#zdxe").text().trim().jia(rndAm));
 				}else{
