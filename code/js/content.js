@@ -45,6 +45,7 @@
 			case "https://trade.1234567.com.cn/Investment/close":
 			case "https://trade.1234567.com.cn/zsb/withdrawcash":
 			case "https://trade.1234567.com.cn/Investment/add.aspx":
+			case "https://trade.1234567.com.cn/Investment/add":
 			case "https://trade.1234567.com.cn/Investment/close":
 			case "https://trade.1234567.com.cn/Investment/again":
 			case "https://trade.1234567.com.cn/Investment/suspend":
