@@ -3,12 +3,9 @@
   "version": "1.0.0",
   "description": "__MSG_extDesc__",
   "dependencies": {
-    "URIjs": "^1.16.1",
+    "urijs": "^1.15.0",
     "jquery": "^2.1.3",
-    "mocha": "^5.1.1",
-    "npm-check": "^5.7.0",
-    "underscore": "^1.8.3",
-    "urijs": "^1.15.0"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

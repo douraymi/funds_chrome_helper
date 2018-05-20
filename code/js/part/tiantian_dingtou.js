@@ -351,6 +351,9 @@ module.exports = function(){
 		function calr(period, money){
 			var _money = 0;
 			switch (period){
+				case "每日(工作日)":
+					_money = money.cheng(21);
+					break;
 				case "每月":
 					_money = money.cheng(1);
 					break;
@@ -377,6 +380,7 @@ module.exports = function(){
 			var temscope = {};
 			$('.mctb.mt10 tbody:eq(2) tr:gt(0)').each(function(i, tr){
 				//统计总投资
+				
 				var piro = $('td:nth-child(5)', tr).text().trim();
 				var sum = $('td:nth-child(4)', tr).text().trim();
 				var ispouse = $('td:nth-child(8)', tr).text().trim();
